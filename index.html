@@ -1,0 +1,1853 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width,initial-scale=1.0"/>
+<title>MapFlow Notes + AI — CMT Mapping Guide</title>
+<link rel="icon" type="image/svg+xml" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'><rect width='32' height='32' rx='8' fill='%23FF6200'/><text x='16' y='22' text-anchor='middle' font-size='16' fill='white' font-family='Arial'>⇌</text></svg>"/>
+<link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700;800;900&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet"/>
+<style>
+:root{
+  --or:#FF6200;--odk:#CC4E00;--olt:#FF8C3A;--or-a20:rgba(255,98,0,0.20);--or-a35:rgba(255,98,0,0.35);
+  --gn:#16A34A;--glt:#4ADE80;--rd:#DC2626;--rlt:#F87171;--gold:#FCD34D;--teal:#2DD4BF;
+  --bg:#07070C;--b2:#0D0D15;--b3:#12121C;--b4:#181825;--b5:#1E1E2E;
+  --bd:rgba(255,255,255,0.06);--bd2:rgba(255,255,255,0.11);--bd3:rgba(255,255,255,0.22);
+  --tx:#E8E8F6;--mt:#58587C;--mlt:#8080A8;--sb:#24243E;
+  --fn:'Outfit',sans-serif;--mo:'JetBrains Mono',monospace;
+  --sw:248px;--aw:390px;--rad:14px;
+}
+*{box-sizing:border-box;margin:0;padding:0;}
+html,body{height:100%;overflow:hidden;}
+body{font-family:var(--fn);background:var(--bg);color:var(--tx);font-size:14px;-webkit-font-smoothing:antialiased;}
+::-webkit-scrollbar{width:5px;height:5px;}
+::-webkit-scrollbar-thumb{background:var(--sb);border-radius:5px;}
+::-webkit-scrollbar-track{background:transparent;}
+
+/* ─── HEADER ─── */
+header{
+  height:54px;background:linear-gradient(90deg,#0A0500,#0D0D15);
+  border-bottom:1px solid var(--bd);
+  display:flex;align-items:center;padding:0 18px;gap:14px;
+  position:fixed;top:0;left:0;right:0;z-index:200;
+}
+.h-logo{display:flex;align-items:center;gap:10px;}
+.h-logo-icon{
+  width:34px;height:34px;border-radius:10px;background:var(--or);
+  display:flex;align-items:center;justify-content:center;font-size:17px;
+  box-shadow:0 0 22px rgba(255,98,0,0.45);flex-shrink:0;
+}
+.h-title{font-size:15px;font-weight:800;white-space:nowrap;}
+.h-title em{color:var(--or);font-style:normal;}
+.h-badge{
+  font-size:10px;font-weight:700;letter-spacing:.05em;
+  background:var(--or-a20);color:var(--olt);
+  border:1px solid var(--or-a35);padding:2px 9px;border-radius:20px;
+  white-space:nowrap;
+}
+.h-sep{flex:1;}
+.h-tabs{display:flex;gap:6px;}
+.h-tab{
+  height:32px;padding:0 14px;border-radius:8px;
+  border:1px solid var(--bd2);background:transparent;
+  color:var(--mt);font-family:var(--fn);font-size:12.5px;font-weight:600;
+  cursor:pointer;transition:all .18s;display:flex;align-items:center;gap:6px;
+}
+.h-tab:hover{background:var(--b3);color:var(--tx);}
+.h-tab.act{background:var(--or-a20);border-color:var(--or-a35);color:var(--or);}
+.h-divider{width:1px;height:22px;background:var(--bd2);}
+
+/* ─── LAYOUT ─── */
+.app{display:flex;height:calc(100vh - 54px);margin-top:54px;position:relative;}
+
+/* ─── SIDEBAR ─── */
+.sidebar{
+  width:var(--sw);min-width:var(--sw);
+  background:var(--b2);border-right:1px solid var(--bd);
+  display:flex;flex-direction:column;overflow:hidden;
+  transition:width .25s,min-width .25s;
+}
+.sb-search{padding:11px 10px;border-bottom:1px solid var(--bd);position:relative;}
+.sb-search input{
+  width:100%;height:33px;background:var(--b4);
+  border:1px solid var(--bd2);border-radius:8px;
+  color:var(--tx);font-family:var(--fn);font-size:12.5px;
+  padding:0 10px 0 30px;outline:none;transition:border-color .2s;
+}
+.sb-search input:focus{border-color:var(--or-a35);}
+.sb-search input::placeholder{color:var(--mt);}
+.sb-si{position:absolute;left:19px;top:50%;transform:translateY(-50%);font-size:12px;color:var(--mt);pointer-events:none;}
+.sb-nav{flex:1;overflow-y:auto;padding:6px 0 12px;}
+.nav-sep{font-size:9.5px;font-weight:800;text-transform:uppercase;letter-spacing:.09em;color:var(--mt);padding:12px 14px 3px;}
+.nav-item{
+  display:flex;align-items:center;gap:8px;
+  padding:7px 12px;border-radius:9px;margin:1px 6px;
+  cursor:pointer;transition:all .14s;
+  font-size:12px;font-weight:500;color:var(--mlt);
+  position:relative;
+}
+.nav-item:hover{background:var(--b4);color:var(--tx);}
+.nav-item.act{background:var(--or-a20);color:var(--or);}
+.nav-item.act::before{content:'';position:absolute;left:0;top:5px;bottom:5px;width:3px;background:var(--or);border-radius:2px;}
+.nav-item .ni{font-size:13px;flex-shrink:0;}
+.nav-item .nl{flex:1;line-height:1.3;}
+.nav-sub .nav-item{padding:6px 10px 6px 26px;font-size:11.5px;}
+
+/* ─── MAIN NOTES ─── */
+.main{flex:1;overflow-y:auto;padding:28px 30px;}
+.note-page{display:none;}
+.note-page.act{display:block;animation:fadeIn .2s ease;}
+@keyframes fadeIn{from{opacity:0;transform:translateY(6px)}to{opacity:1;transform:translateY(0)}}
+.np-head{margin-bottom:26px;}
+.np-title{font-size:26px;font-weight:900;line-height:1.2;margin-bottom:5px;}
+.np-title em{color:var(--or);font-style:normal;}
+.np-sub{font-size:13.5px;color:var(--mt);line-height:1.6;}
+
+/* Cards */
+.card{background:var(--b2);border:1px solid var(--bd);border-radius:var(--rad);padding:18px 20px;margin-bottom:14px;transition:border-color .2s;}
+.card:hover{border-color:var(--bd2);}
+.card-h{font-size:13.5px;font-weight:700;margin-bottom:12px;display:flex;align-items:center;gap:8px;}
+.card-h em{font-style:normal;font-size:15px;}
+.card p{color:var(--tx);line-height:1.75;margin-bottom:10px;font-size:13.5px;}
+.card p:last-child{margin-bottom:0;}
+.card ul{list-style:none;padding:0;}
+.card ul li{padding:5px 0 5px 20px;position:relative;font-size:13.5px;line-height:1.65;color:var(--tx);}
+.card ul li::before{content:'›';position:absolute;left:0;color:var(--or);font-weight:800;font-size:15px;line-height:1.3;}
+.card ol{padding-left:20px;}
+.card ol li{padding:4px 0;font-size:13.5px;line-height:1.65;}
+.grid2{display:grid;grid-template-columns:1fr 1fr;gap:12px;}
+.grid3{display:grid;grid-template-columns:1fr 1fr 1fr;gap:10px;}
+
+/* Callouts */
+.callout{border-radius:10px;padding:12px 16px;margin:10px 0;font-size:13px;line-height:1.7;}
+.co-or{background:rgba(255,98,0,0.07);border:1px solid rgba(255,98,0,0.22);}
+.co-or strong{color:var(--or);}
+.co-gn{background:rgba(22,163,74,0.07);border:1px solid rgba(22,163,74,0.2);}
+.co-gn strong{color:var(--glt);}
+.co-rd{background:rgba(220,38,38,0.07);border:1px solid rgba(220,38,38,0.2);}
+.co-rd strong{color:var(--rlt);}
+.co-yw{background:rgba(252,211,77,0.07);border:1px solid rgba(252,211,77,0.2);}
+.co-yw strong{color:var(--gold);}
+.co-tl{background:rgba(45,212,191,0.07);border:1px solid rgba(45,212,191,0.2);}
+.co-tl strong{color:var(--teal);}
+
+/* Badges */
+.badge{display:inline-flex;align-items:center;padding:2px 9px;border-radius:20px;font-size:11px;font-weight:700;letter-spacing:.04em;vertical-align:middle;}
+.b-if{background:rgba(22,163,74,0.15);color:var(--glt);border:1px solid rgba(74,222,128,0.25);}
+.b-inf{background:rgba(252,211,77,0.15);color:var(--gold);border:1px solid rgba(252,211,77,0.25);}
+.b-inv{background:rgba(220,38,38,0.15);color:var(--rlt);border:1px solid rgba(248,113,113,0.25);}
+.b-inx{background:rgba(255,98,0,0.15);color:var(--olt);border:1px solid rgba(255,140,58,0.25);}
+
+/* Steps */
+.steps{display:flex;flex-direction:column;gap:10px;}
+.step{display:flex;gap:14px;align-items:flex-start;padding:13px;background:var(--b3);border-radius:10px;border:1px solid var(--bd);}
+.step-n{width:30px;height:30px;border-radius:8px;background:var(--or-a20);border:1px solid var(--or-a35);display:flex;align-items:center;justify-content:center;font-size:13px;font-weight:800;color:var(--or);flex-shrink:0;}
+.step-body strong{display:block;font-size:13px;margin-bottom:3px;}
+.step-body span{font-size:12.5px;color:var(--mt);line-height:1.6;}
+
+/* Table */
+.tw{overflow-x:auto;margin:10px 0;border-radius:10px;border:1px solid var(--bd);}
+table{width:100%;border-collapse:collapse;font-size:12.5px;}
+th{background:var(--b4);padding:9px 12px;text-align:left;font-weight:700;font-size:10.5px;text-transform:uppercase;letter-spacing:.05em;color:var(--mt);border-bottom:1px solid var(--bd2);}
+td{padding:8px 12px;border-bottom:1px solid var(--bd);vertical-align:top;line-height:1.55;}
+tr:last-child td{border-bottom:none;}
+tr:nth-child(even) td{background:rgba(255,255,255,0.02);}
+
+/* Example pills */
+.ex-row{display:flex;flex-wrap:wrap;gap:6px;margin:8px 0;}
+.ex-pill{display:inline-flex;align-items:center;gap:6px;background:var(--b4);border:1px solid var(--bd2);border-radius:7px;padding:4px 10px;font-size:12px;font-family:var(--mo);}
+.ex-pill .arr{color:var(--or);}
+.ex-pill .ok{color:var(--glt);}
+.ex-pill .inx{color:var(--olt);}
+.ex-pill .bad{color:var(--rlt);}
+
+/* Code */
+code{background:var(--b4);border:1px solid var(--bd2);border-radius:5px;padding:1px 6px;font-family:var(--mo);font-size:12px;color:var(--olt);}
+
+/* Divider */
+.div{height:1px;background:var(--bd);margin:16px 0;}
+
+/* Color chip */
+.cc{display:inline-block;width:13px;height:13px;border-radius:3px;border:1px solid rgba(255,255,255,0.1);vertical-align:middle;margin-right:4px;}
+
+/* ─── AI PANEL ─── */
+.ai-panel{
+  width:var(--aw);min-width:var(--aw);
+  background:var(--b2);border-left:1px solid var(--bd);
+  display:flex;flex-direction:column;overflow:hidden;
+}
+.ai-hdr{padding:14px 16px;border-bottom:1px solid var(--bd);display:flex;align-items:center;gap:10px;}
+.ai-icon{width:38px;height:38px;border-radius:11px;background:linear-gradient(135deg,#FF6200,#8B1A00);display:flex;align-items:center;justify-content:center;font-size:19px;box-shadow:0 0 22px rgba(255,98,0,0.32);flex-shrink:0;}
+.ai-hdr-t{font-size:14px;font-weight:800;}
+.ai-hdr-s{font-size:11px;color:var(--mt);}
+.ai-body{flex:1;overflow-y:auto;padding:14px;display:flex;flex-direction:column;gap:11px;}
+
+/* Input tabs */
+.in-tabs{display:flex;gap:5px;margin-bottom:8px;}
+.in-tab{padding:4px 11px;border-radius:7px;font-size:11.5px;font-weight:600;background:var(--b4);border:1px solid var(--bd);color:var(--mt);cursor:pointer;transition:all .14s;}
+.in-tab.act{background:var(--or-a20);border-color:var(--or-a35);color:var(--or);}
+.ai-ta{width:100%;background:var(--b3);border:1px solid var(--bd2);border-radius:10px;color:var(--tx);font-family:var(--fn);font-size:13px;padding:11px 13px;resize:none;outline:none;transition:border-color .2s;line-height:1.6;}
+.ai-ta:focus{border-color:var(--or-a35);}
+.ai-ta::placeholder{color:var(--mt);}
+.ai-lbl{font-size:11px;color:var(--mt);margin-bottom:4px;}
+
+/* Buttons */
+.btn-or{
+  flex:1;height:38px;background:var(--or);color:#fff;
+  border:none;border-radius:9px;font-family:var(--fn);
+  font-size:13px;font-weight:700;cursor:pointer;transition:all .2s;
+  display:flex;align-items:center;justify-content:center;gap:6px;
+}
+.btn-or:hover{background:var(--olt);box-shadow:0 0 22px rgba(255,98,0,0.38);}
+.btn-or:disabled{opacity:.45;cursor:not-allowed;box-shadow:none;}
+.btn-sec{height:38px;padding:0 14px;background:var(--b4);color:var(--tx);border:1px solid var(--bd2);border-radius:9px;font-family:var(--fn);font-size:12px;font-weight:600;cursor:pointer;transition:all .15s;}
+.btn-sec:hover{background:var(--b5);border-color:var(--bd3);}
+.ai-acts{display:flex;gap:8px;}
+
+/* Thinking */
+.thinking{display:none;align-items:center;gap:10px;padding:13px;background:var(--b3);border:1px solid var(--bd);border-radius:var(--rad);}
+.thinking.show{display:flex;}
+.th-dots{display:flex;gap:5px;}
+.th-dots span{width:7px;height:7px;border-radius:50%;background:var(--or);animation:thdot 1.4s infinite ease-in-out;}
+.th-dots span:nth-child(2){animation-delay:.22s;}
+.th-dots span:nth-child(3){animation-delay:.44s;}
+@keyframes thdot{0%,80%,100%{opacity:.2;transform:scale(.7)}40%{opacity:1;transform:scale(1)}}
+.th-txt{font-size:12.5px;color:var(--mt);}
+
+/* Samples */
+.samp-chip{padding:9px 12px;background:var(--b4);border:1px solid var(--bd);border-radius:9px;cursor:pointer;transition:all .15s;margin-bottom:7px;}
+.samp-chip:hover{border-color:var(--or-a35);background:var(--b3);}
+.samp-chip strong{display:block;font-size:12.5px;margin-bottom:2px;}
+.samp-chip span{font-size:11.5px;color:var(--mt);}
+
+/* Result box */
+.res-box{background:var(--b3);border:1px solid var(--bd);border-radius:var(--rad);padding:14px;display:none;}
+.res-box.show{display:block;}
+.res-top{display:flex;align-items:flex-start;justify-content:space-between;margin-bottom:12px;}
+.res-status-big{padding:5px 16px;border-radius:9px;font-size:15px;font-weight:900;letter-spacing:.07em;}
+.rsb-if{background:rgba(22,163,74,0.18);color:var(--glt);border:1px solid rgba(74,222,128,0.3);}
+.rsb-inf{background:rgba(252,211,77,0.18);color:var(--gold);border:1px solid rgba(252,211,77,0.3);}
+.rsb-inv{background:rgba(220,38,38,0.18);color:var(--rlt);border:1px solid rgba(248,113,113,0.3);}
+.res-conf-wrap{text-align:right;}
+.res-conf-lbl{font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:.07em;color:var(--mt);}
+.res-conf-num{font-size:24px;font-weight:900;color:var(--or);}
+.conf-bar-w{height:4px;background:var(--bd);border-radius:4px;margin:4px 0 12px;overflow:hidden;}
+.conf-bar{height:100%;border-radius:4px;background:linear-gradient(90deg,var(--or),var(--olt));transition:width .5s ease;}
+.res-row{display:flex;gap:8px;margin-bottom:9px;align-items:flex-start;}
+.res-lbl{font-size:10.5px;font-weight:700;text-transform:uppercase;letter-spacing:.06em;color:var(--mt);white-space:nowrap;min-width:90px;padding-top:2px;}
+.res-val{font-size:13px;line-height:1.6;flex:1;}
+.res-val.dim{font-size:12.5px;color:#9090B8;}
+.copy-btn{height:29px;padding:0 11px;background:var(--b4);border:1px solid var(--bd2);border-radius:7px;color:var(--mt);font-family:var(--fn);font-size:11px;font-weight:600;cursor:pointer;transition:all .14s;display:flex;align-items:center;gap:4px;white-space:nowrap;}
+.copy-btn:hover{background:var(--b5);color:var(--tx);}
+
+/* Attr table inside result */
+.attr-tbl{width:100%;border-collapse:collapse;font-size:12px;margin-top:8px;}
+.attr-tbl th{background:var(--b4);padding:6px 9px;font-size:10px;text-align:left;font-weight:700;text-transform:uppercase;letter-spacing:.05em;color:var(--mt);border-bottom:1px solid var(--bd2);}
+.attr-tbl td{padding:6px 9px;border-bottom:1px solid var(--bd);vertical-align:top;}
+.attr-tbl tr:last-child td{border-bottom:none;}
+.m-ok{color:var(--glt);}
+.m-inx{color:var(--olt);}
+.m-bad{color:var(--rlt);}
+.m-na{color:var(--mt);}
+
+/* AI mode note */
+.ai-note{background:var(--b3);border:1px solid var(--bd);border-radius:10px;padding:10px 13px;font-size:11.5px;color:var(--mt);line-height:1.6;}
+.ai-note strong{color:var(--mlt);}
+
+/* Mobile: hide AI panel, stack tabs */
+@media(max-width:1100px){.ai-panel{width:340px;min-width:340px;}}
+@media(max-width:900px){
+  .sidebar{width:52px;min-width:52px;}
+  .sidebar .sb-search,.sidebar .nav-sep,.nav-item .nl{display:none;}
+  .nav-item{justify-content:center;padding:10px 0;}
+}
+@media(max-width:720px){.ai-panel{display:none;}.main{padding:18px 16px;}}
+</style>
+</head>
+<body>
+
+<header>
+  <div class="h-logo">
+    <div class="h-logo-icon">⇌</div>
+    <div>
+      <div class="h-title">MapFlow <em>Notes</em> + AI</div>
+    </div>
+  </div>
+  <span class="h-badge">CMT Mapping Guide</span>
+  <div class="h-sep"></div>
+  <div class="h-tabs">
+    <button class="h-tab act" id="htab-notes" onclick="setHTab('notes')">📘 Learning Notes</button>
+    <div class="h-divider"></div>
+    <button class="h-tab" id="htab-ai" onclick="setHTab('ai')">🤖 AI Assistant</button>
+  </div>
+</header>
+
+<div class="app" id="app">
+  <!-- ── SIDEBAR ── -->
+  <aside class="sidebar" id="sidebar">
+    <div class="sb-search">
+      <span class="sb-si">🔍</span>
+      <input type="text" id="search-inp" placeholder="Search notes…" oninput="doSearch(this.value)"/>
+    </div>
+    <nav class="sb-nav" id="sb-nav"></nav>
+  </aside>
+
+  <!-- ── MAIN CONTENT ── -->
+  <main class="main" id="main-notes"></main>
+
+  <!-- ── AI PANEL ── -->
+  <aside class="ai-panel" id="ai-panel">
+    <div class="ai-hdr">
+      <div class="ai-icon">🤖</div>
+      <div>
+        <div class="ai-hdr-t">AI Mapping Assistant</div>
+        <div class="ai-hdr-s">Temu → Amazon · IF / INF / INVALID</div>
+      </div>
+    </div>
+    <div class="ai-body">
+
+      <div>
+        <div class="in-tabs" id="in-tabs">
+          <button class="in-tab act" onclick="setInTab('text',this)">📝 Text</button>
+          <button class="in-tab" onclick="setInTab('url',this)">🔗 URL</button>
+          <button class="in-tab" onclick="setInTab('structured',this)">📋 Fields</button>
+        </div>
+        <div id="in-text-area">
+          <textarea id="ai-temu" class="ai-ta" rows="5" placeholder="Paste Temu product title + description here…&#10;&#10;Include: name, color, size, material, brand, pack quantity…"></textarea>
+          <div class="ai-lbl" style="margin-top:8px">Amazon product details (optional, for comparison):</div>
+          <textarea id="ai-amz" class="ai-ta" rows="3" placeholder="Amazon product title + details…"></textarea>
+        </div>
+        <div id="in-struct-area" style="display:none">
+          <div style="display:grid;grid-template-columns:1fr 1fr;gap:8px">
+            <div>
+              <div class="ai-lbl">Product Type</div>
+              <input id="sf-type" type="text" class="ai-ta" style="height:34px;resize:none" placeholder="e.g. T-Shirt, Headphones">
+            </div>
+            <div>
+              <div class="ai-lbl">Category</div>
+              <select id="sf-cat" style="width:100%;height:34px;background:var(--b3);border:1px solid var(--bd2);border-radius:10px;color:var(--tx);font-family:var(--fn);font-size:13px;padding:0 10px;outline:none;cursor:pointer">
+                <option value="">Auto-detect</option>
+                <option value="softlines">Softlines</option>
+                <option value="hardlines">Hardlines</option>
+                <option value="consumables">Consumables</option>
+              </select>
+            </div>
+            <div>
+              <div class="ai-lbl">Temu Brand</div>
+              <input id="sf-tbrand" type="text" class="ai-ta" style="height:34px;resize:none" placeholder="Brand or Generic">
+            </div>
+            <div>
+              <div class="ai-lbl">Amazon Brand</div>
+              <input id="sf-abrand" type="text" class="ai-ta" style="height:34px;resize:none" placeholder="Brand or Generic">
+            </div>
+            <div>
+              <div class="ai-lbl">Temu Color</div>
+              <input id="sf-tcolor" type="text" class="ai-ta" style="height:34px;resize:none" placeholder="e.g. Navy Blue">
+            </div>
+            <div>
+              <div class="ai-lbl">Amazon Color</div>
+              <input id="sf-acolor" type="text" class="ai-ta" style="height:34px;resize:none" placeholder="e.g. Dark Navy">
+            </div>
+            <div>
+              <div class="ai-lbl">Temu Material</div>
+              <input id="sf-tmat" type="text" class="ai-ta" style="height:34px;resize:none" placeholder="e.g. 100% Cotton">
+            </div>
+            <div>
+              <div class="ai-lbl">Amazon Material</div>
+              <input id="sf-amat" type="text" class="ai-ta" style="height:34px;resize:none" placeholder="e.g. Cotton Blend">
+            </div>
+            <div>
+              <div class="ai-lbl">Temu Size/Pack</div>
+              <input id="sf-tsize" type="text" class="ai-ta" style="height:34px;resize:none" placeholder="e.g. XL, 2-pack">
+            </div>
+            <div>
+              <div class="ai-lbl">Amazon Size/Pack</div>
+              <input id="sf-asize" type="text" class="ai-ta" style="height:34px;resize:none" placeholder="e.g. XL, 3-pack">
+            </div>
+          </div>
+          <div style="margin-top:8px">
+            <div class="ai-lbl">Additional notes</div>
+            <textarea id="sf-notes" class="ai-ta" rows="2" placeholder="Any other details, design differences, specs…"></textarea>
+          </div>
+        </div>
+      </div>
+
+      <div class="ai-acts">
+        <button class="btn-or" id="analyze-btn" onclick="analyzeProduct()">⚡ Analyze Mapping</button>
+        <button class="btn-sec" onclick="toggleSamples()">🧪 Try Sample</button>
+      </div>
+
+      <div class="thinking" id="thinking">
+        <div class="th-dots"><span></span><span></span><span></span></div>
+        <span class="th-txt" id="th-txt">Analyzing with Claude AI…</span>
+      </div>
+
+      <div id="samples-wrap" style="display:none">
+        <div style="font-size:11px;font-weight:800;text-transform:uppercase;letter-spacing:.08em;color:var(--mt);margin-bottom:8px">Sample Products</div>
+        <div id="samples-list"></div>
+      </div>
+
+      <div class="res-box" id="res-box">
+        <div class="res-top">
+          <div>
+            <div class="ai-lbl" style="margin-bottom:5px">Suggested Status</div>
+            <div class="res-status-big" id="res-status">IF</div>
+          </div>
+          <div class="res-conf-wrap">
+            <div class="res-conf-lbl">Confidence</div>
+            <div class="res-conf-num" id="res-conf">85%</div>
+          </div>
+        </div>
+        <div class="conf-bar-w"><div class="conf-bar" id="conf-bar" style="width:85%"></div></div>
+
+        <div class="res-row">
+          <span class="res-lbl">Match Type</span>
+          <span class="res-val" id="res-matchtype">—</span>
+        </div>
+        <div class="res-row">
+          <span class="res-lbl">Inexact Code</span>
+          <span class="res-val" id="res-inxtype">—</span>
+        </div>
+        <div class="res-row">
+          <span class="res-lbl">Reasoning</span>
+          <span class="res-val dim" id="res-reason">—</span>
+        </div>
+
+        <div style="height:1px;background:var(--bd);margin:10px 0"></div>
+        <div style="font-size:10.5px;font-weight:800;text-transform:uppercase;letter-spacing:.07em;color:var(--mt);margin-bottom:7px">Attribute Comparison</div>
+        <table class="attr-tbl">
+          <thead><tr><th>Attribute</th><th>Temu</th><th>Amazon</th><th>Result</th></tr></thead>
+          <tbody id="attr-tbody"></tbody>
+        </table>
+
+        <div style="display:flex;gap:6px;margin-top:12px">
+          <button class="copy-btn" onclick="copyResult()">📋 Copy Output</button>
+          <button class="copy-btn" onclick="clearResult()">✕ Clear</button>
+        </div>
+      </div>
+
+      <div class="ai-note">
+        <strong>🔑 Hybrid AI Mode:</strong> Tries Claude API first for full intelligence. Falls back to built-in rule engine if unavailable — no data leaves your browser.
+      </div>
+    </div>
+  </aside>
+</div>
+
+<script>
+// ══════════════════════════════════════════════════════════════
+//  NAV CONFIG
+// ══════════════════════════════════════════════════════════════
+const NAV=[
+  {id:'intro',icon:'🗺️',label:'Introduction to CMT Mapping'},
+  {id:'flow',icon:'🔄',label:'Mapping Flow (Step-by-step)'},
+  {id:'decision',icon:'🧭',label:'Decision System (IF / INF / INVALID)'},
+  {id:'exact-inexact',icon:'⚖️',label:'Exact vs Inexact Mapping'},
+  {id:'inexact-codes',icon:'🔖',label:'Inexact Reason Codes'},
+  {id:'product-lines',icon:'📦',label:'Product Line Rules',ch:[
+    {id:'softlines',label:'Softlines'},
+    {id:'hardlines',label:'Hardlines'},
+    {id:'consumables',label:'Consumables'},
+  ]},
+  {id:'attributes',icon:'🧬',label:'Attribute Matching Rules',ch:[
+    {id:'attr-brand',label:'Brand'},
+    {id:'attr-color',label:'Color'},
+    {id:'attr-material',label:'Material'},
+    {id:'attr-design',label:'Design / Pattern'},
+    {id:'attr-size',label:'Size'},
+    {id:'attr-pack',label:'Pack / Bundle'},
+  ]},
+  {id:'special',icon:'⭐',label:'Special Rules',ch:[
+    {id:'spec-gender',label:'Gender Mapping'},
+    {id:'spec-matfam',label:'Material Family Equivalence'},
+    {id:'spec-sizetol',label:'Size Tolerance Rules'},
+  ]},
+  {id:'color-table',icon:'🎨',label:'Apparel Color Mapping Table'},
+  {id:'mistakes',icon:'⚠️',label:'Common Mistakes'},
+  {id:'pro',icon:'🏆',label:'Pro Mapper Thinking'},
+];
+
+// ══════════════════════════════════════════════════════════════
+//  NOTES CONTENT
+// ══════════════════════════════════════════════════════════════
+const NOTES={
+
+intro:`<div class="np-head">
+  <div class="np-title">Introduction to <em>CMT Mapping</em></div>
+  <div class="np-sub">What is CMT? Why does it matter? Start here before anything else.</div>
+</div>
+<div class="card">
+  <div class="card-h"><em>🗺️</em> What is CMT Mapping?</div>
+  <p>CMT stands for <strong>Competitor Mapping Tool</strong>. Your job as a CMT mapper is to find an <strong>Amazon product (ASIN)</strong> that best matches a <strong>Temu product</strong>.</p>
+  <p>Think of it like being a matchmaker — you look at a Temu product and find its closest Amazon twin. The better the match, the higher the data quality.</p>
+  <div class="callout co-or"><strong>🎯 Core Goal:</strong> For every Temu product URL, find the most accurate equivalent Amazon ASIN and decide if it's an Exact or Inexact match.</div>
+</div>
+<div class="card">
+  <div class="card-h"><em>📚</em> Key Terms You Must Know</div>
+  <div class="tw"><table>
+    <thead><tr><th>Term</th><th>Meaning</th></tr></thead>
+    <tbody>
+      <tr><td><strong>ASIN</strong></td><td>Amazon Standard Identification Number — unique ID for each Amazon product</td></tr>
+      <tr><td><strong>SKU</strong></td><td>Stock Keeping Unit — Temu's product identifier</td></tr>
+      <tr><td><strong>IF</strong></td><td>In Feed — a valid match was found (Exact or Inexact)</td></tr>
+      <tr><td><strong>INF</strong></td><td>In Feed Not Found — product type exists on Amazon but no close match found</td></tr>
+      <tr><td><strong>INVALID</strong></td><td>The Temu URL is broken, discontinued, or unavailable</td></tr>
+      <tr><td><strong>Inexact IF</strong></td><td>Match found but one or more attributes differ (brand, color, material, etc.)</td></tr>
+      <tr><td><strong>Exact IF</strong></td><td>Match found and all key attributes are the same</td></tr>
+      <tr><td><strong>MKPL</strong></td><td>Marketplace (e.g. US, UK, DE, FR)</td></tr>
+    </tbody>
+  </table></div>
+</div>
+<div class="card">
+  <div class="card-h"><em>🏷️</em> The Three Product Lines</div>
+  <div class="grid3">
+    <div style="background:var(--b4);border-radius:10px;padding:13px;border:1px solid var(--bd)">
+      <div style="font-size:20px;margin-bottom:6px">👕</div>
+      <div style="font-weight:700;margin-bottom:4px">Softlines (SL)</div>
+      <div style="font-size:12px;color:var(--mt)">Apparel, shoes, jewelry, bags, accessories, watches</div>
+    </div>
+    <div style="background:var(--b4);border-radius:10px;padding:13px;border:1px solid var(--bd)">
+      <div style="font-size:20px;margin-bottom:6px">🔧</div>
+      <div style="font-weight:700;margin-bottom:4px">Hardlines (HL)</div>
+      <div style="font-size:12px;color:var(--mt)">Electronics, tools, home goods, toys, furniture, sports equipment</div>
+    </div>
+    <div style="background:var(--b4);border-radius:10px;padding:13px;border:1px solid var(--bd)">
+      <div style="font-size:20px;margin-bottom:6px">🛒</div>
+      <div style="font-weight:700;margin-bottom:4px">Consumables</div>
+      <div style="font-size:12px;color:var(--mt)">Grocery, beauty, supplements, cleaning, baby care</div>
+    </div>
+  </div>
+</div>
+<div class="callout co-gn"><strong>✅ Remember:</strong> The product line determines which rules apply. Always classify the product type FIRST before checking any other attributes.</div>`,
+
+flow:`<div class="np-head">
+  <div class="np-title">Mapping Flow <em>(Step-by-Step)</em></div>
+  <div class="np-sub">Follow this process for every single Temu product. Don't skip steps.</div>
+</div>
+<div class="card">
+  <div class="card-h"><em>🔄</em> The 6-Step Mapping Process</div>
+  <div class="steps">
+    <div class="step"><div class="step-n">1</div><div class="step-body"><strong>Open the Temu URL</strong><span>Check if the page loads. If the product is unavailable, discontinued, or shows a 404 → mark as <span class="badge b-inv">INVALID</span></span></div></div>
+    <div class="step"><div class="step-n">2</div><div class="step-body"><strong>Identify the Product Type</strong><span>What is it? T-shirt? Wireless earbuds? Face cream? This tells you which product line it belongs to (SL / HL / Consumables) and which rules apply.</span></div></div>
+    <div class="step"><div class="step-n">3</div><div class="step-body"><strong>Extract Key Attributes</strong><span>Note down: Brand, Color, Material, Size/Dimensions, Pack quantity, Design/Pattern, Gender (if SL). These are what you'll compare.</span></div></div>
+    <div class="step"><div class="step-n">4</div><div class="step-body"><strong>Search Amazon for a Match</strong><span>Use Amazon's search bar, lens search (for images), or title search. Look for the ASIN that best matches the Temu product's type and specifications.</span></div></div>
+    <div class="step"><div class="step-n">5</div><div class="step-body"><strong>Compare Attributes Side by Side</strong><span>Go through each attribute: Brand → Color → Material → Design → Size → Pack. Check for mismatches using the inexact reason code rules.</span></div></div>
+    <div class="step"><div class="step-n">6</div><div class="step-body"><strong>Assign the Mapping Status</strong><span>Based on your comparison: <span class="badge b-if">IF Exact</span> or <span class="badge b-inx">IF Inexact</span> or <span class="badge b-inf">INF</span> or <span class="badge b-inv">INVALID</span>. Fill in all fields and move to next row.</span></div></div>
+  </div>
+</div>
+<div class="card">
+  <div class="card-h"><em>📊</em> Decision Priority Order</div>
+  <p>When checking attributes, always follow this priority order. The <strong>highest-priority mismatch</strong> becomes your inexact reason code.</p>
+  <div class="callout co-or">
+    <strong>Priority for finding Inexact IF:</strong><br/>
+    1st — Brand, Color &nbsp;&nbsp; 2nd — Size, Material &nbsp;&nbsp; 3rd — Spec, Pack, Design
+  </div>
+  <div class="callout co-yw">
+    <strong>Priority for Reason Code (when writing the code):</strong><br/>
+    1st — Spec, Pack, Design &nbsp;&nbsp; 2nd — Size, Material &nbsp;&nbsp; 3rd — Brand, Color
+  </div>
+</div>`,
+
+decision:`<div class="np-head">
+  <div class="np-title">Decision System <em>(IF / INF / INVALID)</em></div>
+  <div class="np-sub">The three possible outcomes for every mapping. Learn these cold.</div>
+</div>
+<div class="grid2" style="margin-bottom:14px">
+  <div style="background:rgba(22,163,74,0.07);border:1px solid rgba(22,163,74,0.2);border-radius:var(--rad);padding:16px">
+    <div style="font-size:28px;font-weight:900;color:var(--glt);margin-bottom:6px">IF</div>
+    <div style="font-weight:700;margin-bottom:6px">In Feed — Match Found</div>
+    <div style="font-size:12.5px;color:var(--mt);line-height:1.6">A matching Amazon product was found. Can be Exact or Inexact. The ASIN goes into your output.</div>
+  </div>
+  <div style="background:rgba(252,211,77,0.07);border:1px solid rgba(252,211,77,0.2);border-radius:var(--rad);padding:16px">
+    <div style="font-size:28px;font-weight:900;color:var(--gold);margin-bottom:6px">INF</div>
+    <div style="font-weight:700;margin-bottom:6px">In Feed Not Found</div>
+    <div style="font-size:12.5px;color:var(--mt);line-height:1.6">The product category exists on Amazon but no close enough match was found.</div>
+  </div>
+</div>
+<div style="background:rgba(220,38,38,0.07);border:1px solid rgba(220,38,38,0.2);border-radius:var(--rad);padding:16px;margin-bottom:14px">
+  <div style="font-size:28px;font-weight:900;color:var(--rlt);margin-bottom:6px">INVALID</div>
+  <div style="font-weight:700;margin-bottom:6px">Product URL is Not Usable</div>
+  <div style="font-size:12.5px;color:var(--mt);line-height:1.6">The Temu page is broken, discontinued, or unavailable. No mapping is possible.</div>
+</div>
+<div class="card">
+  <div class="card-h"><em>🧭</em> When to Use Each Status</div>
+  <div class="tw"><table>
+    <thead><tr><th>Status</th><th>When to Use</th><th>Example</th></tr></thead>
+    <tbody>
+      <tr><td><span class="badge b-if">IF Exact</span></td><td>Match found, all attributes same</td><td>Nike Air Max in both, same color, material, size</td></tr>
+      <tr><td><span class="badge b-inx">IF Inexact</span></td><td>Match found, but 1–2 minor attributes differ</td><td>Same shirt, different brand name</td></tr>
+      <tr><td><span class="badge b-inf">INF</span></td><td>No close match found, or key spec mismatches</td><td>iPhone 15 on Temu vs iPhone 15 Pro on Amazon</td></tr>
+      <tr><td><span class="badge b-inv">INVALID</span></td><td>Page broken, discontinued, or out of stock (unavailable)</td><td>Temu shows "This item is unavailable"</td></tr>
+    </tbody>
+  </table></div>
+</div>
+<div class="card">
+  <div class="card-h"><em>⚠️</em> INF — Common Reasons</div>
+  <ul>
+    <li><strong>Product type not found</strong> on Amazon at all</li>
+    <li><strong>Model mismatch</strong> — e.g. bulb A16 vs A17, iPhone 15 vs iPhone 15 Pro</li>
+    <li><strong>Refurbished / Renewed</strong> product on Amazon vs new on Temu</li>
+    <li><strong>Pack/Bundle mismatch</strong> for Hardlines & Consumables (Temu has MORE than Amazon)</li>
+    <li><strong>Gender mismatch</strong> — e.g. Men's product mapped to Women's product</li>
+    <li><strong>Power input mismatch</strong> — critical spec difference</li>
+    <li><strong>Full sleeve vs half sleeve, ankle socks vs toe socks</strong> — not minor differences</li>
+  </ul>
+</div>
+<div class="card">
+  <div class="card-h"><em>❓</em> INF vs INVALID — Don't Confuse These!</div>
+  <div class="grid2">
+    <div class="callout co-yw"><strong>INF</strong> = Product is real and available, but no ASIN match close enough was found. The URL works fine, the product exists.</div>
+    <div class="callout co-rd"><strong>INVALID</strong> = The URL is broken. Product discontinued, removed, or shows "Unavailable". If it's just "Sold out" temporarily → mark INF instead.</div>
+  </div>
+</div>`,
+
+'exact-inexact':`<div class="np-head">
+  <div class="np-title">Exact vs <em>Inexact</em> Mapping</div>
+  <div class="np-sub">Both are IF (match found). The difference is whether attributes match perfectly.</div>
+</div>
+<div class="card">
+  <div class="card-h"><em>⚖️</em> The Core Distinction</div>
+  <div class="grid2">
+    <div>
+      <div class="callout co-gn" style="margin-top:0">
+        <strong>✅ Exact IF</strong><br/>
+        All key attributes match between Temu and Amazon. Brand, color, material, design, size, and pack quantity are all the same (within allowed tolerances).
+      </div>
+    </div>
+    <div>
+      <div class="callout co-or" style="margin-top:0">
+        <strong>🔶 Inexact IF</strong><br/>
+        A good match was found, but one or more attributes differ in a minor way. The product type and core function are the same, but something is different.
+      </div>
+    </div>
+  </div>
+</div>
+<div class="card">
+  <div class="card-h"><em>📝</em> Quick Decision Guide</div>
+  <div class="steps">
+    <div class="step"><div class="step-n">A</div><div class="step-body"><strong>Is the product type exactly the same?</strong><span>If the core product is different (sneaker vs loafer, sofa vs chair) → This is usually <span class="badge b-inx">Inexact</span> or <span class="badge b-inf">INF</span>. Never force a wrong product type match.</span></div></div>
+    <div class="step"><div class="step-n">B</div><div class="step-body"><strong>Do all main attributes match?</strong><span>Go through Brand → Color → Material → Design → Size → Pack one by one. If ALL pass → <span class="badge b-if">Exact IF</span>.</span></div></div>
+    <div class="step"><div class="step-n">C</div><div class="step-body"><strong>Is there exactly 1 minor attribute mismatch?</strong><span>If only brand differs, or only color differs, etc. → <span class="badge b-inx">Inexact IF</span> with that code.</span></div></div>
+    <div class="step"><div class="step-n">D</div><div class="step-body"><strong>Are there major mismatches or model differences?</strong><span>If the core spec doesn't match (different model, wrong gender, refurbished vs new) → <span class="badge b-inf">INF</span>.</span></div></div>
+  </div>
+</div>
+<div class="card">
+  <div class="card-h"><em>💡</em> Examples</div>
+  <div class="ex-row">
+    <div class="ex-pill">Nike T-shirt → Nike T-shirt (same color, same material) <span class="ok">✅ Exact IF</span></div>
+  </div>
+  <div class="ex-row">
+    <div class="ex-pill">ABC Brand T-shirt → XYZ Brand T-shirt (everything else same) <span class="inx">⚠️ Inexact - Brand</span></div>
+  </div>
+  <div class="ex-row">
+    <div class="ex-pill">Navy polo shirt → Black polo shirt (same brand, material) <span class="inx">⚠️ Inexact - Color</span></div>
+  </div>
+  <div class="ex-row">
+    <div class="ex-pill">iPhone 15 → iPhone 15 Pro <span class="bad">❌ INF</span></div>
+  </div>
+  <div class="ex-row">
+    <div class="ex-pill">Full sleeve shirt → Half sleeve shirt <span class="bad">❌ INF</span></div>
+  </div>
+</div>`,
+
+'inexact-codes':`<div class="np-head">
+  <div class="np-title">Inexact <em>Reason Codes</em></div>
+  <div class="np-sub">7 codes. Learn each one — when to use it, and real examples.</div>
+</div>
+<div class="callout co-or" style="margin-bottom:14px"><strong>Rule:</strong> When multiple attributes mismatch, use the HIGHEST priority inexact reason code. Don't list all of them — pick the most important one. Order: Spec > Pack > Design > Size > Material > Color > Brand.</div>
+
+<div class="card">
+  <div class="card-h"><em>🏷️</em> 1. Brand Inexact</div>
+  <p>All images, colors, and specifications match — only the brand name is different.</p>
+  <div class="tw"><table>
+    <thead><tr><th>Temu Brand</th><th>Amazon Brand</th><th>Status</th></tr></thead>
+    <tbody>
+      <tr><td>Brand mentioned (ABC)</td><td>Generic / No brand</td><td><span class="badge b-if">Exact IF</span></td></tr>
+      <tr><td>No brand mentioned</td><td>Generic / No brand</td><td><span class="badge b-if">Exact IF</span></td></tr>
+      <tr><td>ABC Brand</td><td>XYZ Brand (different)</td><td><span class="badge b-inx">Inexact IF — Brand</span></td></tr>
+      <tr><td>No brand mentioned</td><td>XYZ Brand (specific)</td><td><span class="badge b-inx">Inexact IF — Brand</span></td></tr>
+      <tr><td>ABC Brand</td><td>ABC Brand (same)</td><td><span class="badge b-if">Exact IF</span></td></tr>
+    </tbody>
+  </table></div>
+  <div class="callout co-gn"><strong>Remember:</strong> Generic = Generic is always Exact IF, even if one has a brand name and the other doesn't.</div>
+</div>
+
+<div class="card">
+  <div class="card-h"><em>🎨</em> 2. Color Inexact</div>
+  <p>All images, brand, and specifications match — only the color is different. Refer to the Color Mapping Table for exact matching rules.</p>
+  <div class="ex-row">
+    <div class="ex-pill">Navy Blue → Dark Navy <span class="ok">✅ Exact (same color group)</span></div>
+  </div>
+  <div class="ex-row">
+    <div class="ex-pill">Red → Blue <span class="bad">❌ Color Inexact</span></div>
+  </div>
+  <div class="callout co-or"><strong>Brand + Color Inexact:</strong> If both brand AND color differ but all specs match → use <code>Brand + Color Inexact</code> as combined code.</div>
+</div>
+
+<div class="card">
+  <div class="card-h"><em>🧵</em> 3. Material Inexact</div>
+  <p>Product type and specs match, but the material is different between Temu and Amazon.</p>
+  <div style="margin-bottom:10px">
+    <div style="font-weight:700;font-size:12.5px;margin-bottom:6px;color:var(--mlt)">👕 For Softlines:</div>
+    <ul>
+      <li>Same material + composition not mentioned → <span class="badge b-if">Exact IF</span> <br/><span style="font-size:12px;color:var(--mt)">e.g. 90% cotton 10% spandex vs "cotton blend"</span></li>
+      <li>Same family, different composition significantly → <span class="badge b-inx">Material Inexact</span><br/><span style="font-size:12px;color:var(--mt)">e.g. 98% Polyester vs 75% Cotton 25% Spandex</span></li>
+      <li>50% cotton 50% spandex vs 100% viscose → <span class="badge b-inx">Material Inexact</span></li>
+    </ul>
+  </div>
+  <div>
+    <div style="font-weight:700;font-size:12.5px;margin-bottom:6px;color:var(--mlt)">🔧 For Hardlines:</div>
+    <ul>
+      <li>Same material family (aluminium vs steel) → <span class="badge b-inx">Material Inexact</span></li>
+      <li>Different material family (glass vs plastic) → <span class="badge b-inx">Material Inexact</span></li>
+    </ul>
+  </div>
+  <div class="callout co-tl" style="margin-top:10px"><strong>💡 Tip:</strong> Check the Material Family Equivalence table first. Viscose = Rayon, Spandex = Lycra = Elastane. These count as Exact IF.</div>
+</div>
+
+<div class="card">
+  <div class="card-h"><em>🖼️</em> 4. Design / Pattern Inexact</div>
+  <div style="margin-bottom:10px">
+    <div style="font-weight:700;font-size:12.5px;margin-bottom:6px;color:var(--mlt)">👕 Softlines Design Rules:</div>
+    <ul>
+      <li><strong>Minor differences = Exact IF:</strong> sleeve style (if length matches), pockets, stitching styles, side slits</li>
+      <li><strong>Neck pattern ≠ minor</strong> — crew neck vs V-neck = Inexact IF</li>
+      <li>Different design type (sneaker vs loafer) = Inexact IF — Design/Pattern</li>
+    </ul>
+  </div>
+  <div style="margin-bottom:10px">
+    <div style="font-weight:700;font-size:12.5px;margin-bottom:6px;color:var(--mlt)">🔧 Hardlines Design Rules:</div>
+    <ul>
+      <li>Minor 1–2 feature variation (1 drawer vs 2 drawers) = Design Inexact</li>
+      <li>5-seater sofa vs 3-seater sofa = Design Inexact</li>
+    </ul>
+  </div>
+  <div>
+    <div style="font-weight:700;font-size:12.5px;margin-bottom:6px;color:var(--mlt)">🌀 Pattern Rules:</div>
+    <ul>
+      <li>Same pattern → Exact IF</li>
+      <li>One pattern vs another pattern (minor) → Inexact IF — Design/Pattern</li>
+      <li>Plain vs patterned (totally different) → Inexact IF — Design/Pattern</li>
+    </ul>
+  </div>
+</div>
+
+<div class="card">
+  <div class="card-h"><em>📏</em> 5. Size Inexact</div>
+  <div class="callout co-gn">
+    <strong>Softlines Exception:</strong> Apparel, Shoes, Shoelaces, Belts (if width same), and Rings → Any size to any size = <span class="badge b-if">Exact IF</span>. Size does NOT matter for these!
+  </div>
+  <div class="callout co-or">
+    <strong>All Other SL (luggage, watches, jewelry) + All Hardlines:</strong><br/>
+    ±10% size difference → <span class="badge b-if">Exact IF</span><br/>
+    &gt;10% size difference → <span class="badge b-inx">Size Inexact IF</span>
+  </div>
+  <div class="ex-row">
+    <div class="ex-pill">T-shirt S → T-shirt XL <span class="ok">✅ Exact IF (apparel, any size OK)</span></div>
+  </div>
+  <div class="ex-row">
+    <div class="ex-pill">Suitcase 20" → Suitcase 22" (10% diff) <span class="ok">✅ Exact IF</span></div>
+  </div>
+  <div class="ex-row">
+    <div class="ex-pill">Suitcase 20" → Suitcase 28" (&gt;10%) <span class="inx">⚠️ Size Inexact</span></div>
+  </div>
+</div>
+
+<div class="card">
+  <div class="card-h"><em>📦</em> 6. Pack Inexact</div>
+  <div style="margin-bottom:10px">
+    <div style="font-weight:700;font-size:12.5px;margin-bottom:6px;color:var(--mlt)">👕 Softlines Pack Rules:</div>
+    <p style="font-size:13px">1 pack to multiple pack = <span class="badge b-inx">Pack Inexact IF</span> — always OK for SL.</p>
+  </div>
+  <div style="margin-bottom:10px">
+    <div style="font-weight:700;font-size:12.5px;margin-bottom:6px;color:var(--mlt)">🔧 Hardlines & Consumables Pack Rules:</div>
+    <ul>
+      <li><strong>Amazon has MORE quantity</strong> than Temu → <span class="badge b-inx">Pack Inexact IF</span><br/><span style="font-size:12px;color:var(--mt)">e.g. Amazon 10 boxes, Temu 2 boxes → Pack Inexact IF ✅</span></li>
+      <li><strong>Temu has MORE quantity</strong> than Amazon → <span class="badge b-inf">INF — Pack/Bundle Mismatch</span><br/><span style="font-size:12px;color:var(--mt)">e.g. Amazon 6 boxes, Temu 16 boxes → INF ❌</span></li>
+      <li>Accessories/Attachments that don't affect core function → Pack Inexact IF ✅</li>
+    </ul>
+  </div>
+  <div class="callout co-yw"><strong>Consumables Special:</strong> 1×20ml vs 2×20ml = Pack Inexact IF ✅ | 1×20ml vs 2×10ml = INF ❌ (different per-unit size)</div>
+</div>
+
+<div class="card">
+  <div class="card-h"><em>⚙️</em> 7. Specification Inexact</div>
+  <ul>
+    <li><strong>Softlines:</strong> Neck style difference (crew vs V-neck), fit type (Regular vs Oversized)</li>
+    <li><strong>Hardlines:</strong> Capacity (5L vs 6L tank), power output (1200W vs 1500W)</li>
+    <li><strong>Consumables:</strong> Flavor difference, package type, item form (pill vs liquid)</li>
+  </ul>
+  <div class="callout co-rd"><strong>Important:</strong> Specification mismatch that is MAJOR (like different model numbers, wrong voltage, full sleeve vs half sleeve) → this becomes <span class="badge b-inf">INF</span>, not just Inexact!</div>
+</div>`,
+
+softlines:`<div class="np-head">
+  <div class="np-title">Product Line Rules — <em>Softlines</em></div>
+  <div class="np-sub">Apparel, shoes, jewelry, bags, luggage, accessories, watches.</div>
+</div>
+<div class="card">
+  <div class="card-h"><em>👕</em> Apparel Rules</div>
+  <ul>
+    <li><strong>Gender:</strong> Unisex → Men's or Women's = <span class="badge b-if">Exact IF</span> (Unisex covers both)</li>
+    <li><strong>Size:</strong> Any size to any size = <span class="badge b-if">Exact IF</span> (size never matters for apparel)</li>
+    <li><strong>Material:</strong> Must match (or be same family). Totally different material = Inexact IF</li>
+    <li><strong>Design/Pattern:</strong> Must match. Minor sleeve/pocket differences OK. Neck style = NOT minor.</li>
+    <li><strong>Product type:</strong> Crew neck T-shirt ≠ V-neck T-shirt (this is a spec difference → INF or Design Inexact)</li>
+  </ul>
+  <div class="ex-row">
+    <div class="ex-pill">Women's crew neck S → Men's crew neck XL <span class="ok">✅ Exact IF (size OK, unisex equiv.)</span></div>
+  </div>
+  <div class="ex-row">
+    <div class="ex-pill">Crew neck → V-neck <span class="inx">⚠️ Spec/Design Inexact</span></div>
+  </div>
+</div>
+<div class="card">
+  <div class="card-h"><em>👟</em> Shoes Rules</div>
+  <ul>
+    <li><strong>Material & toe type</strong> must match (e.g. round toe ≠ pointed toe)</li>
+    <li><strong>Size:</strong> Any shoe size = Exact IF (same as apparel)</li>
+    <li><strong>Kids Toddler:</strong> Toddler = Toddler ONLY (no substitution with kids sizes)</li>
+    <li><strong>Print/Pattern</strong> must match (snake print ≠ floral print)</li>
+    <li><strong>Design type:</strong> Sneaker ≠ Loafer — this is Design Inexact or INF</li>
+  </ul>
+</div>
+<div class="card">
+  <div class="card-h"><em>💍</em> Jewelry Rules</div>
+  <ul>
+    <li><strong>Carat must match</strong> — 14k ≠ 18k ≠ 22k (this is INF, not inexact)</li>
+    <li><strong>Chain length must match</strong> (within ±10% tolerance)</li>
+    <li><strong>Ring size:</strong> Can differ if all other specs match (similar to apparel rule)</li>
+    <li><strong>Material:</strong> Gold-plated ≠ Solid Gold</li>
+  </ul>
+</div>
+<div class="card">
+  <div class="card-h"><em>⌚</em> Watches & <em>🧳</em> Luggage</div>
+  <div class="grid2">
+    <div>
+      <div style="font-weight:700;font-size:12.5px;margin-bottom:6px">Watches:</div>
+      <ul>
+        <li>Dial size must match (±10%)</li>
+        <li>Strap size must match (±10%)</li>
+        <li>Digital ≠ Analog = Design Inexact or INF</li>
+      </ul>
+    </div>
+    <div>
+      <div style="font-weight:700;font-size:12.5px;margin-bottom:6px">Luggage:</div>
+      <ul>
+        <li>Number of wheels must match</li>
+        <li>±10% size = Exact IF</li>
+        <li>&gt;10% size = Size Inexact</li>
+        <li>Hard shell ≠ Soft shell = Design Inexact</li>
+      </ul>
+    </div>
+  </div>
+</div>`,
+
+hardlines:`<div class="np-head">
+  <div class="np-title">Product Line Rules — <em>Hardlines</em></div>
+  <div class="np-sub">Electronics, tools, home goods, toys, furniture, musical instruments, sports gear.</div>
+</div>
+<div class="callout co-or" style="margin-bottom:14px"><strong>Universal HL Rule:</strong> Brand AND Color must ALWAYS match exactly for Hardlines. No exceptions.</div>
+<div class="card">
+  <div class="card-h"><em>🔧</em> General Hardlines Rules</div>
+  <ul>
+    <li><strong>Model numbers:</strong> Must match (A16 ≠ A17, iPhone 15 ≠ iPhone 15 Pro) → INF</li>
+    <li><strong>Size / dimensions:</strong> ±10% tolerance for Exact IF</li>
+    <li><strong>Pack quantity:</strong> Amazon more than Temu → Pack Inexact IF; Temu more than Amazon → INF</li>
+    <li><strong>Condition:</strong> New = New / Renewed = Refurbished. New ≠ Renewed → INF</li>
+    <li><strong>Material family:</strong> Same family = Material Inexact (aluminium vs steel)</li>
+  </ul>
+</div>
+<div class="card">
+  <div class="card-h"><em>🎹</em> Musical Instruments</div>
+  <ul>
+    <li><strong>Keyboards:</strong> Number of keys MUST match (61-key ≠ 88-key → INF)</li>
+    <li><strong>Guitars:</strong> Left-hand guitars = Left-hand ONLY (cannot swap to right-hand)</li>
+    <li>Material (body wood) must match or be same family</li>
+  </ul>
+</div>
+<div class="card">
+  <div class="card-h"><em>🏎️</em> Tyres</div>
+  <ul>
+    <li><strong>Season:</strong> Winter = Winter ONLY (Winter ≠ All-Season ≠ Summer → INF)</li>
+    <li><strong>RIM size must match</strong> exactly (17" ≠ 18" → INF)</li>
+    <li>Width and aspect ratio must match within tolerance</li>
+  </ul>
+</div>
+<div class="card">
+  <div class="card-h"><em>🧸</em> Toys</div>
+  <ul>
+    <li><strong>Age group must match</strong> — "3+" is not interchangeable with "5+" or "8+" → INF</li>
+    <li>Theme/character must match (car toy ≠ truck toy)</li>
+    <li>Pack/set size: Amazon more = Pack Inexact; Temu more = INF</li>
+  </ul>
+</div>`,
+
+consumables:`<div class="np-head">
+  <div class="np-title">Product Line Rules — <em>Consumables</em></div>
+  <div class="np-sub">Grocery, beauty, personal care, supplements, cleaning products, baby items.</div>
+</div>
+<div class="callout co-or" style="margin-bottom:14px"><strong>Universal Consumables Rule:</strong> Brand AND Color/Flavor must match exactly. Strict rules.</div>
+<div class="card">
+  <div class="card-h"><em>🛒</em> Grocery / Food</div>
+  <ul>
+    <li><strong>Pack & quantity:</strong> 5kg = 5kg exactly (or Amazon more = Pack Inexact)</li>
+    <li><strong>Flavor must match</strong> — chocolate ≠ vanilla → Spec Inexact or INF</li>
+    <li><strong>Organic = Organic, Vegan = Vegan</strong> — these are not interchangeable</li>
+    <li>Gluten-free, halal, kosher — must match if stated</li>
+  </ul>
+</div>
+<div class="card">
+  <div class="card-h"><em>💄</em> Beauty & Personal Care</div>
+  <ul>
+    <li>Fragrance/scent must match</li>
+    <li><strong>EDP = EDP, EDT = EDT</strong> — Eau de Parfum ≠ Eau de Toilette → Spec Inexact</li>
+    <li>Formulation: gel ≠ cream ≠ foam → Spec Inexact or INF</li>
+    <li>SPF value must match if stated</li>
+  </ul>
+</div>
+<div class="card">
+  <div class="card-h"><em>👶</em> Baby Products</div>
+  <ul>
+    <li><strong>Size by age must match:</strong> 0–6m = 0–6m (not 3–6m), 12–24m = 1–2 years ✅</li>
+    <li><strong>Gender must match</strong> (baby boy items ≠ baby girl items)</li>
+    <li>Material: BPA-free, organic cotton — must match if stated</li>
+  </ul>
+</div>`,
+
+'attr-brand':`<div class="np-head">
+  <div class="np-title">Attribute — <em>Brand</em></div>
+  <div class="np-sub">Brand is the first thing to check. Priority differs by product line.</div>
+</div>
+<div class="card">
+  <div class="card-h"><em>🏷️</em> Brand Rules by Product Line</div>
+  <div class="callout co-gn"><strong>Softlines:</strong> Generic = Generic is always Exact IF even if one mentions a brand name and the other is unbranded.</div>
+  <div class="callout co-or"><strong>Hardlines & Consumables:</strong> Brand MUST match exactly. ABC Brand ≠ XYZ Brand → Brand Inexact or INF depending on severity.</div>
+</div>
+<div class="card">
+  <div class="card-h"><em>📊</em> Brand Decision Table</div>
+  <div class="tw"><table>
+    <thead><tr><th>Temu Brand</th><th>Amazon Brand</th><th>Softlines</th><th>HL / Cons</th></tr></thead>
+    <tbody>
+      <tr><td>ABC Brand</td><td>Generic / No brand</td><td><span class="badge b-if">Exact IF</span></td><td><span class="badge b-inx">Brand Inexact</span></td></tr>
+      <tr><td>No brand</td><td>Generic / No brand</td><td><span class="badge b-if">Exact IF</span></td><td><span class="badge b-if">Exact IF</span></td></tr>
+      <tr><td>ABC Brand</td><td>XYZ Brand (different)</td><td><span class="badge b-inx">Brand Inexact</span></td><td><span class="badge b-inx">Brand Inexact</span></td></tr>
+      <tr><td>No brand</td><td>XYZ Brand (specific)</td><td><span class="badge b-inx">Brand Inexact</span></td><td><span class="badge b-inx">Brand Inexact</span></td></tr>
+      <tr><td>ABC Brand</td><td>ABC Brand (same)</td><td><span class="badge b-if">Exact IF</span></td><td><span class="badge b-if">Exact IF</span></td></tr>
+    </tbody>
+  </table></div>
+</div>`,
+
+'attr-color':`<div class="np-head">
+  <div class="np-title">Attribute — <em>Color</em></div>
+  <div class="np-sub">Color matching uses a color family table. Exact match first, then closest group.</div>
+</div>
+<div class="card">
+  <div class="card-h"><em>🎨</em> Color Matching Rules</div>
+  <ol>
+    <li style="margin-bottom:8px"><strong>Exact color match first</strong> — if the color names are the same or obvious synonyms (Black = Jet Black = Midnight Black), it's Exact IF</li>
+    <li style="margin-bottom:8px"><strong>Same color group</strong> — if both fall in the same primary color group (e.g. both are shades of Blue), check if it's a reasonable match → Exact IF</li>
+    <li style="margin-bottom:8px"><strong>Different color groups</strong> — e.g. Navy Blue vs Green → this is Color Inexact IF</li>
+    <li><strong>Completely different</strong> — e.g. Red vs Blue → Color Inexact IF</li>
+  </ol>
+  <div class="callout co-or"><strong>Priority:</strong> Always try for Exact color match first. Only use closest match if exact isn't available. Refer to the Apparel Color Table section for the full list.</div>
+</div>
+<div class="card">
+  <div class="card-h"><em>💡</em> Quick Color Examples</div>
+  <div class="ex-row"><div class="ex-pill">Black → Jet Black <span class="ok">✅ Exact (same group)</span></div></div>
+  <div class="ex-row"><div class="ex-pill">Navy → Dark Navy <span class="ok">✅ Exact (same group)</span></div></div>
+  <div class="ex-row"><div class="ex-pill">Navy Blue → Royal Blue <span class="inx">⚠️ Check color table — different primaries</span></div></div>
+  <div class="ex-row"><div class="ex-pill">Red → Blue <span class="bad">❌ Color Inexact</span></div></div>
+</div>`,
+
+'attr-material':`<div class="np-head">
+  <div class="np-title">Attribute — <em>Material</em></div>
+  <div class="np-sub">Material rules differ between Softlines and Hardlines.</div>
+</div>
+<div class="card">
+  <div class="card-h"><em>🧵</em> Softlines Material Rules</div>
+  <ul>
+    <li><strong>Same material, composition unmentioned</strong> → Exact IF<br/><span style="font-size:12px;color:var(--mt)">e.g. "90% cotton 10% spandex" vs "cotton blend" → Exact IF</span></li>
+    <li><strong>Clearly different material (significant %)</strong> → Material Inexact<br/><span style="font-size:12px;color:var(--mt)">e.g. "98% Polyester" vs "75% Cotton 25% Spandex" → Material Inexact</span></li>
+    <li><strong>50% cotton 50% spandex vs 100% viscose</strong> → Material Inexact</li>
+    <li><strong>Material equivalents</strong> (see Material Family table) → Exact IF<br/><span style="font-size:12px;color:var(--mt)">e.g. Viscose = Rayon, Spandex = Lycra = Elastane</span></li>
+  </ul>
+</div>
+<div class="card">
+  <div class="card-h"><em>🔧</em> Hardlines Material Rules</div>
+  <ul>
+    <li><strong>Same material family</strong> (aluminium vs steel) → Material Inexact</li>
+    <li><strong>Different material family</strong> (glass vs plastic) → Material Inexact</li>
+    <li>Always check if function is affected by the material difference</li>
+  </ul>
+</div>`,
+
+'attr-design':`<div class="np-head">
+  <div class="np-title">Attribute — <em>Design / Pattern</em></div>
+  <div class="np-sub">Design is tricky — "minor" vs "major" differences make all the difference.</div>
+</div>
+<div class="card">
+  <div class="card-h"><em>🖼️</em> What Counts as Minor (Exact IF)?</div>
+  <ul>
+    <li>Sleeve style (provided length matches)</li>
+    <li>Small pocket differences</li>
+    <li>Stitching style variations</li>
+    <li>Side slits</li>
+  </ul>
+  <div class="callout co-rd"><strong>NOT minor — these require Design Inexact or INF:</strong><br/>Neck pattern (crew vs V-neck), Different shoe style (sneaker vs loafer), Full sleeve vs half sleeve, Ankle-length vs full-length</div>
+</div>
+<div class="card">
+  <div class="card-h"><em>🌀</em> Pattern Rules</div>
+  <ul>
+    <li>Same pattern (both floral) → Exact IF</li>
+    <li>Similar patterns (stripes vs plaid) → Inexact IF — Design/Pattern</li>
+    <li>Plain vs patterned → Inexact IF — Design/Pattern</li>
+    <li>Animal prints: snake print ≠ leopard print → Design Inexact</li>
+  </ul>
+</div>`,
+
+'attr-size':`<div class="np-head">
+  <div class="np-title">Attribute — <em>Size</em></div>
+  <div class="np-sub">Size rules have a major exception for apparel and shoes.</div>
+</div>
+<div class="card">
+  <div class="card-h"><em>📏</em> The Golden Rule</div>
+  <div class="callout co-gn">
+    <strong>Softlines Exception (Apparel, Shoes, Shoelaces, Belts with same width, Rings):</strong><br/>
+    Any size to any size = <span class="badge b-if">Exact IF</span>. Size literally doesn't matter for these!
+  </div>
+  <div class="callout co-or">
+    <strong>Everything else (Other SL + All HL):</strong><br/>
+    ±10% size difference → Exact IF<br/>
+    &gt;10% size difference → Size Inexact IF
+  </div>
+</div>
+<div class="card">
+  <div class="card-h"><em>🧮</em> Size Tolerance Formula</div>
+  <p>To check if a size difference is within 10%:</p>
+  <div style="background:var(--b4);border-radius:9px;padding:13px;font-family:var(--mo);font-size:13px;text-align:center;border:1px solid var(--bd2)">
+    Difference% = |Amazon Size − Temu Size| ÷ Amazon Size × 100
+  </div>
+  <div class="ex-row" style="margin-top:10px">
+    <div class="ex-pill">20" vs 22": |22-20|÷22×100 = 9.1% <span class="ok">✅ Within 10% → Exact IF</span></div>
+  </div>
+  <div class="ex-row">
+    <div class="ex-pill">20" vs 28": |28-20|÷28×100 = 28.6% <span class="bad">❌ Over 10% → Size Inexact</span></div>
+  </div>
+</div>`,
+
+'attr-pack':`<div class="np-head">
+  <div class="np-title">Attribute — <em>Pack / Bundle</em></div>
+  <div class="np-sub">Pack rules are completely different for Softlines vs Hardlines/Consumables.</div>
+</div>
+<div class="card">
+  <div class="card-h"><em>👕</em> Softlines Pack Rules</div>
+  <div class="callout co-gn"><strong>Simple rule:</strong> 1 pack to any multiple pack = <span class="badge b-inx">Pack Inexact IF</span>. Always OK for Softlines regardless of who has more.</div>
+</div>
+<div class="card">
+  <div class="card-h"><em>🔧</em> Hardlines & Consumables Pack Rules</div>
+  <div class="grid2">
+    <div class="callout co-gn" style="margin:0">
+      <strong>Amazon has MORE ✅</strong><br/>
+      Temu: 2 boxes<br/>Amazon: 10 boxes<br/>→ <span class="badge b-inx">Pack Inexact IF</span>
+    </div>
+    <div class="callout co-rd" style="margin:0">
+      <strong>Temu has MORE ❌</strong><br/>
+      Temu: 16 boxes<br/>Amazon: 6 boxes<br/>→ <span class="badge b-inf">INF — Bundle Mismatch</span>
+    </div>
+  </div>
+  <div class="callout co-yw" style="margin-top:10px">
+    <strong>Consumables Special Case:</strong><br/>
+    1×20ml (Temu) vs 2×20ml (Amazon) → Pack Inexact IF ✅<br/>
+    1×20ml (Temu) vs 2×10ml (Amazon) → INF ❌ (per-unit size differs)
+  </div>
+</div>`,
+
+'spec-gender':`<div class="np-head">
+  <div class="np-title">Special Rules — <em>Gender Mapping</em></div>
+  <div class="np-sub">Gender mismatches are INF — but Unisex has a special treatment.</div>
+</div>
+<div class="card">
+  <div class="card-h"><em>👥</em> Gender Rules</div>
+  <div class="tw"><table>
+    <thead><tr><th>Temu Gender</th><th>Amazon Gender</th><th>Status</th></tr></thead>
+    <tbody>
+      <tr><td>Unisex</td><td>Men's</td><td><span class="badge b-if">Exact IF</span> — Unisex covers Men's</td></tr>
+      <tr><td>Unisex</td><td>Women's</td><td><span class="badge b-if">Exact IF</span> — Unisex covers Women's</td></tr>
+      <tr><td>Men's</td><td>Women's</td><td><span class="badge b-inf">INF — Gender Mismatch</span></td></tr>
+      <tr><td>Women's</td><td>Men's</td><td><span class="badge b-inf">INF — Gender Mismatch</span></td></tr>
+      <tr><td>Men's</td><td>Unisex</td><td><span class="badge b-if">Exact IF</span> — Unisex includes Men's</td></tr>
+      <tr><td>Women's</td><td>Unisex</td><td><span class="badge b-if">Exact IF</span> — Unisex includes Women's</td></tr>
+    </tbody>
+  </table></div>
+  <div class="callout co-or" style="margin-top:10px"><strong>Key:</strong> Unisex is the "wildcard" — it can match Men's or Women's. But Men's ≠ Women's directly.</div>
+</div>`,
+
+'spec-matfam':`<div class="np-head">
+  <div class="np-title">Special Rules — <em>Material Family Equivalence</em></div>
+  <div class="np-sub">These material pairs are considered the SAME — use Exact IF when you see them.</div>
+</div>
+<div class="card">
+  <div class="card-h"><em>🧵</em> Material Family Table</div>
+  <div class="tw"><table>
+    <thead><tr><th>Material 1</th><th>Material 2 (Equivalent)</th></tr></thead>
+    <tbody>
+      <tr><td>Denim</td><td>Jean Fabric</td></tr>
+      <tr><td>Corduroy</td><td>Manchester</td></tr>
+      <tr><td>Satin</td><td>Sateen, Polyester (satin-finish)</td></tr>
+      <tr><td>Viscose</td><td>Rayon</td></tr>
+      <tr><td>Spandex</td><td>Lycra, Elastane</td></tr>
+      <tr><td>Tulle</td><td>Netting</td></tr>
+      <tr><td>Fleece</td><td>Polar Fleece</td></tr>
+      <tr><td>Terry Cloth</td><td>French Terry</td></tr>
+      <tr><td>Chiffon</td><td>Georgette</td></tr>
+      <tr><td>Flannel</td><td>Brushed Cotton</td></tr>
+      <tr><td>Velvet</td><td>Velveteen</td></tr>
+      <tr><td>Linen</td><td>Flax Fabric</td></tr>
+      <tr><td>Nylon</td><td>Polyamide</td></tr>
+      <tr><td>Genuine Leather</td><td>Full Grain Leather</td></tr>
+    </tbody>
+  </table></div>
+  <div class="callout co-gn"><strong>How to use:</strong> If Temu says "Viscose" and Amazon says "Rayon" — this is the SAME material. Mark as Exact IF (assuming other attributes match).</div>
+</div>`,
+
+'spec-sizetol':`<div class="np-head">
+  <div class="np-title">Special Rules — <em>Size Tolerance</em></div>
+  <div class="np-sub">The ±10% rule explained with examples and calculations.</div>
+</div>
+<div class="card">
+  <div class="card-h"><em>📐</em> When Size Tolerance Applies</div>
+  <ul>
+    <li>Other SL General (luggage, watches, jewelry beyond rings)</li>
+    <li>All Hardlines products</li>
+    <li>Does NOT apply to: Apparel, Shoes, Shoelaces, Belts (same width), Rings</li>
+  </ul>
+</div>
+<div class="card">
+  <div class="card-h"><em>🧮</em> Calculation Examples</div>
+  <div class="steps">
+    <div class="step"><div class="step-n">✅</div><div class="step-body"><strong>Suitcase: Temu 20" vs Amazon 22"</strong><span>|22-20| ÷ 22 × 100 = 9.09% → Within 10% → <span class="badge b-if">Exact IF</span></span></div></div>
+    <div class="step"><div class="step-n">⚠️</div><div class="step-body"><strong>Shelf: Temu 80cm vs Amazon 90cm</strong><span>|90-80| ÷ 90 × 100 = 11.1% → Over 10% → <span class="badge b-inx">Size Inexact IF</span></span></div></div>
+    <div class="step"><div class="step-n">✅</div><div class="step-body"><strong>Watch: Temu 42mm vs Amazon 44mm</strong><span>|44-42| ÷ 44 × 100 = 4.5% → Within 10% → <span class="badge b-if">Exact IF</span></span></div></div>
+  </div>
+</div>`,
+
+'color-table':`<div class="np-head">
+  <div class="np-title">Apparel <em>Color Mapping Table</em></div>
+  <div class="np-sub">Official color groups. Core colors take priority. If exact match not available, use same group.</div>
+</div>
+<div class="callout co-or" style="margin-bottom:14px"><strong>Rule:</strong> Always try for an exact color match first. If exact is unavailable, pick the closest from the same color group. Cross-group = Color Inexact IF.</div>
+<div class="tw"><table>
+  <thead><tr><th>Primary Color</th><th>Type</th><th>Matching Variants (all count as same)</th></tr></thead>
+  <tbody>
+    <tr><td><span class="cc" style="background:#111"></span><strong>Black</strong></td><td>Core</td><td>Noir, Noire, Black Wash, Raven, Midnight Black, Washed Black, Night, Jet Black, Licorice, Double Black</td></tr>
+    <tr><td><span class="cc" style="background:#001a4d"></span><strong>Navy</strong></td><td>Core</td><td>Dark Stonewash, Midnight, Dark Navy, Admiral Navy, Eclipse, Vintage True Navy</td></tr>
+    <tr><td><span class="cc" style="background:#1a6fb5"></span><strong>Blue</strong></td><td>Core</td><td>Medium Stonewash, Sky, Royal, Baby Blue, Admiral Blue, Teal, Ocean, Marine, Cobalt, Slate Blue, Sapphire, Columbia Blue, Azure Blue, Dream Blue, Denim, Cyan, Turquoise, Lagoon, Sailor Blue</td></tr>
+    <tr><td><span class="cc" style="background:#f5f5f0"></span><strong>White</strong></td><td>Core</td><td>Ivory, Off-White, Eggshell, Chalk, Natural, Sugar, Milk, Pearl, Sea Salt, Vanilla, Ecru, Star White, Sweet Cream, Optic White, White Sand, Birch, Oyster, Cream</td></tr>
+    <tr><td><span class="cc" style="background:#5a5a5a"></span><strong>Grey</strong></td><td>Core</td><td>Iron, Pumice, Silver, Gray, Charcoal Heather, Graphite, Steel, Clay, Smoke, Anthracite, Slate Grey, Heather Grey, Steel Violet, Gunmetal</td></tr>
+    <tr><td><span class="cc" style="background:#c8a86b"></span><strong>Khaki</strong></td><td>Core</td><td>Beige, Stone, Chino, Oatmeal, Sand, Tan, Oatmeal Heather, Rose Beige, Putty, Bare, Almond</td></tr>
+    <tr><td><span class="cc" style="background:#d4a017"></span><strong>Gold</strong></td><td>Fashion</td><td>Champagne</td></tr>
+    <tr><td><span class="cc" style="background:#6b3a2a"></span><strong>Brown</strong></td><td>Fashion</td><td>Chocolate, Bark, Saddle, Leather, Chestnut, Copper, Bronze, Toffee, Amber</td></tr>
+    <tr><td><span class="cc" style="background:#1a5c2a"></span><strong>Green</strong></td><td>Fashion</td><td>Olive, Forest, Kelly, Lime, Emerald, Sea Foam, Shamrock, Surplus, Military Green, Jade, Alpine Tundra, Grass, Hunter, Jungle, Camo-Green, Prime Green</td></tr>
+    <tr><td><span class="cc" style="background:#b01c1c"></span><strong>Red</strong></td><td>Fashion</td><td>Maroon, Burgundy, Wine, Scarlet, Strawberry, Rhubarb, Ruby, Cherry, True Red, Chilli Red, Cardinal, Red Heather, Raspberry</td></tr>
+    <tr><td><span class="cc" style="background:#e8609a"></span><strong>Pink</strong></td><td>Fashion</td><td>Coral, Hot Pink, Fuchsia, Cotton Candy, Salmon, Rose, Lotus, Bubblegum, Rosewood, Petunia, Dahlia, Salmon Pink, Rosewater</td></tr>
+    <tr><td><span class="cc" style="background:#6a0d91"></span><strong>Purple</strong></td><td>Fashion</td><td>Violet, Lavender, Plum, Grape, Eggplant, Orchid, Wisteria, Amethyst, Lilac, Majestic Purple, Dark Purple</td></tr>
+    <tr><td><span class="cc" style="background:#d45500"></span><strong>Orange</strong></td><td>Fashion</td><td>Burnt Orange, Rust, Tangerine, Apricot, Papaya, Cinnabar, Tangy Orange, Zesty</td></tr>
+    <tr><td><span class="cc" style="background:#d4b800"></span><strong>Yellow</strong></td><td>Fashion</td><td>Canary, Banana, Sunshine, Corn, Mango, Fresh Aloe, Yellow Tail, Honey, Pineapple</td></tr>
+  </tbody>
+</table></div>`,
+
+mistakes:`<div class="np-head">
+  <div class="np-title"><em>Common Mistakes</em> to Avoid</div>
+  <div class="np-sub">Real errors that mappers make. Study these and don't repeat them.</div>
+</div>
+<div class="card">
+  <div class="card-h"><em>❌</em> Mistake 1: Treating INF and INVALID the Same</div>
+  <p><strong>Wrong:</strong> Marking a "Sold out" product as INVALID.</p>
+  <p><strong>Correct:</strong> "Sold out" = product exists but stock is gone → <span class="badge b-inf">INF</span>. "Unavailable/discontinued" = product gone → <span class="badge b-inv">INVALID</span>.</p>
+</div>
+<div class="card">
+  <div class="card-h"><em>❌</em> Mistake 2: Ignoring Neck Style Differences</div>
+  <p><strong>Wrong:</strong> Mapping a crew neck T-shirt to a V-neck T-shirt as Exact IF (thinking "it's just a minor design thing").</p>
+  <p><strong>Correct:</strong> Neck style is NOT a minor difference. → <span class="badge b-inx">Design Inexact IF</span> or even <span class="badge b-inf">INF</span>.</p>
+</div>
+<div class="card">
+  <div class="card-h"><em>❌</em> Mistake 3: Getting Pack Direction Wrong (HL/Cons)</div>
+  <p><strong>Wrong:</strong> Temu has 16 items, Amazon has 6 → mapping as Pack Inexact IF.</p>
+  <p><strong>Correct:</strong> When Temu has MORE than Amazon (HL/Cons) → <span class="badge b-inf">INF — Bundle Mismatch</span>. Pack Inexact IF only applies when Amazon has MORE.</p>
+</div>
+<div class="card">
+  <div class="card-h"><em>❌</em> Mistake 4: Wrong Size Tolerance Calculation</div>
+  <p><strong>Wrong:</strong> Using Temu size as the denominator: |22-20| ÷ 20 × 100 = 10% (seems OK).</p>
+  <p><strong>Correct:</strong> Use AMAZON size as denominator: |22-20| ÷ 22 × 100 = 9.09% ✅. Formula: Difference ÷ Amazon Size × 100.</p>
+</div>
+<div class="card">
+  <div class="card-h"><em>❌</em> Mistake 5: Not Checking Material Family Equivalence</div>
+  <p><strong>Wrong:</strong> Marking "Viscose (Temu) vs Rayon (Amazon)" as Material Inexact.</p>
+  <p><strong>Correct:</strong> Viscose = Rayon (same family!) → <span class="badge b-if">Exact IF</span>. Always check the material equivalence table first.</p>
+</div>
+<div class="card">
+  <div class="card-h"><em>❌</em> Mistake 6: Forcing a Match When Model Numbers Differ</div>
+  <p><strong>Wrong:</strong> Mapping "Bulb Type A16" to "Bulb Type A17" as Inexact IF.</p>
+  <p><strong>Correct:</strong> Model number mismatch is a critical spec difference → <span class="badge b-inf">INF</span>. Same goes for iPhone 15 vs iPhone 15 Pro.</p>
+</div>
+<div class="card">
+  <div class="card-h"><em>❌</em> Mistake 7: Mapping Different Age Groups (Toys)</div>
+  <p><strong>Wrong:</strong> Mapping a "3+" toy to a "5+" toy because the toy "looks similar".</p>
+  <p><strong>Correct:</strong> Age group MUST match for toys. 3+ ≠ 5+ → <span class="badge b-inf">INF</span>.</p>
+</div>`,
+
+pro:`<div class="np-head">
+  <div class="np-title"><em>Pro Mapper</em> Thinking</div>
+  <div class="np-sub">Advanced mindset for faster, more accurate mapping. Think like a senior mapper.</div>
+</div>
+<div class="card">
+  <div class="card-h"><em>🧠</em> The Golden Mental Model</div>
+  <div class="callout co-or"><strong>Don't assume. Validate.</strong> Every claim must be visible in the product listing. If the data isn't there → don't fill it in from your imagination → default to INF when in doubt.</div>
+</div>
+<div class="card">
+  <div class="card-h"><em>⚡</em> Speed vs Accuracy Balance</div>
+  <ul>
+    <li><strong>Quick scan first:</strong> Product type → Brand → Color. If these three don't match, you already know the direction.</li>
+    <li><strong>Don't over-analyze:</strong> If it's clearly an INF (wrong model, wrong gender), mark it and move on. Don't spend 5 minutes trying to force a match.</li>
+    <li><strong>Use lens search</strong> for products where text search fails — image matching often finds the Amazon ASIN faster.</li>
+    <li><strong>Bookmark your region's postal code</strong> to switch Amazon country without re-logging.</li>
+  </ul>
+</div>
+<div class="card">
+  <div class="card-h"><em>🔍</em> Advanced Matching Tricks</div>
+  <ul>
+    <li><strong>Look at the image, not just the title</strong> — product titles can be misleading. Trust the photo.</li>
+    <li><strong>For generic items:</strong> The best match is the one with the highest star rating and most reviews — this is the "benchmark" Amazon product.</li>
+    <li><strong>Material composition:</strong> If Temu says "cotton blend" and Amazon says "60% cotton 40% polyester" — this is acceptable as Exact IF (blend composition matches direction).</li>
+    <li><strong>When searching Amazon:</strong> Use 3–5 keywords maximum. Too many words = Amazon returns irrelevant results.</li>
+    <li><strong>Color synonyms:</strong> Know your core color groups cold — "Midnight" = Black, "Ecru" = White, "Gunmetal" = Grey.</li>
+  </ul>
+</div>
+<div class="card">
+  <div class="card-h"><em>📊</em> Priority Checklist (Mental)</div>
+  <div class="steps">
+    <div class="step"><div class="step-n">1</div><div class="step-body"><strong>Product Type Match?</strong><span>Same item category? If not → INF immediately.</span></div></div>
+    <div class="step"><div class="step-n">2</div><div class="step-body"><strong>Brand Check</strong><span>Same brand / both generic / generic acceptable for SL?</span></div></div>
+    <div class="step"><div class="step-n">3</div><div class="step-body"><strong>Critical Specs</strong><span>Model number, gender, age group, carat, key capacity — these are INF triggers if wrong.</span></div></div>
+    <div class="step"><div class="step-n">4</div><div class="step-body"><strong>Color</strong><span>Same color group? Use the color table.</span></div></div>
+    <div class="step"><div class="step-n">5</div><div class="step-body"><strong>Material</strong><span>Same family? Use equivalence table. Composition close enough?</span></div></div>
+    <div class="step"><div class="step-n">6</div><div class="step-body"><strong>Size / Pack</strong><span>Apply tolerance rules. Check pack direction for HL/Cons.</span></div></div>
+  </div>
+</div>
+<div class="callout co-tl"><strong>Pro Tip:</strong> After 50+ mappings, pattern recognition kicks in. You'll instantly see "Unisex crew neck cotton T-shirt = easy Exact IF territory" and "Different model number = INF, don't even try". Trust your trained eye — but always verify before finalizing.</div>`,
+
+'product-lines':`<div class="np-head">
+  <div class="np-title"><em>Product Line</em> Rules Overview</div>
+  <div class="np-sub">Choose a sub-section from the sidebar: Softlines, Hardlines, or Consumables.</div>
+</div>
+<div class="grid3" style="margin-bottom:14px">
+  <div class="card" style="cursor:pointer;margin-bottom:0" onclick="navTo('softlines')">
+    <div style="font-size:28px;margin-bottom:8px">👕</div>
+    <div style="font-weight:700;margin-bottom:4px">Softlines</div>
+    <div style="font-size:12px;color:var(--mt)">Apparel, shoes, jewelry, luggage, bags, watches</div>
+    <div style="color:var(--or);font-size:12px;margin-top:8px">Open → </div>
+  </div>
+  <div class="card" style="cursor:pointer;margin-bottom:0" onclick="navTo('hardlines')">
+    <div style="font-size:28px;margin-bottom:8px">🔧</div>
+    <div style="font-weight:700;margin-bottom:4px">Hardlines</div>
+    <div style="font-size:12px;color:var(--mt)">Electronics, tools, furniture, toys, musical instruments</div>
+    <div style="color:var(--or);font-size:12px;margin-top:8px">Open → </div>
+  </div>
+  <div class="card" style="cursor:pointer;margin-bottom:0" onclick="navTo('consumables')">
+    <div style="font-size:28px;margin-bottom:8px">🛒</div>
+    <div style="font-weight:700;margin-bottom:4px">Consumables</div>
+    <div style="font-size:12px;color:var(--mt)">Grocery, beauty, supplements, cleaning, baby</div>
+    <div style="color:var(--or);font-size:12px;margin-top:8px">Open → </div>
+  </div>
+</div>`,
+
+attributes:`<div class="np-head">
+  <div class="np-title"><em>Attribute</em> Matching Rules</div>
+  <div class="np-sub">Select an attribute from the sidebar to see its specific rules.</div>
+</div>
+<div class="grid2">
+  ${['Brand','Color','Material','Design / Pattern','Size','Pack / Bundle'].map((n,i)=>{
+    const ids=['attr-brand','attr-color','attr-material','attr-design','attr-size','attr-pack'];
+    const icons=['🏷️','🎨','🧵','🖼️','📏','📦'];
+    return `<div class="card" style="cursor:pointer;margin-bottom:0" onclick="navTo('${ids[i]}')">
+      <div style="font-size:22px;margin-bottom:6px">${icons[i]}</div>
+      <div style="font-weight:700;margin-bottom:3px">${n}</div>
+      <div style="color:var(--or);font-size:12px">Open rules →</div>
+    </div>`;
+  }).join('')}
+</div>`,
+
+special:`<div class="np-head">
+  <div class="np-title"><em>Special</em> Rules</div>
+  <div class="np-sub">Edge cases that need extra attention — gender, material families, size tolerance.</div>
+</div>
+<div class="grid3">
+  ${['Gender Mapping','Material Family Equivalence','Size Tolerance Rules'].map((n,i)=>{
+    const ids=['spec-gender','spec-matfam','spec-sizetol'];
+    const icons=['👥','🧵','📐'];
+    return `<div class="card" style="cursor:pointer;margin-bottom:0" onclick="navTo('${ids[i]}')">
+      <div style="font-size:22px;margin-bottom:6px">${icons[i]}</div>
+      <div style="font-weight:700;margin-bottom:3px">${n}</div>
+      <div style="color:var(--or);font-size:12px">Open →</div>
+    </div>`;
+  }).join('')}
+</div>`,
+};
+
+// ══════════════════════════════════════════════════════════════
+//  SAMPLES
+// ══════════════════════════════════════════════════════════════
+const SAMPLES=[
+  {
+    label:'✅ Exact IF — Basic T-shirt',
+    desc:'Same brand, color, material',
+    temu:'BASICS Brand Men\'s Crew Neck T-shirt, Navy Blue, 100% Cotton, Size L',
+    amz:'BASICS Brand Men\'s Classic Crew Neck Tee, Dark Navy, Cotton, Size M'
+  },
+  {
+    label:'🔶 Inexact IF — Brand Difference',
+    desc:'Different brand, all else same',
+    temu:'ZARA Men\'s Slim Fit Chino Pants, Khaki/Beige, 98% Cotton 2% Elastane, Size 32×30',
+    amz:'UNIQLO Men\'s Slim Chino Pants, Stone/Oatmeal, 98% Cotton 2% Elastane, Size 32×30'
+  },
+  {
+    label:'🔶 Inexact IF — Pack Difference (HL)',
+    desc:'Amazon has more quantity',
+    temu:'Duracell AA Batteries, Pack of 8',
+    amz:'Duracell AA Batteries, Pack of 20'
+  },
+  {
+    label:'❌ INF — Model Mismatch',
+    desc:'Different model = no match',
+    temu:'Apple iPhone 15 Case, Clear TPU, 6.1 inch',
+    amz:'Apple iPhone 15 Pro Case, Clear TPU, 6.1 inch'
+  },
+  {
+    label:'❌ INF — Gender Mismatch',
+    desc:'Men\'s vs Women\'s is always INF',
+    temu:'Women\'s Running Shoes, Pink/White, Mesh Upper, Size 7',
+    amz:'Men\'s Running Shoes, Blue/White, Mesh Upper, Size 10'
+  },
+  {
+    label:'🔶 Inexact IF — Color Only',
+    desc:'Everything same, just color differs',
+    temu:'Generic Stainless Steel Water Bottle, 750ml, Red/Scarlet',
+    amz:'Generic Stainless Steel Water Bottle, 750ml, Black'
+  },
+];
+
+// ══════════════════════════════════════════════════════════════
+//  SIDEBAR & NAV RENDER
+// ══════════════════════════════════════════════════════════════
+let currentPage='intro';
+function buildNav(){
+  const nav=document.getElementById('sb-nav');
+  let html='';
+  NAV.forEach(item=>{
+    html+=`<div class="nav-item${item.id===currentPage?' act':''}" onclick="navTo('${item.id}')" id="ni-${item.id}">
+      <span class="ni">${item.icon||'·'}</span>
+      <span class="nl">${item.label}</span>
+    </div>`;
+    if(item.ch){
+      html+='<div class="nav-sub">';
+      item.ch.forEach(c=>{
+        html+=`<div class="nav-item${c.id===currentPage?' act':''}" onclick="navTo('${c.id}')" id="ni-${c.id}">
+          <span class="ni">·</span>
+          <span class="nl">${c.label}</span>
+        </div>`;
+      });
+      html+='</div>';
+    }
+  });
+  nav.innerHTML=html;
+}
+
+function buildMain(){
+  const main=document.getElementById('main-notes');
+  let html='';
+  Object.keys(NOTES).forEach(id=>{
+    html+=`<div class="note-page${id===currentPage?' act':''}" id="page-${id}">${NOTES[id]}</div>`;
+  });
+  main.innerHTML=html;
+}
+
+function navTo(id){
+  if(!NOTES[id])return;
+  const old=document.getElementById('page-'+currentPage);
+  if(old)old.classList.remove('act');
+  const ni=document.getElementById('ni-'+currentPage);
+  if(ni)ni.classList.remove('act');
+  currentPage=id;
+  const pg=document.getElementById('page-'+id);
+  if(pg)pg.classList.add('act');
+  else{buildMain();}
+  const nni=document.getElementById('ni-'+id);
+  if(nni){nni.classList.add('act');nni.scrollIntoView({block:'nearest',behavior:'smooth'});}
+  document.getElementById('main-notes').scrollTop=0;
+  localStorage.setItem('mfn_page',id);
+  // show notes panel on mobile
+  setHTab('notes');
+}
+
+function doSearch(q){
+  q=q.toLowerCase().trim();
+  document.querySelectorAll('.nav-item').forEach(el=>{
+    const txt=el.querySelector('.nl')?.textContent?.toLowerCase()||'';
+    el.style.display=(!q||txt.includes(q))?'':'none';
+  });
+  document.querySelectorAll('.nav-sub').forEach(el=>{
+    const anyVisible=[...el.querySelectorAll('.nav-item')].some(c=>c.style.display!=='none');
+    el.style.display=anyVisible?'':'none';
+  });
+}
+
+// ══════════════════════════════════════════════════════════════
+//  HEADER TABS (mobile / panel switch)
+// ══════════════════════════════════════════════════════════════
+function setHTab(tab){
+  document.getElementById('htab-notes').classList.toggle('act',tab==='notes');
+  document.getElementById('htab-ai').classList.toggle('act',tab==='ai');
+  const ai=document.getElementById('ai-panel');
+  const mn=document.getElementById('main-notes');
+  const sb=document.getElementById('sidebar');
+  if(window.innerWidth<=720){
+    if(tab==='ai'){ai.style.display='flex';mn.style.display='none';sb.style.display='none';}
+    else{ai.style.display='none';mn.style.display='';sb.style.display='';}
+  }
+}
+
+// ══════════════════════════════════════════════════════════════
+//  INPUT TABS
+// ══════════════════════════════════════════════════════════════
+function setInTab(type,el){
+  document.querySelectorAll('.in-tab').forEach(t=>t.classList.remove('act'));
+  el.classList.add('act');
+  const ta=document.getElementById('in-text-area');
+  const sa=document.getElementById('in-struct-area');
+  if(type==='structured'){ta.style.display='none';sa.style.display='block';}
+  else{ta.style.display='block';sa.style.display='none';
+    if(type==='url')document.getElementById('ai-temu').placeholder='Paste Temu product URL here…\nhttps://www.temu.com/…';
+    else document.getElementById('ai-temu').placeholder='Paste Temu product title + description here…\n\nInclude: name, color, size, material, brand, pack quantity…';
+  }
+}
+
+// ══════════════════════════════════════════════════════════════
+//  SAMPLES
+// ══════════════════════════════════════════════════════════════
+let sampOpen=false;
+function toggleSamples(){
+  sampOpen=!sampOpen;
+  const w=document.getElementById('samples-wrap');
+  if(sampOpen){
+    let h='';
+    SAMPLES.forEach((s,i)=>{
+      h+=`<div class="samp-chip" onclick="loadSample(${i})">
+        <strong>${s.label}</strong>
+        <span>${s.desc}</span>
+      </div>`;
+    });
+    document.getElementById('samples-list').innerHTML=h;
+    w.style.display='block';
+  }else{w.style.display='none';}
+}
+function loadSample(i){
+  const s=SAMPLES[i];
+  // ensure text tab
+  document.querySelector('.in-tab.act')?.classList.remove('act');
+  document.querySelectorAll('.in-tab')[0].classList.add('act');
+  document.getElementById('in-text-area').style.display='block';
+  document.getElementById('in-struct-area').style.display='none';
+  document.getElementById('ai-temu').value=s.temu;
+  document.getElementById('ai-amz').value=s.amz;
+  document.getElementById('samples-wrap').style.display='none';
+  sampOpen=false;
+}
+
+// ══════════════════════════════════════════════════════════════
+//  AI ENGINE — CLAUDE API + RULE-BASED FALLBACK
+// ══════════════════════════════════════════════════════════════
+let lastResult=null;
+
+async function analyzeProduct(){
+  const btn=document.getElementById('analyze-btn');
+  const thinking=document.getElementById('thinking');
+  const thTxt=document.getElementById('th-txt');
+
+  // Gather input
+  let temu='',amz='';
+  const isStruct=document.getElementById('in-struct-area').style.display==='block';
+  if(isStruct){
+    const g=id=>document.getElementById(id).value.trim();
+    temu=`Product Type: ${g('sf-type')}\nCategory: ${g('sf-cat')}\nBrand: ${g('sf-tbrand')}\nColor: ${g('sf-tcolor')}\nMaterial: ${g('sf-tmat')}\nSize/Pack: ${g('sf-tsize')}\nNotes: ${g('sf-notes')}`;
+    amz=`Brand: ${g('sf-abrand')}\nColor: ${g('sf-acolor')}\nMaterial: ${g('sf-amat')}\nSize/Pack: ${g('sf-asize')}`;
+  }else{
+    temu=document.getElementById('ai-temu').value.trim();
+    amz=document.getElementById('ai-amz').value.trim();
+  }
+  if(!temu){document.getElementById('ai-temu').focus();return;}
+
+  btn.disabled=true;
+  document.getElementById('res-box').classList.remove('show');
+  thinking.classList.add('show');
+  thTxt.textContent='Calling Claude AI…';
+
+  let result=null;
+  try{
+    result=await callClaudeAPI(temu,amz);
+    thTxt.textContent='Claude responded ✓';
+  }catch(e){
+    thTxt.textContent='API unavailable — using rule engine…';
+    await new Promise(r=>setTimeout(r,700));
+    result=ruleEngine(temu,amz);
+  }
+
+  setTimeout(()=>{
+    thinking.classList.remove('show');
+    btn.disabled=false;
+    showResult(result);
+  },400);
+}
+
+// ─── Claude API call ───
+async function callClaudeAPI(temu,amz){
+  const systemPrompt=`You are an expert CMT (Competitor Mapping Tool) analyst. You map Temu products to Amazon products.
+Rules:
+- STATUS options: IF (match found), INF (no match/major mismatch), INVALID (URL broken)
+- matchType: "Exact" or "Inexact" (only when status=IF)
+- inexactType: one of: Brand, Color, Material, Design/Pattern, Size, Pack, Specification, Brand+Color, or null
+- confidence: 0-100 integer
+- Inexact reason code priority (highest first): Specification > Pack > Design/Pattern > Size > Material > Color > Brand
+- Unisex → Men's/Women's = Exact IF for gender
+- Any apparel/shoe size = Exact IF
+- ±10% size tolerance for HL and non-apparel SL (use Amazon size as denominator)
+- Pack: SL 1-to-multi = Pack Inexact IF; HL/Cons Amazon-more=Pack Inexact, Temu-more=INF
+- Brand+Generic for SL = Exact IF; for HL/Cons = Brand Inexact IF
+- Material family equivalents (Viscose=Rayon, Spandex=Lycra, Nylon=Polyamide, etc.) = Exact IF
+- Color variants in same group = Exact IF (e.g. Navy = Dark Navy)
+- Never assume missing data; when unclear → INF
+
+Respond ONLY with a JSON object (no markdown, no explanation):
+{
+  "status": "IF|INF|INVALID",
+  "matchType": "Exact|Inexact|null",
+  "confidence": 85,
+  "inexactType": "Brand|Color|...|null",
+  "reasoning": "Clear 1-2 sentence explanation",
+  "attributes": [
+    {"name":"Product Type","temu":"...","amazon":"...","match":"ok|inexact|fail|na"},
+    {"name":"Brand","temu":"...","amazon":"...","match":"ok|inexact|fail|na"},
+    {"name":"Color","temu":"...","amazon":"...","match":"ok|inexact|fail|na"},
+    {"name":"Material","temu":"...","amazon":"...","match":"ok|inexact|fail|na"},
+    {"name":"Size","temu":"...","amazon":"...","match":"ok|inexact|fail|na"},
+    {"name":"Pack","temu":"...","amazon":"...","match":"ok|inexact|fail|na"}
+  ]
+}`;
+
+  const userMsg=`TEMU PRODUCT:\n${temu}\n\n${amz?'AMAZON PRODUCT:\n'+amz:'No Amazon product provided — analyze Temu product and suggest likely mapping status.'}`;
+
+  const resp=await fetch('https://api.anthropic.com/v1/messages',{
+    method:'POST',
+    headers:{'Content-Type':'application/json'},
+    body:JSON.stringify({
+      model:'claude-sonnet-4-20250514',
+      max_tokens:1000,
+      system:systemPrompt,
+      messages:[{role:'user',content:userMsg}]
+    })
+  });
+  if(!resp.ok)throw new Error('API error '+resp.status);
+  const data=await resp.json();
+  const txt=data.content?.find(c=>c.type==='text')?.text||'';
+  const clean=txt.replace(/```json|```/g,'').trim();
+  return JSON.parse(clean);
+}
+
+// ─── Rule-based fallback engine ───
+function ruleEngine(temu,amz){
+  const t=temu.toLowerCase();
+  const a=amz.toLowerCase();
+
+  // Material equivalents
+  const MAT_FAM=[['viscose','rayon'],['spandex','lycra','elastane'],['nylon','polyamide'],
+    ['denim','jean fabric'],['corduroy','manchester'],['satin','sateen'],['tulle','netting'],
+    ['fleece','polar fleece'],['terry cloth','french terry'],['chiffon','georgette'],
+    ['flannel','brushed cotton'],['velvet','velveteen'],['linen','flax'],['genuine leather','full grain leather']];
+
+  // Color groups
+  const COLOR_GROUPS={
+    black:['noir','noire','jet black','midnight black','raven','licorice','washed black'],
+    navy:['dark navy','midnight','admiral navy','eclipse','dark stonewash'],
+    blue:['royal','sky','baby blue','cobalt','slate blue','sapphire','azure','denim','cyan','turquoise','ocean','teal'],
+    white:['ivory','off-white','eggshell','chalk','natural','cream','pearl','ecru','birch','oyster','vanilla'],
+    grey:['gray','graphite','charcoal','silver','gunmetal','smoke','steel','slate grey','anthracite'],
+    khaki:['beige','stone','chino','sand','tan','oatmeal','putty','almond','bare'],
+    brown:['chocolate','chestnut','copper','bronze','toffee','amber','saddle'],
+    green:['olive','forest','emerald','lime','jungle','military','jade','moss'],
+    red:['maroon','burgundy','wine','scarlet','ruby','cherry','cardinal'],
+    pink:['coral','hot pink','fuchsia','salmon','rose','bubblegum'],
+    purple:['violet','lavender','plum','grape','eggplant','lilac','amethyst'],
+    orange:['burnt orange','rust','tangerine','apricot'],
+    yellow:['canary','banana','sunshine','honey','mango'],
+    gold:['champagne','golden'],
+  };
+
+  const attrs=[];
+  let issues=[];
+  let status='IF',matchType='Exact',inexactType=null,confidence=80;
+
+  // Detect invalid
+  if(t.includes('unavailable')||t.includes('discontinued')||t.includes('404')||t.includes('not found')){
+    return{status:'INVALID',matchType:null,confidence:90,inexactType:null,
+      reasoning:'The Temu product URL appears to be broken or the product is discontinued.',
+      attributes:[{name:'URL Status',temu:'Unavailable/Discontinued',amazon:'N/A',match:'fail'}]};
+  }
+
+  // Extract brands
+  function extractBrand(str){
+    const m=str.match(/brand[:\s]+([a-z0-9\s]+?)(?:,|\.|\n|$)/i)||str.match(/^([A-Z][a-z]+(?:\s[A-Z][a-z]+)?)\s/);
+    if(m)return m[1].trim();
+    if(str.includes('generic')||str.includes('no brand')||str.includes('unbranded'))return'Generic';
+    return'Unknown';
+  }
+
+  // Extract colors
+  function extractColor(str){
+    for(const [primary,variants] of Object.entries(COLOR_GROUPS)){
+      if(str.includes(primary))return primary;
+      for(const v of variants)if(str.includes(v))return primary;
+    }
+    const m=str.match(/colou?r[:\s]+([a-z\s]+?)(?:,|\.|\n|$)/i);
+    return m?m[1].trim():'Unknown';
+  }
+
+  // Check colors same group
+  function sameColorGroup(c1,c2){
+    if(!c1||!c2||c1==='unknown'||c2==='unknown')return true; // can't determine
+    if(c1===c2)return true;
+    for(const [p,v] of Object.entries(COLOR_GROUPS)){
+      const inGroup=(x)=>x===p||v.some(vv=>x.includes(vv));
+      if(inGroup(c1)&&inGroup(c2))return true;
+    }
+    return false;
+  }
+
+  // Check material same family
+  function sameMaterialFamily(m1,m2){
+    if(!m1||!m2)return true;
+    for(const fam of MAT_FAM){
+      const has1=fam.some(f=>m1.includes(f));
+      const has2=fam.some(f=>m2.includes(f));
+      if(has1&&has2)return true;
+    }
+    return m1===m2;
+  }
+
+  // Is softlines?
+  const SL_KEYWORDS=['shirt','tee','t-shirt','pants','jeans','dress','skirt','jacket','coat','hoodie','sweater','blouse','shorts','leggings','shoe','sneaker','boot','sandal','loafer','ring','necklace','bracelet','earring','watch','bag','luggage','suitcase','belt','scarf','hat','cap','sock','glove'];
+  const HL_KEYWORDS=['phone','laptop','tablet','headphone','speaker','tv','monitor','keyboard','mouse','drill','tool','blender','vacuum','furniture','sofa','chair','toy','game','bicycle'];
+  const CONS_KEYWORDS=['supplement','vitamin','protein','shampoo','conditioner','moisturizer','cream','serum','makeup','lipstick','mascara','food','snack','coffee','tea','detergent','cleaning'];
+
+  let category='unknown';
+  for(const k of SL_KEYWORDS){if(t.includes(k)){category='softlines';break;}}
+  if(category==='unknown')for(const k of HL_KEYWORDS){if(t.includes(k)){category='hardlines';break;}}
+  if(category==='unknown')for(const k of CONS_KEYWORDS){if(t.includes(k)){category='consumables';break;}}
+
+  attrs.push({name:'Category',temu:category,amazon:category,match:'ok'});
+
+  // Gender check
+  const tGender=t.includes('women')||t.includes('female')||t.includes("women's")?'Women\'s':t.includes('men')||t.includes("men's")||t.includes('male')?'Men\'s':t.includes('unisex')?'Unisex':'Unknown';
+  const aGender=a.includes('women')||a.includes('female')?'Women\'s':a.includes('men')||a.includes("men's")?'Men\'s':a.includes('unisex')?'Unisex':'Unknown';
+  let gMatch='ok';
+  if(tGender!=='Unknown'&&aGender!=='Unknown'){
+    if((tGender==='Men\'s'&&aGender==='Women\'s')||(tGender==='Women\'s'&&aGender==='Men\'s')){
+      gMatch='fail';issues.push({code:'Gender',severity:10});
+    }
+  }
+  if(tGender!=='Unknown')attrs.push({name:'Gender',temu:tGender,amazon:aGender||'N/A',match:gMatch});
+
+  // Brand
+  const tBrand=extractBrand(t);const aBrand=a?extractBrand(a):'Unknown';
+  let brandMatch='ok';
+  if(aBrand!=='Unknown'&&tBrand!=='Unknown'){
+    const tGen=tBrand.toLowerCase().includes('generic')||tBrand==='Unknown';
+    const aGen=aBrand.toLowerCase().includes('generic')||aBrand==='Unknown';
+    if(!tGen&&!aGen&&tBrand.toLowerCase()!==aBrand.toLowerCase()){
+      brandMatch='inexact';issues.push({code:'Brand',severity:1});
+    }else if(!aGen&&tGen){
+      if(category!=='softlines'){brandMatch='inexact';issues.push({code:'Brand',severity:1});}
+    }
+  }
+  attrs.push({name:'Brand',temu:tBrand,amazon:aBrand,match:brandMatch});
+
+  // Color
+  const tColor=extractColor(t);const aColor=a?extractColor(a):'Unknown';
+  let colorMatch='ok';
+  if(tColor!=='Unknown'&&aColor!=='Unknown'){
+    if(!sameColorGroup(tColor,aColor)){colorMatch='inexact';issues.push({code:'Color',severity:2});}
+  }
+  attrs.push({name:'Color',temu:tColor,amazon:aColor,match:colorMatch});
+
+  // Material
+  const tMat=t.match(/(\d+%\s*[a-z]+(?:\s+\d+%\s*[a-z]+)*)/i)?.[0]||
+    ['cotton','polyester','nylon','wool','silk','linen','denim','leather','metal','plastic','wood','glass','aluminum','steel'].find(m=>t.includes(m))||'Unknown';
+  const aMat=a?(['cotton','polyester','nylon','wool','silk','linen','denim','leather','metal','plastic','wood','glass','aluminum','steel'].find(m=>a.includes(m))||'Unknown'):'Unknown';
+  let matMatch='ok';
+  if(tMat!=='Unknown'&&aMat!=='Unknown'&&!sameMaterialFamily(tMat,aMat)){
+    matMatch='inexact';issues.push({code:'Material',severity:3});
+  }
+  attrs.push({name:'Material',temu:tMat,amazon:aMat,match:matMatch});
+
+  // Size
+  const tSize=t.match(/\b(xs|s|m|l|xl|xxl|2xl|3xl|\d+(?:\.\d+)?\s*(?:inch|"|cm|mm|ml|l|kg|lb|oz))\b/i)?.[0]||'N/A';
+  const aSize=a?a.match(/\b(xs|s|m|l|xl|xxl|2xl|3xl|\d+(?:\.\d+)?\s*(?:inch|"|cm|mm|ml|l|kg|lb|oz))\b/i)?.[0]||'N/A':'N/A';
+  let sizeMatch='ok';
+  // For apparel sizes like S/M/L/XL — always ok for SL
+  const isApparelSize=s=>/^(xs|s|m|l|xl|xxl|2xl|3xl)$/i.test(s?.trim());
+  if(tSize!=='N/A'&&aSize!=='N/A'&&!isApparelSize(tSize)){
+    const tn=parseFloat(tSize),an=parseFloat(aSize);
+    if(!isNaN(tn)&&!isNaN(an)&&an!==0){
+      const diff=Math.abs(an-tn)/an*100;
+      if(diff>10){sizeMatch='inexact';issues.push({code:'Size',severity:4});}
+    }
+  }
+  attrs.push({name:'Size',temu:tSize,amazon:aSize,match:sizeMatch});
+
+  // Pack
+  const tPack=t.match(/pack\s+of\s+(\d+)|(\d+)\s*(?:pack|piece|ct|count)/i);
+  const aPack=a?a.match(/pack\s+of\s+(\d+)|(\d+)\s*(?:pack|piece|ct|count)/i):null;
+  let packMatch='ok';
+  if(tPack&&aPack){
+    const tn=parseInt(tPack[1]||tPack[2]),an=parseInt(aPack[1]||aPack[2]);
+    if(tn!==an){
+      if(category==='softlines'){packMatch='inexact';issues.push({code:'Pack',severity:5});}
+      else if(tn>an){packMatch='fail';issues.push({code:'Pack',severity:10});}
+      else{packMatch='inexact';issues.push({code:'Pack',severity:5});}
+    }
+  }
+  if(tPack)attrs.push({name:'Pack',temu:(tPack[1]||tPack[2])+'-pack',amazon:aPack?(aPack[1]||aPack[2])+'-pack':'Unknown',match:packMatch});
+
+  // Determine final status
+  const hasFail=issues.some(i=>i.severity>=10);
+  const hasInexact=issues.some(i=>i.severity>0&&i.severity<10);
+
+  if(hasFail){
+    const failIssue=issues.find(i=>i.severity>=10);
+    if(failIssue?.code==='Gender'){status='INF';confidence=88;inexactType=null;matchType=null;}
+    else if(failIssue?.code==='Pack'){status='INF';confidence=82;inexactType=null;matchType=null;}
+    else{status='INF';confidence=78;matchType=null;}
+  }else if(hasInexact){
+    const highestPriority=['Specification','Pack','Design/Pattern','Size','Material','Color','Brand'];
+    for(const code of highestPriority){
+      if(issues.some(i=>i.code===code)){inexactType=code;break;}
+    }
+    status='IF';matchType='Inexact';confidence=75+Math.random()*10|0;
+  }else{
+    status='IF';matchType='Exact';confidence=85+Math.random()*10|0;
+    if(!a)confidence=60; // no amazon data to compare
+  }
+
+  // Reasoning
+  const reasonMap={
+    'Brand':'All attributes match except the brand name differs between Temu and Amazon.',
+    'Color':'Product type and specs match, but the color falls in a different color group.',
+    'Material':'Product type matches, but the material composition is meaningfully different.',
+    'Size':'Product type matches, but the size difference exceeds the 10% tolerance.',
+    'Pack':'Pack quantity differs — Amazon has more units than Temu (for HL/Cons this is Pack Inexact).',
+    'Gender':'Gender of the Temu product does not match the Amazon product — this is a critical mismatch (INF).',
+  };
+  const reasoning=hasFail
+    ?`${issues.find(i=>i.severity>=10)?.code} mismatch detected — this requires INF status as it's a critical attribute difference.`
+    :hasInexact
+    ?(reasonMap[inexactType]||`Minor attribute mismatch (${inexactType}) detected. All other attributes are acceptable matches.`)
+    :a?'All key attributes match within acceptable tolerances. This is a solid Exact IF mapping.'
+    :'No Amazon product provided for comparison. Based on the Temu product data alone, likely mappable if a matching Amazon ASIN is found.';
+
+  return{status,matchType,confidence,inexactType,reasoning,attributes:attrs};
+}
+
+// ══════════════════════════════════════════════════════════════
+//  SHOW RESULT
+// ══════════════════════════════════════════════════════════════
+function showResult(r){
+  lastResult=r;
+  const box=document.getElementById('res-box');
+  box.classList.add('show');
+
+  const statusEl=document.getElementById('res-status');
+  statusEl.textContent=r.status;
+  statusEl.className='res-status-big';
+  if(r.status==='IF')statusEl.classList.add('rsb-if');
+  else if(r.status==='INF')statusEl.classList.add('rsb-inf');
+  else statusEl.classList.add('rsb-inv');
+
+  const conf=Math.min(100,Math.max(0,r.confidence||70));
+  document.getElementById('res-conf').textContent=conf+'%';
+  document.getElementById('conf-bar').style.width=conf+'%';
+
+  const mt=r.matchType||(r.status==='IF'?'Unknown':'—');
+  document.getElementById('res-matchtype').innerHTML=r.status==='IF'
+    ?`<span class="badge ${r.matchType==='Exact'?'b-if':'b-inx'}">${mt}</span>`
+    :'<span style="color:var(--mt)">—</span>';
+
+  document.getElementById('res-inxtype').innerHTML=r.inexactType
+    ?`<span class="badge b-inx">${r.inexactType}</span>`
+    :'<span style="color:var(--mt)">None</span>';
+
+  document.getElementById('res-reason').textContent=r.reasoning||'—';
+
+  const tbody=document.getElementById('attr-tbody');
+  if(r.attributes&&r.attributes.length){
+    tbody.innerHTML=r.attributes.map(a=>{
+      const cls={ok:'m-ok',inexact:'m-inx',fail:'m-bad',na:'m-na'}[a.match]||'m-na';
+      const icon={ok:'✓',inexact:'≈',fail:'✗',na:'—'}[a.match]||'—';
+      return`<tr>
+        <td style="font-weight:600">${a.name}</td>
+        <td>${a.temu||'—'}</td>
+        <td>${a.amazon||'—'}</td>
+        <td class="${cls}">${icon}</td>
+      </tr>`;
+    }).join('');
+  }else{tbody.innerHTML='<tr><td colspan="4" style="color:var(--mt);text-align:center">No attribute data</td></tr>';}
+
+  box.scrollIntoView({behavior:'smooth',block:'nearest'});
+}
+
+function copyResult(){
+  if(!lastResult)return;
+  const r=lastResult;
+  const txt=`MAPPING ANALYSIS
+================
+Status: ${r.status}
+Match Type: ${r.matchType||'—'}
+Confidence: ${r.confidence}%
+Inexact Code: ${r.inexactType||'None'}
+Reasoning: ${r.reasoning}
+
+ATTRIBUTES
+----------
+${(r.attributes||[]).map(a=>`${a.name}: Temu="${a.temu}" | Amazon="${a.amazon}" | ${a.match}`).join('\n')}
+
+— Generated by MapFlow Notes + AI`;
+  navigator.clipboard.writeText(txt).then(()=>{
+    const btn=event.target;btn.textContent='✓ Copied!';
+    setTimeout(()=>btn.textContent='📋 Copy Output',2000);
+  }).catch(()=>{});
+}
+
+function clearResult(){
+  document.getElementById('res-box').classList.remove('show');
+  document.getElementById('ai-temu').value='';
+  document.getElementById('ai-amz').value='';
+  lastResult=null;
+}
+
+// ══════════════════════════════════════════════════════════════
+//  INIT
+// ══════════════════════════════════════════════════════════════
+window.addEventListener('DOMContentLoaded',()=>{
+  const saved=localStorage.getItem('mfn_page');
+  if(saved&&NOTES[saved])currentPage=saved;
+  buildNav();
+  buildMain();
+});
+</script>
+</body>
+</html>
