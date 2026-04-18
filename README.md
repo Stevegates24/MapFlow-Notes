@@ -14,7 +14,7 @@ A simple web app to **learn CMT mapping** and **analyze products using AI**.
 
 ## 🔗 Open App
 
-👉 
+👉 [MapFlow Notes](https://stevegates24.github.io/MapFlow-Notes/)
 
 ---
 
