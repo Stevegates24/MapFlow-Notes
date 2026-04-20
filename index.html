@@ -982,7 +982,7 @@ consumables:`<div class="ph">
 
 mistakes:`<div class="ph"><div class="pt"><em>Common Mistakes</em></div><div class="ps">Real errors mappers make. Learn these so you don't repeat them.</div></div>
 ${[
-['INF vs INVALID Confusion','Wrong: "Sold out" → INVALID. Correct: Sold out = INF. Only "discontinued/unavailable/broken URL" = INVALID.','decision'],
+['INF vs INVALID Confusion','Wrong: "Sold out" → INF. Correct: Sold out = INVALID (as Competitor OOS). Only "Sold out/discontinued/unavailable/broken URL" = INVALID.','decision'],
 ['Ignoring Neck Style','Wrong: Crew neck → V-neck as Exact IF ("minor design"). Correct: Neck style is NOT minor → Design Inexact or INF.','inexact-codes'],
 ['Wrong Pack Direction (HL/Cons)','Wrong: Temu 16, Amazon 6 → Pack Inexact IF. Correct: Temu MORE than Amazon (HL/Cons) = INF — Bundle Mismatch.','attr-pack'],
 ['Wrong Size Denominator','Wrong: |22-20|÷20×100 = 10% (using Temu). Correct: Use Amazon size: |22-20|÷22×100 = 9.09% ✅','spec-sizetol'],
