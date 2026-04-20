@@ -4,7 +4,7 @@
 <script>
 (function(){
   const t=localStorage.getItem('mfn_theme')||'dark';
-  document.documentElement.setAttribute('data-theme',t);
+  document.documentElement.setAttribute('data-theme',['light','dark','pitch'].includes(t)?t:'dark');
 })();
 </script>
 <meta charset="UTF-8"/><meta name="viewport" content="width=device-width,initial-scale=1.0"/>
@@ -15,15 +15,16 @@
 /* ─── DESIGN TOKENS (inherits from MapFlow) ─── */
 :root{--or:#FF6200;--odk:#CC4E00;--olt:#FF8C3A;--gn:#16A34A;--glt:#4ADE80;--rd:#DC2626;--rlt:#F87171;--teal:#2DD4BF;--gold:#FCD34D;--fn:'Outfit',sans-serif;--mo:'JetBrains Mono',monospace;}
 [data-theme="dark"]{
-  --bg:#07070C;--b2:#0D0D15;--b3:#12121C;--b4:#181825;--b5:#1E1E2E;
-  --bd:rgba(255,255,255,0.06);--bd2:rgba(255,255,255,0.11);--bd3:rgba(255,255,255,0.2);
-  --tx:#E8E8F6;--mt:#58587C;--mlt:#8080A8;--sb:#24243E;
-  --hdr-bg:linear-gradient(90deg,#0E0804,#0D0D15);
-  --blob1:rgba(255,98,0,0.15);--blob2:rgba(80,40,200,0.07);
+  --bg:#030308;--b2:#08080F;--b3:#0E0E18;--b4:#131320;--b5:#181828;
+  --bd:rgba(255,255,255,0.055);--bd2:rgba(255,255,255,0.10);--bd3:rgba(255,255,255,0.18);
+  --tx:#EEEEFF;--mt:#52527A;--mlt:#7878A8;--sb:#1E1E38;
+  --hdr-bg:linear-gradient(90deg,#060308,#08080F);
+  --blob1:rgba(255,98,0,0.18);--blob2:rgba(60,20,180,0.09);
   --or-a04:rgba(255,98,0,0.04);--or-a06:rgba(255,98,0,0.06);--or-a08:rgba(255,98,0,0.08);
   --or-a10:rgba(255,98,0,0.10);--or-a12:rgba(255,98,0,0.12);--or-a18:rgba(255,98,0,0.18);
   --or-a20:rgba(255,98,0,0.20);--or-a25:rgba(255,98,0,0.25);--or-a30:rgba(255,98,0,0.30);
   --or-a40:rgba(255,98,0,0.40);--or-a50:rgba(255,98,0,0.50);
+  --glow-or:0 0 20px rgba(255,98,0,0.25);
 }
 [data-theme="light"]{
   --bg:#EEEEF8;--b2:#FFFFFF;--b3:#E6E6F4;--b4:#D8D8EE;--b5:#F2F2FC;
@@ -35,6 +36,19 @@
   --or-a10:rgba(255,98,0,0.10);--or-a12:rgba(255,98,0,0.12);--or-a18:rgba(255,98,0,0.18);
   --or-a20:rgba(255,98,0,0.20);--or-a25:rgba(255,98,0,0.25);--or-a30:rgba(255,98,0,0.30);
   --or-a40:rgba(255,98,0,0.40);--or-a50:rgba(255,98,0,0.50);
+  --glow-or:none;
+}
+[data-theme="pitch"]{
+  --bg:#000000;--b2:#060608;--b3:#0A0A0E;--b4:#0F0F15;--b5:#13131A;
+  --bd:rgba(255,255,255,0.04);--bd2:rgba(255,255,255,0.08);--bd3:rgba(255,255,255,0.15);
+  --tx:#F0F0FF;--mt:#44445E;--mlt:#6A6A92;--sb:#18182A;
+  --hdr-bg:linear-gradient(90deg,#030104,#060608);
+  --blob1:rgba(255,98,0,0.22);--blob2:rgba(50,10,160,0.12);
+  --or-a04:rgba(255,98,0,0.04);--or-a06:rgba(255,98,0,0.07);--or-a08:rgba(255,98,0,0.09);
+  --or-a10:rgba(255,98,0,0.11);--or-a12:rgba(255,98,0,0.13);--or-a18:rgba(255,98,0,0.20);
+  --or-a20:rgba(255,98,0,0.22);--or-a25:rgba(255,98,0,0.28);--or-a30:rgba(255,98,0,0.33);
+  --or-a40:rgba(255,98,0,0.44);--or-a50:rgba(255,98,0,0.56);
+  --glow-or:0 0 30px rgba(255,98,0,0.30);
 }
 *{box-sizing:border-box;margin:0;padding:0;}
 html,body{height:100%;overflow:hidden;}
@@ -43,16 +57,23 @@ body{font-family:var(--fn);background:var(--bg);color:var(--tx);font-size:14px;-
 ::-webkit-scrollbar-thumb{background:var(--sb);border-radius:4px;}
 
 /* ─── BLOB ─── */
-#blob{position:fixed;width:800px;height:800px;border-radius:50%;pointer-events:none;z-index:0;top:30%;left:50%;transform:translate(-50%,-50%);background:radial-gradient(circle,var(--blob1) 0%,var(--blob2) 55%,transparent 78%);filter:blur(90px);opacity:.8;transition:background .5s;}
+#blob{position:fixed;width:900px;height:900px;border-radius:50%;pointer-events:none;z-index:0;top:30%;left:50%;transform:translate(-50%,-50%);background:radial-gradient(circle,var(--blob1) 0%,var(--blob2) 55%,transparent 78%);filter:blur(100px);opacity:.9;transition:background .5s;}
+#blob2{position:fixed;width:400px;height:400px;border-radius:50%;pointer-events:none;z-index:0;top:80%;left:10%;transform:translate(-50%,-50%);background:radial-gradient(circle,rgba(80,20,200,0.08) 0%,transparent 70%);filter:blur(80px);opacity:.7;}
 
 /* ─── HEADER ─── */
 .hdr{
   position:fixed;top:0;left:0;right:0;z-index:200;height:54px;
   background:var(--hdr-bg);border-bottom:1px solid var(--bd2);
   padding:0 16px;display:flex;align-items:center;gap:10px;
-  backdrop-filter:blur(16px);-webkit-backdrop-filter:blur(16px);
+  backdrop-filter:blur(20px);-webkit-backdrop-filter:blur(20px);
+  box-shadow:0 1px 0 var(--bd), 0 4px 24px rgba(0,0,0,.4);
 }
-[data-theme="dark"] .hdr::after{content:'';position:absolute;inset:0;background:linear-gradient(90deg,var(--or-a07,rgba(255,98,0,0.07)),transparent 50%);pointer-events:none;}
+[data-theme="dark"] .hdr::after,[data-theme="pitch"] .hdr::after{content:'';position:absolute;inset:0;background:linear-gradient(90deg,var(--or-a07,rgba(255,98,0,0.07)),transparent 50%);pointer-events:none;}
+[data-theme="pitch"] .hlogo{box-shadow:0 2px 20px var(--or-a50),0 0 40px var(--or-a20);}
+[data-theme="pitch"] .ai-ico{box-shadow:0 3px 20px var(--or-a50),0 0 40px var(--or-a25);}
+[data-theme="pitch"] .hbtn.or{box-shadow:0 2px 16px var(--or-a40),0 0 30px var(--or-a20);}
+[data-theme="pitch"] .ni.act::before{box-shadow:0 0 12px var(--or);}
+[data-theme="pitch"] .card:hover{box-shadow:0 12px 60px rgba(0,0,0,.8),0 0 0 1px var(--or-a12);}
 .hlogo{width:32px;height:32px;background:var(--or);border-radius:9px;display:flex;align-items:center;justify-content:center;font-size:16px;flex-shrink:0;box-shadow:0 2px 14px var(--or-a40);cursor:pointer;}
 .htitle{font-size:14px;font-weight:800;letter-spacing:-.3px;line-height:1.1;flex-shrink:0;}
 .htitle span{color:var(--or);}
@@ -109,8 +130,8 @@ body{font-family:var(--fn);background:var(--bg);color:var(--tx);font-size:14px;-
   transition:background .12s,color .12s,transform .12s;position:relative;
 }
 .ni:hover{background:var(--b4);color:var(--tx);transform:translateX(2px);}
-.ni.act{background:var(--or-a10);color:var(--or);font-weight:700;}
-.ni.act::before{content:'';position:absolute;left:0;top:5px;bottom:5px;width:2.5px;background:var(--or);border-radius:2px;}
+.ni.act{background:var(--or-a10);color:var(--or);font-weight:700;box-shadow:inset 0 0 20px var(--or-a06);}
+.ni.act::before{content:'';position:absolute;left:0;top:5px;bottom:5px;width:2.5px;background:var(--or);border-radius:2px;box-shadow:0 0 8px var(--or-a50);}
 .ni .ico{font-size:13px;flex-shrink:0;width:18px;text-align:center;}
 .ni .lbl{flex:1;line-height:1.3;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;}
 .nsub .ni{padding:5.5px 8px 5.5px 22px;font-size:11.5px;}
@@ -120,15 +141,15 @@ body{font-family:var(--fn);background:var(--bg);color:var(--tx);font-size:14px;-
 .np{display:none;padding:30px 32px;max-width:900px;}
 .np.act{display:block;animation:fadeUp .22s ease;}
 @keyframes fadeUp{from{opacity:0;transform:translateY(10px)}to{opacity:1;transform:translateY(0)}}
-.ph{margin-bottom:28px;}
-.pt{font-size:24px;font-weight:900;letter-spacing:-.5px;line-height:1.2;margin-bottom:5px;}
+.ph{margin-bottom:30px;}
+.pt{font-size:26px;font-weight:900;letter-spacing:-.6px;line-height:1.2;margin-bottom:6px;}
 .pt em{color:var(--or);font-style:normal;}
-.ps{font-size:13px;color:var(--mt);line-height:1.7;}
+.ps{font-size:13px;color:var(--mt);line-height:1.75;}
 
 /* ─── INTERACTIVE CARDS ─── */
 .card{
-  background:var(--b2);border:1px solid var(--bd);border-radius:14px;
-  padding:18px 20px;margin-bottom:14px;
+  background:var(--b2);border:1px solid var(--bd);border-radius:16px;
+  padding:20px 22px;margin-bottom:14px;
   transition:border-color .22s,box-shadow .22s,transform .22s;
   position:relative;overflow:hidden;
 }
@@ -137,10 +158,10 @@ body{font-family:var(--fn);background:var(--bg);color:var(--tx);font-size:14px;-
   background:radial-gradient(circle at var(--mx,50%) var(--my,50%), var(--or-a04), transparent 60%);
   opacity:0;transition:opacity .3s;pointer-events:none;
 }
-.card:hover{border-color:var(--bd2);box-shadow:0 8px 32px rgba(0,0,0,.25),0 0 0 1px var(--or-a08);transform:translateY(-1px);}
+.card:hover{border-color:var(--bd2);box-shadow:0 8px 40px rgba(0,0,0,.5),0 0 0 1px var(--or-a08);transform:translateY(-1px);}
 .card:hover::before{opacity:1;}
 .card.clickable{cursor:pointer;}
-.card.clickable:hover{border-color:var(--or-a20);box-shadow:0 10px 40px rgba(0,0,0,.28),0 0 0 1px var(--or-a12);}
+.card.clickable:hover{border-color:var(--or-a20);box-shadow:0 12px 50px rgba(0,0,0,.55),0 0 0 1px var(--or-a12);}
 .card.clickable:active{transform:scale(.985);}
 .ch{font-size:13px;font-weight:800;margin-bottom:11px;display:flex;align-items:center;gap:7px;color:var(--tx);}
 .ch em{font-style:normal;font-size:14px;}
@@ -221,7 +242,7 @@ code{background:var(--b4);border:1px solid var(--bd2);border-radius:5px;padding:
 
 /* ─── AI PANEL (slide from right, like gpanel in MapFlow) ─── */
 .ai-panel{
-  position:fixed;right:0;top:54px;bottom:0;width:400px;
+  position:fixed;right:0;top:54px;bottom:0;width:420px;
   background:var(--b2);border-left:1px solid var(--bd2);
   z-index:150;transform:translateX(100%);
   transition:transform .28s cubic-bezier(.4,0,.2,1);
@@ -229,15 +250,18 @@ code{background:var(--b4);border:1px solid var(--bd2);border-radius:5px;padding:
 }
 .ai-panel.open{transform:translateX(0);}
 .ai-hdr{
-  padding:13px 16px;border-bottom:1px solid var(--bd);
-  display:flex;align-items:center;gap:9px;background:var(--b3);flex-shrink:0;
+  padding:14px 18px;border-bottom:1px solid var(--bd);
+  display:flex;align-items:center;gap:10px;
+  background:linear-gradient(135deg,var(--b3),var(--b2));
+  flex-shrink:0;position:relative;overflow:hidden;
 }
-.ai-ico{width:30px;height:30px;border-radius:8px;background:var(--or);display:flex;align-items:center;justify-content:center;font-size:15px;flex-shrink:0;box-shadow:0 2px 12px var(--or-a40);}
+.ai-hdr::after{content:'';position:absolute;inset:0;background:linear-gradient(135deg,var(--or-a06),transparent 60%);pointer-events:none;}
+.ai-ico{width:32px;height:32px;border-radius:9px;background:linear-gradient(135deg,var(--or),var(--odk));display:flex;align-items:center;justify-content:center;font-size:16px;flex-shrink:0;box-shadow:0 3px 14px var(--or-a40);}
 .ai-hdr-t{font-size:13px;font-weight:800;line-height:1.2;}
 .ai-hdr-s{font-size:10px;color:var(--mt);}
-.ai-close{width:26px;height:26px;background:var(--b4);border:1px solid var(--bd);color:var(--mt);border-radius:5px;cursor:pointer;display:flex;align-items:center;justify-content:center;font-size:13px;transition:all .12s;flex-shrink:0;}
-.ai-close:hover{color:var(--tx);background:var(--b5);}
-.ai-body{flex:1;overflow-y:auto;padding:13px;display:flex;flex-direction:column;gap:10px;}
+.ai-close{width:28px;height:28px;background:var(--b4);border:1px solid var(--bd);color:var(--mt);border-radius:6px;cursor:pointer;display:flex;align-items:center;justify-content:center;font-size:13px;transition:all .12s;flex-shrink:0;position:relative;z-index:1;}
+.ai-close:hover{color:var(--tx);background:var(--b5);border-color:var(--bd3);}
+.ai-body{flex:1;overflow-y:auto;padding:14px;display:flex;flex-direction:column;gap:10px;}
 
 /* Input tabs */
 .itabs{display:flex;gap:3px;background:var(--b4);border:1px solid var(--bd);border-radius:8px;padding:3px;}
@@ -260,9 +284,9 @@ code{background:var(--b4);border:1px solid var(--bd2);border-radius:5px;padding:
 .toast.toast-ok{border-color:rgba(74,222,128,.25);color:var(--glt);}
 .toast.toast-err{border-color:rgba(248,113,113,.25);color:var(--rlt);}
 /* AI panel glow when open */
-.ai-panel.open{box-shadow:-8px 0 40px rgba(255,98,0,0.06);}
+.ai-panel.open{box-shadow:-12px 0 60px rgba(255,98,0,0.08), -1px 0 0 rgba(255,98,0,0.12);}
 /* Analyze button pulse when idle */
-@keyframes btnPulse{0%,100%{box-shadow:0 2px 10px var(--or-a30)}50%{box-shadow:0 2px 22px var(--or-a50)}}
+@keyframes btnPulse{0%,100%{box-shadow:0 2px 10px var(--or-a30),0 0 0 0 var(--or-a08)}50%{box-shadow:0 2px 24px var(--or-a50),0 0 0 6px transparent}}
 .abtn-or.idle{animation:btnPulse 2.5s ease-in-out infinite;}
 /* Buttons */
 .abtn{display:flex;align-items:center;justify-content:center;gap:5px;height:36px;border:none;border-radius:8px;font-family:var(--fn);font-size:12.5px;font-weight:800;cursor:pointer;transition:all .18s;flex:1;}
@@ -301,7 +325,7 @@ code{background:var(--b4);border:1px solid var(--bd2);border-radius:5px;padding:
 .status-big{padding:4px 13px;border-radius:7px;font-size:14px;font-weight:900;letter-spacing:.07em;}
 .s-if{background:rgba(22,163,74,0.16);color:var(--glt);border:1px solid rgba(74,222,128,0.28);}
 .s-inf{background:rgba(252,211,77,0.16);color:var(--gold);border:1px solid rgba(252,211,77,0.28);}
-.s-inv{background:rgba(220,38,38,0.16);color:var(--rlt);border:1px solid rgba(248,113,113,0.28);}
+.s-inv,.s-invalid{background:rgba(220,38,38,0.16);color:var(--rlt);border:1px solid rgba(248,113,113,0.28);}
 .conf-wrap{text-align:right;}
 .conf-lbl{font-size:9px;font-weight:800;text-transform:uppercase;letter-spacing:.07em;color:var(--mt);}
 .conf-num{font-size:22px;font-weight:900;color:var(--or);}
@@ -327,6 +351,7 @@ code{background:var(--b4);border:1px solid var(--bd2);border-radius:5px;padding:
 </head>
 <body>
 <div id="blob"></div>
+<div id="blob2"></div>
 
 <!-- ── HEADER ── -->
 <header class="hdr" id="hdr">
@@ -375,7 +400,7 @@ code{background:var(--b4);border:1px solid var(--bd2);border-radius:5px;padding:
     <div class="ai-ico">🤖</div>
     <div style="flex:1">
       <div class="ai-hdr-t">AI Mapping Assistant</div>
-      <div class="ai-hdr-s">Claude via OpenRouter · <span class="ai-ready">● Ready</span></div>
+      <div class="ai-hdr-s">Groq — Llama 3.3 70B · <span class="ai-ready">● Ready</span></div>
     </div>
     <button class="ai-close" onclick="toggleAI()">✕</button>
   </div>
@@ -427,7 +452,7 @@ code{background:var(--b4);border:1px solid var(--bd2);border-radius:5px;padding:
     </div>
 
     <div class="stream-box" id="stream-box">
-      <div class="stream-lbl">Claude is analyzing…</div>
+      <div class="stream-lbl">⚡ Groq / Llama 3.3 is analyzing…</div>
       <div class="stream-txt" id="stream-txt"><span class="cursor"></span></div>
     </div>
 
@@ -461,7 +486,12 @@ code{background:var(--b4);border:1px solid var(--bd2);border-radius:5px;padding:
     </div>
 
     <div style="background:var(--b3);border:1px solid var(--bd);border-radius:9px;padding:10px 12px;font-size:11px;color:var(--mt);line-height:1.7;">
-      <strong style="color:var(--mlt)">Powered by Claude Sonnet</strong> via OpenRouter. AI gets full CMT mapping context and all rules. Falls back to built-in rule engine automatically.
+      <strong style="color:var(--mlt)">Powered by Groq — Llama 3.3 70B</strong> via Google AI. Gets full CMT mapping context. Falls back to built-in rule engine automatically.
+      <div style="margin-top:7px;display:flex;align-items:center;gap:7px;">
+        <span id="ai-status-dot" style="width:7px;height:7px;border-radius:50%;background:var(--mt);display:inline-block;flex-shrink:0"></span>
+        <span id="ai-status-txt" style="font-size:10px;color:var(--mt)">Not tested yet</span>
+        <button onclick="pingGemini()" style="margin-left:auto;height:22px;padding:0 8px;background:var(--b4);border:1px solid var(--bd2);border-radius:5px;color:var(--mt);font-family:var(--fn);font-size:10px;font-weight:700;cursor:pointer;">Test AI</button>
+      </div>
     </div>
   </div>
 </aside>
@@ -496,6 +526,21 @@ const NAV=[
     {id:'spec-locked', label:'Locked vs Unlocked Phones'},
   ]},
   {id:'color-table',icon:'🎨',label:'Apparel Color Table'},
+  {id:'field-rules',icon:'🔬',label:'Field-Level Rules',ch:[
+    {id:'field-material',  label:'Material (1% Rule)'},
+    {id:'field-color',     label:'Color (Multicolor)'},
+    {id:'field-alphabet',  label:'Alphabet & Text Products'},
+    {id:'field-pattern',   label:'Pattern & Design (Extended)'},
+    {id:'field-neck',      label:'Neck Style Rules'},
+    {id:'field-fit',       label:'Size & Fit Rules'},
+    {id:'field-closure',   label:'Closure & Functional Design'},
+    {id:'field-pack2',     label:'Pack Rules (Advanced)'},
+    {id:'field-missing',   label:'Missing Components Rule'},
+    {id:'field-datasource',label:'Data Source Priority (BQT)'},
+    {id:'field-cards',     label:'Greeting Cards Rule'},
+    {id:'field-universal', label:'Universal Mapping Rule'},
+    {id:'field-cheatsheet',label:'Quick Cheatsheet'},
+  ]},
   {id:'mistakes',  icon:'⚠️',label:'Common Mistakes'},
   {id:'pro',       icon:'🏆',label:'Pro Mapper Thinking'},
 ];
@@ -543,7 +588,7 @@ flow:`<div class="ph">
 <div class="card">
   <div class="ch"><em>🔄</em> The 6-Step Process</div>
   <div class="steps">
-    <div class="step"><div class="sn">1</div><div class="sb"><strong>Open the Temu URL</strong><span>If the page fails, shows "unavailable" or "discontinued" or "Temporarily sold out" → <span class="badge b-inv">INVALID</span>. See <a class="il" onclick="navTo('decision')">decision rules</a>.</span></div></div>
+    <div class="step"><div class="sn">1</div><div class="sb"><strong>Open the Temu URL</strong><span>If the page fails, shows "unavailable" or "discontinued" → <span class="badge b-inv">INVALID</span>. Temporarily sold out → <span class="badge b-inv">INVALID</span>. See <a class="il" onclick="navTo('decision')">decision rules</a>.</span></div></div>
     <div class="step"><div class="sn">2</div><div class="sb"><strong>Identify the Product Type</strong><span>What is it exactly? Classify as <a class="il" onclick="navTo('softlines')">Softlines</a>, <a class="il" onclick="navTo('hardlines')">Hardlines</a>, or <a class="il" onclick="navTo('consumables')">Consumables</a>. This determines every rule that applies.</span></div></div>
     <div class="step"><div class="sn">3</div><div class="sb"><strong>Extract Key Attributes</strong><span>Note: Brand, Color, Material, Size, Pack quantity, Design/Pattern, Gender. These are your comparison points. See <a class="il" onclick="navTo('attributes')">attribute rules</a>.</span></div></div>
     <div class="step"><div class="sn">4</div><div class="sb"><strong>Search Amazon for a Match</strong><span>Use keyword search, image/lens search, or title. Find the ASIN that best matches Temu's product type and specifications.</span></div></div>
@@ -585,8 +630,8 @@ decision:`<div class="ph">
     <tbody>
       <tr><td><span class="badge b-if">IF Exact</span></td><td>All attributes match</td><td>Same Nike T-shirt, same color, material, brand</td></tr>
       <tr><td><span class="badge b-inx">IF Inexact</span></td><td>Match found, one minor attr differs</td><td>Same shirt, different brand name</td></tr>
-      <tr><td><span class="badge b-inf">INF</span></td><td>No close match or major mismatch</td><td>iPhone 15 vs iPhone 15 Pro; sold-out item</td></tr>
-      <tr><td><span class="badge b-inv">INVALID</span></td><td>Page broken / product gone</td><td>"This item is unavailable" error page</td></tr>
+      <tr><td><span class="badge b-inf">INF</span></td><td>No close match or major mismatch</td><td>iPhone 15 vs iPhone 15 Pro</td></tr>
+      <tr><td><span class="badge b-inv">INVALID</span></td><td>Page broken / product gone / sold out</td><td>"This item is unavailable" error page; sold-out Temu item</td></tr>
     </tbody>
   </table></div>
 </div>
@@ -606,8 +651,8 @@ decision:`<div class="ph">
 <div class="card">
   <div class="ch"><em>❓</em> INF vs INVALID — Never Confuse These</div>
   <div class="g2">
-    <div class="co co-yw" style="margin:0"><strong>INF</strong> = URL works fine. Product exists. Just no good Amazon match.</div>
-    <div class="co co-rd" style="margin:0"><strong>INVALID</strong> = URL broken. Product removed. "Sold out" temporarily, Then map it as INVALID.</div>
+    <div class="co co-yw" style="margin:0"><strong>INF</strong> = URL works fine. Product exists on Temu. Just no good Amazon match.</div>
+    <div class="co co-rd" style="margin:0"><strong>INVALID</strong> = URL broken. Product removed. <strong>Sold out on Temu = INVALID</strong>, not INF.</div>
   </div>
 </div>`,
 
@@ -982,7 +1027,7 @@ consumables:`<div class="ph">
 
 mistakes:`<div class="ph"><div class="pt"><em>Common Mistakes</em></div><div class="ps">Real errors mappers make. Learn these so you don't repeat them.</div></div>
 ${[
-['INF vs INVALID Confusion','Wrong: "Sold out" → INF. Correct: Sold out = INVALID (as Competitor OOS). Only "Sold out/discontinued/unavailable/broken URL" = INVALID.','decision'],
+['INF vs INVALID Confusion','Wrong: "Temporarily Sold out" → INF. Correct: Sold out = INVALID. Only "Sold out/discontinued/unavailable/broken URL" = INVALID.','decision'],
 ['Ignoring Neck Style','Wrong: Crew neck → V-neck as Exact IF ("minor design"). Correct: Neck style is NOT minor → Design Inexact or INF.','inexact-codes'],
 ['Wrong Pack Direction (HL/Cons)','Wrong: Temu 16, Amazon 6 → Pack Inexact IF. Correct: Temu MORE than Amazon (HL/Cons) = INF — Bundle Mismatch.','attr-pack'],
 ['Wrong Size Denominator','Wrong: |22-20|÷20×100 = 10% (using Temu). Correct: Use Amazon size: |22-20|÷22×100 = 9.09% ✅','spec-sizetol'],
@@ -1024,6 +1069,375 @@ pro:`<div class="ph"><div class="pt"><em>Pro Mapper</em> Thinking</div><div clas
 
 'special':`<div class="ph"><div class="pt"><em>Special</em> Rules</div><div class="ps">Edge cases that trip up even experienced mappers.</div></div>
 <div class="g2">${[['spec-gender','👥','Gender Mapping'],['spec-matfam','🧵','Material Family Equivalence'],['spec-sizetol','📐','Size Tolerance Rules'],['spec-locked','📱','Locked vs Unlocked Phones']].map(([id,ic,t])=>`<div class="ncard" onclick="navTo('${id}')"><div class="nc-ico">${ic}</div><div class="nc-title">${t}</div><div class="nc-arr">Open →</div></div>`).join('')}</div>`,
+
+// ─── FIELD-LEVEL RULES ───────────────────────────────────────
+'field-rules':`<div class="ph">
+  <div class="pt">🔬 <em>Field-Level Rules</em></div>
+  <div class="ps">Practical rules from real mapping sessions. These fill the gaps the standard guidelines don't cover explicitly.</div>
+</div>
+<div class="g2">
+${[['field-material','🧵','Material (1% Rule)','Even 1–2% composition difference is not allowed for Exact IF'],['field-color','🎨','Color (Multicolor)','Multicolor vs named color — when images match, it counts'],['field-alphabet','🔤','Alphabet & Text Products','Same font + case, different letter = Exact IF'],['field-pattern','🖼️','Pattern & Design (Extended)','Font, word, layout changes = Design Inexact'],['field-neck','👕','Neck Style Rules','Crew neck = Round neck. Structure must match.'],['field-fit','📏','Size & Fit Rules','Plus ↔ Regular OK. Loose fit vs Wide leg = Spec Inexact'],['field-closure','🔒','Closure & Functional Design','Button vs Buckle = Design Inexact'],['field-pack2','📦','Pack Rules (Advanced)','Eyelash pad examples, minor vs major quantity gaps'],['field-missing','📸','Missing Components','Cloth missing = Pack Inexact. Battery missing = INF'],['field-datasource','📄','Data Source Priority (BQT)','Product Description wins over BQT. Know when to switch.'],['field-cards','🎴','Greeting Cards Rule','Text differs = Design Inexact'],['field-universal','🚗','Universal Mapping Rule','Generic/universal products → map to universal ASIN'],['field-cheatsheet','⚡','Quick Cheatsheet','All rules at a glance — print-friendly reference']].map(([id,ic,t,s])=>`<div class="ncard" onclick="navTo('${id}')"><div class="nc-ico">${ic}</div><div class="nc-title">${t}</div><div class="nc-sub">${s}</div><div class="nc-arr">Open →</div></div>`).join('')}
+</div>`,
+
+'field-material':`<div class="ph">
+  <div class="pt">🧵 Material — <em>The 1% Rule</em></div>
+  <div class="ps">Even tiny composition differences matter. Stricter than most mappers realise.</div>
+</div>
+<div class="card card-rd">
+  <div class="ch"><em>❗</em> Core Rule</div>
+  <p>Even <strong>1–2% material difference = NOT allowed for Exact IF</strong>. Material composition must match exactly for Exact mapping.</p>
+  <div class="ex"><div class="expill">98% Cotton vs 100% Cotton <span class="eb">❌ Not Exact</span></div></div>
+</div>
+<div class="card">
+  <div class="ch"><em>📊</em> Decision Table</div>
+  <div class="tw"><table><thead><tr><th>Situation</th><th>Status</th></tr></thead><tbody>
+    <tr><td>100% Cotton vs 100% Cotton</td><td><span class="badge b-if">Exact IF</span></td></tr>
+    <tr><td>98% Cotton 2% Elastane vs 98% Cotton 2% Spandex</td><td><span class="badge b-if">Exact IF</span> (Spandex = Elastane)</td></tr>
+    <tr><td>98% Cotton vs 100% Cotton</td><td><span class="badge b-inx">Material Inexact IF</span></td></tr>
+    <tr><td>75% Cotton 25% Polyester vs 100% Cotton</td><td><span class="badge b-inx">Material Inexact IF</span></td></tr>
+    <tr><td>100% Polyester vs 100% Cotton (completely different)</td><td><span class="badge b-inf">INF</span> (if material is critical to product)</td></tr>
+  </tbody></table></div>
+</div>
+<div class="co co-or"><strong>Always check:</strong> Material Equivalence table first — Spandex = Lycra = Elastane, Viscose = Rayon. These count as Exact IF. See <a class="il" onclick="navTo('spec-matfam')">equivalence table →</a></div>
+<div class="co co-yw"><strong>When to mark INF:</strong> If the material is the core selling point (e.g., 100% silk product mapped to polyester) — the experience is fundamentally different. Mark INF.</div>`,
+
+'field-color':`<div class="ph">
+  <div class="pt">🎨 Color — <em>Multicolor Rule</em></div>
+  <div class="ps">When a Temu product says "Multicolor" but Amazon shows a named color — check the images.</div>
+</div>
+<div class="card card-gn">
+  <div class="ch"><em>✅</em> When to Mark Exact IF</div>
+  <p>If:</p>
+  <ul>
+    <li>Temu = <strong>Multicolor</strong></li>
+    <li>Amazon = Named color (e.g., Blue, Pink, Red)</li>
+    <li><strong>Product images clearly match</strong> — same design, same appearance</li>
+  </ul>
+  <p>→ Mark as <span class="badge b-if">Exact IF</span>. The listing name doesn't override visual evidence.</p>
+</div>
+<div class="card">
+  <div class="ch"><em>📊</em> Multicolor Decision Table</div>
+  <div class="tw"><table><thead><tr><th>Temu Color</th><th>Amazon Color</th><th>Images Match?</th><th>Status</th></tr></thead><tbody>
+    <tr><td>Multicolor</td><td>Blue</td><td>Yes — clearly same product</td><td><span class="badge b-if">Exact IF</span></td></tr>
+    <tr><td>Multicolor</td><td>Blue</td><td>No — visually different</td><td><span class="badge b-inx">Color Inexact</span></td></tr>
+    <tr><td>Multicolor</td><td>Multicolor</td><td>Yes</td><td><span class="badge b-if">Exact IF</span></td></tr>
+    <tr><td>Red</td><td>Blue</td><td>Clearly different</td><td><span class="badge b-inx">Color Inexact</span></td></tr>
+  </tbody></table></div>
+</div>
+<div class="co co-or"><strong>Attribute Priority Rule:</strong> For Color, Design, and Size — always follow <strong>Product Description &gt; Images</strong>. Images are secondary confirmation, not the primary source. See <a class="il" onclick="navTo('field-datasource')">data source priority →</a></div>`,
+
+'field-alphabet':`<div class="ph">
+  <div class="pt">🔤 Alphabet & <em>Text-Based Products</em></div>
+  <div class="ps">Keychains, letter signs, monogram products. Special rules apply.</div>
+</div>
+<div class="card card-gn">
+  <div class="ch"><em>✅</em> Exact IF Cases</div>
+  <ul>
+    <li><strong>Any alphabet → any alphabet keychain</strong> of the same type = Exact IF</li>
+    <li><strong>Single letter, different letter</strong> (e.g., "A" vs "B") = Exact IF — IF:
+      <ul>
+        <li>Same font style</li>
+        <li>Same case (both uppercase OR both lowercase)</li>
+        <li>Same product type/design</li>
+      </ul>
+    </li>
+  </ul>
+  <div class="ex">
+    <div class="expill">"A" keychain → "B" keychain (same font, same uppercase) <span class="ek">✅ Exact IF</span></div>
+  </div>
+</div>
+<div class="card card-or">
+  <div class="ch"><em>🔶</em> Design Inexact Cases</div>
+  <ul>
+    <li><strong>Font is different</strong> — same letter, different style → Design Inexact</li>
+    <li><strong>Case is different</strong> — "A" (uppercase) vs "a" (lowercase) → Design Inexact</li>
+    <li><strong>Words vs letters</strong> — "LOVE" vs "A" → Design Inexact</li>
+  </ul>
+  <div class="ex">
+    <div class="expill">"A" serif font → "A" script font <span class="ei">⚠️ Design Inexact</span></div>
+  </div>
+  <div class="ex">
+    <div class="expill">Uppercase "A" → lowercase "a" <span class="ei">⚠️ Design Inexact</span></div>
+  </div>
+</div>
+<div class="co co-or"><strong>Golden Rule for text products:</strong> Text must match exactly (same font, same case, same word) for Exact mapping. Only the specific letter can differ for single-letter alphabet products.</div>`,
+
+'field-pattern':`<div class="ph">
+  <div class="pt">🖼️ Pattern & Design — <em>Extended Rules</em></div>
+  <div class="ps">Covers font changes, word changes, layout changes, and closure mechanisms.</div>
+</div>
+<div class="card">
+  <div class="ch"><em>📋</em> What Counts as Design Inexact</div>
+  <ul>
+    <li><strong>Font change</strong> — same text but different font style</li>
+    <li><strong>Word change</strong> — different text/slogan on the product</li>
+    <li><strong>Layout change</strong> — elements in different positions</li>
+    <li><strong>Pattern type change</strong> — stripes vs floral, plain vs patterned</li>
+    <li><strong>Animal prints differ</strong> — snake print ≠ leopard print</li>
+    <li><strong>Greeting card text differs</strong> — "Happy Birthday" vs "Thank You"</li>
+  </ul>
+  <div class="ex">
+    <div class="expill">Serif font logo → Script font logo <span class="ei">⚠️ Design Inexact</span></div>
+  </div>
+  <div class="ex">
+    <div class="expill">"Love" print → "Joy" print <span class="ei">⚠️ Design Inexact</span></div>
+  </div>
+  <div class="ex">
+    <div class="expill">Striped shirt → Plaid shirt <span class="ei">⚠️ Design Inexact</span></div>
+  </div>
+</div>
+<div class="card card-gn">
+  <div class="ch"><em>✅</em> Still Exact IF</div>
+  <ul>
+    <li>Minor sleeve variation (same length)</li>
+    <li>Small pocket differences</li>
+    <li>Stitching style variation</li>
+    <li>Side slits</li>
+  </ul>
+</div>
+<div class="co co-yw"><strong>Remember:</strong> Always follow Product Description &gt; Images for design attributes. If description says "striped" and image looks plain, trust the description.</div>`,
+
+'field-neck':`<div class="ph">
+  <div class="pt">👕 Neck Style — <em>Exact Rules</em></div>
+  <div class="ps">Neck style is a specification attribute — structure must match exactly.</div>
+</div>
+<div class="card card-gn">
+  <div class="ch"><em>✅</em> Same Structure = Exact IF</div>
+  <ul>
+    <li><strong>Crew neck = Round neck</strong> → Exact IF (these are the same neck style)</li>
+    <li>Both have same structure (e.g., both V-neck) → Exact IF</li>
+  </ul>
+  <div class="ex">
+    <div class="expill">Crew neck → Round neck <span class="ek">✅ Exact IF (same structure)</span></div>
+  </div>
+</div>
+<div class="card card-or">
+  <div class="ch"><em>⚠️</em> Different Structure = Inexact / INF</div>
+  <ul>
+    <li><strong>Crew/Round neck vs V-neck</strong> → Specification Inexact IF</li>
+    <li><strong>Turtleneck vs Crew neck</strong> → Specification Inexact or INF</li>
+    <li><strong>Halter neck vs Round neck</strong> → INF (very different product)</li>
+  </ul>
+  <div class="ex">
+    <div class="expill">Crew neck → V-neck <span class="ei">⚠️ Spec Inexact</span></div>
+  </div>
+  <div class="ex">
+    <div class="expill">Round neck → Turtleneck <span class="eb">❌ INF or Spec Inexact</span></div>
+  </div>
+</div>
+<div class="co co-or"><strong>Neck pattern must match exactly.</strong> This is not a "minor design difference" — it fundamentally changes how the product looks and fits.</div>`,
+
+'field-fit':`<div class="ph">
+  <div class="pt">📏 Size & Fit — <em>Extended Rules</em></div>
+  <div class="ps">Plus size vs regular is fine. But fit type differences are specification mismatches.</div>
+</div>
+<div class="card card-gn">
+  <div class="ch"><em>✅</em> Allowed — Exact IF</div>
+  <ul>
+    <li><strong>Plus size ↔ Regular size</strong> = Exact IF (size freedom applies to apparel)</li>
+    <li>Any S/M/L/XL/2XL to any other size = Exact IF for apparel</li>
+    <li>Plus size XL to Regular XL = Exact IF</li>
+  </ul>
+  <div class="ex">
+    <div class="expill">Regular XL → Plus Size 2XL <span class="ek">✅ Exact IF (apparel size rule)</span></div>
+  </div>
+</div>
+<div class="card card-or">
+  <div class="ch"><em>⚠️</em> Fit Type Differences = Specification Inexact</div>
+  <ul>
+    <li><strong>Loose fit vs Wide leg</strong> → Specification Inexact IF (different fit type = different product experience)</li>
+    <li><strong>Slim fit vs Regular fit</strong> → Specification Inexact IF</li>
+    <li><strong>Cropped vs Full length</strong> → INF (fundamentally different)</li>
+    <li><strong>Oversized vs Regular fit</strong> → Specification Inexact IF</li>
+  </ul>
+  <div class="ex">
+    <div class="expill">Loose fit → Wide leg <span class="ei">⚠️ Specification Inexact</span></div>
+  </div>
+  <div class="ex">
+    <div class="expill">Slim fit → Oversized <span class="ei">⚠️ Specification Inexact</span></div>
+  </div>
+</div>
+<div class="co co-tl"><strong>Key distinction:</strong> Size (S/M/L/XL) = doesn't matter for apparel. Fit type (loose/slim/wide leg/oversized) = DOES matter and creates Specification Inexact.</div>`,
+
+'field-closure':`<div class="ph">
+  <div class="pt">🔒 Closure & <em>Functional Design</em></div>
+  <div class="ps">How a product closes or fastens is a design attribute — different mechanisms = Design Inexact.</div>
+</div>
+<div class="card card-or">
+  <div class="ch"><em>⚠️</em> Different Mechanism = Design Inexact</div>
+  <p>When the closure/fastening mechanism differs between Temu and Amazon products, mark as <span class="badge b-inx">Design Inexact IF</span>.</p>
+  <div class="tw"><table><thead><tr><th>Temu</th><th>Amazon</th><th>Status</th></tr></thead><tbody>
+    <tr><td>Button closure</td><td>Buckle closure</td><td><span class="badge b-inx">Design Inexact</span></td></tr>
+    <tr><td>Zip fastening</td><td>Button fastening</td><td><span class="badge b-inx">Design Inexact</span></td></tr>
+    <tr><td>Drawstring</td><td>Elastic waistband</td><td><span class="badge b-inx">Design Inexact</span></td></tr>
+    <tr><td>Snap buttons</td><td>Velcro</td><td><span class="badge b-inx">Design Inexact</span></td></tr>
+    <tr><td>Zip</td><td>Zip (same)</td><td><span class="badge b-if">Exact IF</span></td></tr>
+  </tbody></table></div>
+</div>
+<div class="co co-or"><strong>Why it matters:</strong> A button vs buckle is a different functional mechanism — users notice this. It's not a minor visual difference.</div>`,
+
+'field-pack2':`<div class="ph">
+  <div class="pt">📦 Pack Rules — <em>Advanced Cases</em></div>
+  <div class="ps">Real examples from field mapping — eyelashes, accessories, replacement parts.</div>
+</div>
+<div class="card">
+  <div class="ch"><em>👁️</em> Eyelash / Replacement Pad Examples</div>
+  <div class="g2">
+    <div class="card card-gn" style="margin-bottom:0">
+      <div style="font-weight:800;font-size:12px;margin-bottom:6px">Case 1 — Pack Inexact ✅</div>
+      <ul>
+        <li>Temu: 1 replacement pad</li>
+        <li>Amazon: 3 replacement pads</li>
+      </ul>
+      <div style="margin-top:8px"><span class="badge b-inx">Pack Inexact IF</span></div>
+      <div style="font-size:11.5px;color:var(--mt);margin-top:5px">Amazon has MORE → Pack Inexact IF (HL rule)</div>
+    </div>
+    <div class="card card-rd" style="margin-bottom:0">
+      <div style="font-weight:800;font-size:12px;margin-bottom:6px">Case 2 — INF ❌</div>
+      <ul>
+        <li>Temu: 0 pads (no pads)</li>
+        <li>Amazon: 3 replacement pads</li>
+      </ul>
+      <div style="margin-top:8px"><span class="badge b-inf">INF — Pack Mismatch</span></div>
+      <div style="font-size:11.5px;color:var(--mt);margin-top:5px">Major mismatch — completely different product content</div>
+    </div>
+  </div>
+</div>
+<div class="co co-or" style="margin-top:10px"><strong>General Rule:</strong> Small quantity difference (Amazon has slightly more) = Pack Inexact. Product content is fundamentally different (one has it, other doesn't) = INF.</div>
+<div class="co co-tl"><strong>Softlines reminder:</strong> For SL, 1-pack → multi-pack is always Pack Inexact IF regardless of direction. The HL/Cons direction rule doesn't apply to SL.</div>`,
+
+'field-missing':`<div class="ph">
+  <div class="pt">📸 Missing Components — <em>Minor vs Major</em></div>
+  <div class="ps">For cameras, tech gadgets, kits. What's missing determines the severity.</div>
+</div>
+<div class="g2" style="margin-bottom:14px">
+  <div class="card card-gn" style="margin-bottom:0">
+    <div class="ch"><em>✅</em> Minor Missing = Pack Inexact</div>
+    <ul>
+      <li>Cleaning cloth missing</li>
+      <li>Pouch/bag missing</li>
+      <li>Instruction manual missing</li>
+      <li>Decorative items missing</li>
+    </ul>
+    <div style="margin-top:8px"><span class="badge b-inx">Pack Inexact IF</span></div>
+  </div>
+  <div class="card card-rd" style="margin-bottom:0">
+    <div class="ch"><em>❌</em> Major Missing = INF</div>
+    <ul>
+      <li>Battery missing (essential)</li>
+      <li>Lens missing from camera kit</li>
+      <li>Charger missing (essential)</li>
+      <li>Core functional part missing</li>
+    </ul>
+    <div style="margin-top:8px"><span class="badge b-inf">INF — Pack Mismatch</span></div>
+  </div>
+</div>
+<div class="co co-or"><strong>The test:</strong> Ask — "Is the missing item essential for the product to function or be used?" YES = INF. NO (it's supplementary) = Pack Inexact IF.</div>`,
+
+'field-datasource':`<div class="ph">
+  <div class="pt">📄 Data Source Priority — <em>BQT vs Product Page</em></div>
+  <div class="ps">When sources conflict, know which one to trust. This is a critical decision point.</div>
+</div>
+<div class="card card-gn">
+  <div class="ch"><em>✅</em> General Rule</div>
+  <p><strong>Product Description / Product Page wins over BQT (Browser Query Tool)</strong> when there is a conflict between the two sources.</p>
+  <div class="co co-gn" style="margin-top:8px"><strong>Product Description = Source of Truth for attributes</strong> (color, material, size, design, specs)</div>
+</div>
+<div class="card">
+  <div class="ch"><em>🔄</em> BQT Special Case (Ruba Insight)</div>
+  <p>Sometimes the BQT shows Amazon listing data that is more accurate or better represents the product's availability and match quality. In this case:</p>
+  <div class="tw"><table><thead><tr><th>Use This</th><th>For This</th></tr></thead><tbody>
+    <tr><td><strong>Product Description</strong></td><td>All attribute decisions (color, material, size, design) — the truth about WHAT the product IS</td></tr>
+    <tr><td><strong>BQT</strong></td><td>Amazon reference / availability confirmation — to verify the ASIN exists and is active</td></tr>
+  </tbody></table></div>
+</div>
+<div class="card">
+  <div class="ch"><em>📌</em> Attribute Priority Rule</div>
+  <p>For <strong>Color, Design, and Size</strong> — always follow this order:</p>
+  <div class="steps">
+    <div class="step"><div class="sn">1</div><div class="sb"><strong>Product Description</strong><span>The written specification. If it says "Navy Blue" — it's Navy Blue.</span></div></div>
+    <div class="step"><div class="sn">2</div><div class="sb"><strong>Product Images</strong><span>Secondary confirmation. If image conflicts with description, follow the description.</span></div></div>
+    <div class="step"><div class="sn">3</div><div class="sb"><strong>BQT</strong><span>Use only for availability/ASIN verification — not for attribute decisions.</span></div></div>
+  </div>
+</div>
+<div class="co co-rd"><strong>Conflict example:</strong> Description says "Striped" but image looks plain. Trust the description → mark attributes as per description.</div>`,
+
+'field-cards':`<div class="ph">
+  <div class="pt">🎴 Greeting Cards — <em>Text = Design</em></div>
+  <div class="ps">For cards, stationery, and text-print products — the text IS the design.</div>
+</div>
+<div class="card card-or">
+  <div class="ch"><em>⚠️</em> Text Differs = Design Inexact</div>
+  <p>If the greeting card text is different between Temu and Amazon, it is <strong>not the same design</strong>.</p>
+  <div class="tw"><table><thead><tr><th>Temu Text</th><th>Amazon Text</th><th>Status</th></tr></thead><tbody>
+    <tr><td>"Happy Birthday"</td><td>"Happy Birthday"</td><td><span class="badge b-if">Exact IF</span></td></tr>
+    <tr><td>"Happy Birthday"</td><td>"Happy Anniversary"</td><td><span class="badge b-inx">Design Inexact</span></td></tr>
+    <tr><td>"Thank You"</td><td>"Congratulations"</td><td><span class="badge b-inx">Design Inexact</span></td></tr>
+    <tr><td>Same card, same text</td><td>Different font/layout</td><td><span class="badge b-inx">Design Inexact</span></td></tr>
+  </tbody></table></div>
+</div>
+<div class="co co-or"><strong>Remember:</strong> Text-print products follow the same rule as alphabet products — the text/words are the defining design attribute. Any change = Design Inexact.</div>`,
+
+'field-universal':`<div class="ph">
+  <div class="pt">🚗 Universal Mapping — <em>Generic Products</em></div>
+  <div class="ps">When a product is designed for universal or generic use, map it to the universal Amazon equivalent.</div>
+</div>
+<div class="card card-gn">
+  <div class="ch"><em>✅</em> Universal Mapping Rule</div>
+  <p>If a Temu product is designed for <strong>generic or universal use</strong> (not specific to one brand/model), map it to a <strong>universal/generic Amazon product</strong>.</p>
+  <div class="ex">
+    <div class="expill">Car seat cover (universal fit) → Universal car seat cover ASIN <span class="ek">✅ Correct</span></div>
+  </div>
+  <div class="ex">
+    <div class="expill">Phone case (generic/fits all) → Generic phone stand <span class="eb">❌ Wrong product type</span></div>
+  </div>
+</div>
+<div class="card">
+  <div class="ch"><em>📋</em> When to Apply</div>
+  <ul>
+    <li>Car accessories labelled "universal fit" or "compatible with all cars"</li>
+    <li>Generic phone accessories not tied to a specific model</li>
+    <li>Universal tool accessories</li>
+    <li>Generic organizers, hooks, brackets</li>
+  </ul>
+  <div class="co co-or"><strong>Key check:</strong> Does the product page say "universal" or "fits all"? If yes, find the Amazon universal equivalent — don't force-match it to a brand-specific ASIN.</div>
+</div>
+<div class="co co-yw"><strong>Still check attributes:</strong> Even for universal products, color, material, size (if dimensional), and design must still match correctly.</div>`,
+
+'field-cheatsheet':`<div class="ph">
+  <div class="pt">⚡ Field Rules — <em>Quick Cheatsheet</em></div>
+  <div class="ps">All practical field rules at a glance. Bookmark this page.</div>
+</div>
+<div class="card">
+  <div class="ch"><em>📋</em> Quick Reference</div>
+  <div class="tw"><table><thead><tr><th>Situation</th><th>Status</th></tr></thead><tbody>
+    <tr><td>Minor material diff (e.g. 98% vs 100% cotton)</td><td><span class="badge b-inx">Material Inexact</span></td></tr>
+    <tr><td>Major material diff (cotton vs polyester)</td><td><span class="badge b-inf">INF</span></td></tr>
+    <tr><td>Multicolor vs named color — images match clearly</td><td><span class="badge b-if">Exact IF</span></td></tr>
+    <tr><td>Font / text / word change</td><td><span class="badge b-inx">Design Inexact</span></td></tr>
+    <tr><td>Same letter, different case (A vs a)</td><td><span class="badge b-inx">Design Inexact</span></td></tr>
+    <tr><td>Different letter, same font+case keychain</td><td><span class="badge b-if">Exact IF</span></td></tr>
+    <tr><td>Pack count diff — small (Amazon has more)</td><td><span class="badge b-inx">Pack Inexact</span></td></tr>
+    <tr><td>Pack diff — one has it, other doesn't</td><td><span class="badge b-inf">INF</span></td></tr>
+    <tr><td>Missing minor item (cloth, pouch)</td><td><span class="badge b-inx">Pack Inexact</span></td></tr>
+    <tr><td>Missing core item (battery, lens)</td><td><span class="badge b-inf">INF</span></td></tr>
+    <tr><td>Button vs Buckle closure</td><td><span class="badge b-inx">Design Inexact</span></td></tr>
+    <tr><td>Crew neck vs Round neck</td><td><span class="badge b-if">Exact IF</span> (same structure)</td></tr>
+    <tr><td>Crew neck vs V-neck</td><td><span class="badge b-inx">Spec Inexact</span></td></tr>
+    <tr><td>Plus size ↔ Regular size (apparel)</td><td><span class="badge b-if">Exact IF</span></td></tr>
+    <tr><td>Loose fit vs Wide leg</td><td><span class="badge b-inx">Spec Inexact</span></td></tr>
+    <tr><td>Greeting card text differs</td><td><span class="badge b-inx">Design Inexact</span></td></tr>
+    <tr><td>Image matches but listing name differs</td><td><span class="badge b-if">Exact IF</span> (if logical)</td></tr>
+    <tr><td>Description vs image conflict</td><td>→ Follow Description</td></tr>
+    <tr><td>BQT vs Product Page conflict</td><td>→ Follow Product Page</td></tr>
+  </tbody></table></div>
+</div>
+<div class="card card-tl">
+  <div class="ch"><em>🧘</em> Golden Rules</div>
+  <div class="co co-tl" style="margin-top:0"><strong>Don't match what looks similar. Match what behaves the same.</strong></div>
+  <div class="co co-gn" style="margin-top:8px"><strong>When confused ask:</strong> "Is the core product experience the same?" YES → IF (Exact/Inexact). NO → INF.</div>
+  <div class="co co-or" style="margin-top:8px"><strong>Data priority:</strong> Product Description &gt; Images &gt; BQT</div>
+</div>`,
 };
 
 // ══════════════════════════════════════════
@@ -1146,18 +1560,20 @@ document.addEventListener('keydown', e => { if (e.key === '/' && document.active
 //  THEME
 // ══════════════════════════════════════════
 function toggleTheme() {
-  const t = document.documentElement.getAttribute('data-theme') === 'dark' ? 'light' : 'dark';
-  document.documentElement.setAttribute('data-theme', t);
-  localStorage.setItem('mfn_theme', t);
-  document.getElementById('theme-btn').textContent = t === 'dark' ? '🌙' : '☀️';
+  const cur = document.documentElement.getAttribute('data-theme');
+  const next = cur === 'light' ? 'dark' : cur === 'dark' ? 'pitch' : 'light';
+  document.documentElement.setAttribute('data-theme', next);
+  localStorage.setItem('mfn_theme', next);
+  document.getElementById('theme-btn').textContent = next === 'light' ? '☀️' : next === 'pitch' ? '⚫' : '🌙';
 }
 
 // ══════════════════════════════════════════
-//  OPENROUTER CONFIG
+//  GEMINI API CONFIG
 // ══════════════════════════════════════════
-const OR_KEY = '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';
-const OR_MODEL = 'anthropic/claude-sonnet-4-5';
-const OR_URL = 'https://openrouter.ai/api/v1/chat/completions';
+// ── Groq uses OpenAI-compatible Chat Completions API ──
+const GROQ_KEY   = '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';
+const GROQ_MODEL = 'llama-3.3-70b-versatile';   // best free model on Groq
+const GROQ_URL   = 'https://api.groq.com/openai/v1/chat/completions';
 
 // ══════════════════════════════════════════
 //  AI PANEL
@@ -1200,22 +1616,26 @@ async function analyzeProduct() {
   resBox.classList.remove('show');
   streamBox.classList.remove('show');
   thinking.classList.add('show');
-  document.getElementById('ttxt').textContent = 'Connecting to Claude…';
+  document.getElementById('ttxt').textContent = 'Connecting to Groq…';
 
   let result = null;
   try {
-    document.getElementById('ttxt').textContent = 'Claude is analyzing…';
+    document.getElementById('ttxt').textContent = 'Sending to Groq AI…';
     thinking.classList.remove('show');
     streamBox.classList.add('show');
     streamTxt.innerHTML = '<span class="cursor"></span>';
-    result = await callOpenRouter(temu, amz, token => {
+    result = await callGemini(temu, amz, token => {
       const cur = streamTxt.querySelector('.cursor');
       if (cur) cur.before(document.createTextNode(token));
       streamTxt.scrollTop = streamTxt.scrollHeight;
     });
+    showToast('✓ Groq analysis complete', 'ok');
   } catch(e) {
-    console.warn('OpenRouter error:', e.message);
-    showToast('Claude unavailable — using rule engine', 'err');
+    console.error('Gemini error:', e.message);
+    // Show real error in stream box before hiding it
+    streamTxt.innerHTML = `<span style="color:var(--rlt);font-size:11px">⚠ ${e.message}</span>`;
+    await new Promise(r => setTimeout(r, 2200));
+    showToast('AI error — using rule engine', 'err');
     streamBox.classList.remove('show');
     thinking.classList.add('show');
     document.getElementById('ttxt').textContent = 'Using rule engine fallback…';
@@ -1231,115 +1651,161 @@ async function analyzeProduct() {
 }
 
 // ══════════════════════════════════════════
-//  FULL CMT SYSTEM PROMPT FOR CLAUDE
+//  FULL CMT SYSTEM PROMPT FOR GEMINI
 // ══════════════════════════════════════════
-const SYSTEM = `You are an expert CMT (Competitor Mapping Tool) analyst. Your job is to map Temu products to Amazon products and determine the correct mapping status using precise rules.
+const SYSTEM = `You are an expert CMT (Competitor Mapping Tool) analyst. Map Temu products to Amazon products using these precise rules. Respond ONLY with valid JSON — no text, no markdown, no code fences.
 
-═══ MAPPING STATUSES ═══
-• IF      = In Feed — a matching Amazon ASIN was found (Exact or Inexact)
-• INF     = In Feed Not Found — product category exists but no close enough match found
-• INVALID = URL broken, product discontinued or unavailable
+═══ STATUSES ═══
+IF = match found (Exact or Inexact) | INF = no close match / major mismatch | INVALID = broken URL, sold-out item, discontinued product
 
-═══ MATCH TYPES (only when status = IF) ═══
-• Exact   = all key attributes match within tolerances
-• Inexact = match found but ONE attribute differs — must assign a reason code
-
-═══ INEXACT REASON CODES (priority order — use HIGHEST that applies) ═══
-1. Specification  (highest priority)
-2. Pack
-3. Design/Pattern
-4. Size
-5. Material
-6. Color
-7. Brand           (lowest priority)
+═══ INEXACT REASON CODES (use HIGHEST priority that applies) ═══
+1.Specification 2.Pack 3.Design/Pattern 4.Size 5.Material 6.Color 7.Brand
 Special: "Brand+Color" when both brand AND color differ but all other specs match
 
-═══ BRAND RULES ═══
-• Softlines: Generic = Generic → Exact IF even if one mentions a brand name
-• HL/Cons: Brand must match exactly. Different brands → Brand Inexact IF
-• Both branded with different names → Brand Inexact for all categories
+═══ BRAND ═══
+SL: Generic=Generic → Exact IF even if one has a brand name. HL/Cons: brand must match exactly.
 
-═══ COLOR RULES ═══
-• Same color group = Exact IF (e.g. Navy=Dark Navy, Black=Jet Black=Midnight Black, Ecru=White)
-• 14 primary groups: Black, Navy, Blue, White, Grey, Khaki, Gold, Brown, Green, Red, Pink, Purple, Orange, Yellow
-• Cross-group = Color Inexact IF
+═══ COLOR ═══
+Same color group = Exact IF (Navy=Dark Navy, Black=Jet Black=Midnight Black, Ecru=White, Gunmetal=Grey).
+14 groups: Black/Navy/Blue/White/Grey/Khaki/Gold/Brown/Green/Red/Pink/Purple/Orange/Yellow.
+Multicolor (Temu) vs named color (Amazon): if product images clearly match → Exact IF.
+Cross-group = Color Inexact IF.
 
-═══ MATERIAL RULES ═══
-• These pairs = same material (Exact IF): Viscose=Rayon | Spandex=Lycra=Elastane | Nylon=Polyamide | Denim=Jean Fabric | Corduroy=Manchester | Satin=Sateen | Tulle=Netting | Fleece=Polar Fleece | Terry Cloth=French Terry | Chiffon=Georgette | Flannel=Brushed Cotton | Velvet=Velveteen | Linen=Flax | Genuine Leather=Full Grain Leather
-• SL: Same material + unstated composition → Exact IF (90% cotton 10% spandex vs "cotton blend")
-• SL: Significantly different composition → Material Inexact
-• HL: Same material family (aluminium vs steel) → Material Inexact; Different family (glass vs plastic) → Material Inexact
+═══ MATERIAL — STRICT RULES ═══
+Even 1-2% composition difference = NOT Exact IF (98% Cotton ≠ 100% Cotton → Material Inexact).
+Equivalents = Exact IF: Viscose=Rayon | Spandex=Lycra=Elastane | Nylon=Polyamide | Denim=Jean Fabric | Corduroy=Manchester | Satin=Sateen | Tulle=Netting | Fleece=Polar Fleece | Terry=French Terry | Chiffon=Georgette | Flannel=Brushed Cotton | Velvet=Velveteen | Linen=Flax | Genuine Leather=Full Grain Leather.
+SL: same material + unstated composition → Exact IF. Significantly different → Material Inexact.
+HL: same/different material family → Material Inexact.
 
-═══ SIZE RULES ═══
-• Apparel, Shoes, Shoelaces, Belts (same width), Rings → ANY size to ANY size = Exact IF
-• All other SL (luggage, watches, jewelry) + All HL: |Amazon−Temu| ÷ Amazon × 100 ≤10% → Exact IF; >10% → Size Inexact
+═══ SIZE ═══
+Apparel/Shoes/Shoelaces/Belts(same width)/Rings → ANY size = Exact IF. Plus size ↔ Regular = Exact IF.
+Fit type (loose/slim/wide leg/oversized) = Specification attribute — different fit = Spec Inexact.
+Other SL + HL: |Amazon−Temu|÷Amazon×100 ≤10% → Exact IF; >10% → Size Inexact.
 
-═══ PACK/BUNDLE RULES ═══
-• Softlines: 1-pack → multi-pack = Pack Inexact IF (always OK)
-• HL & Consumables: Amazon MORE → Pack Inexact IF ✅ | Temu MORE → INF (Bundle Mismatch) ❌
-• Consumables: 1×20ml vs 2×20ml → Pack Inexact ✅ | 1×20ml vs 2×10ml → INF ❌
+═══ NECK STYLE ═══
+Crew neck = Round neck → Exact IF (same structure). Crew/Round vs V-neck → Spec Inexact.
 
-═══ GENDER RULES ═══
-• Unisex covers both — Unisex→Men's = Exact IF | Unisex→Women's = Exact IF
-• Men's ≠ Women's → ALWAYS INF (never map directly across genders)
+═══ PACK/BUNDLE ═══
+SL: 1→multi = Pack Inexact IF. HL/Cons: Amazon more → Pack Inexact IF; Temu more → INF.
+Consumables: 1×20ml vs 2×20ml → Pack Inexact; 1×20ml vs 2×10ml → INF.
+Missing minor item (cloth, pouch) → Pack Inexact. Missing core item (battery, lens) → INF.
 
-═══ PHONE LOCK STATUS — CRITICAL ═══
-• Locked (Temu) vs Unlocked (Amazon) = INF. NO EXCEPTIONS.
-• Unlocked (Temu) vs Locked (Amazon) = INF. NO EXCEPTIONS.
-• Locked (AT&T) vs Locked (T-Mobile) = INF (different carrier = incompatible)
-• Same lock status + same carrier = Exact IF for that attribute
-• Lock status difference is NEVER acceptable as an Inexact IF — it is always INF.
+═══ GENDER ═══
+Unisex→Men's/Women's = Exact IF. Men's≠Women's → INF always.
 
-═══ ALWAYS INF TRIGGERS ═══
-• Model number mismatch (iPhone 15 vs iPhone 15 Pro, bulb A16 vs A17)
-• Refurbished/Renewed ≠ New
-• Gender mismatch (Men's vs Women's)
-• Full sleeve vs half sleeve | Ankle socks vs toe socks
-• Power input/voltage mismatch
-• Phone locked vs unlocked (ANY difference in lock status)
-• Toy age group mismatch (3+ ≠ 5+)
-• Jewelry carat mismatch (14k ≠ 18k)
-• Keyboard key count mismatch (61 ≠ 88 keys)
-• Tyre season mismatch (Winter ≠ All-Season)
-• HL/Cons: Temu has more pack quantity than Amazon
+═══ ALPHABET/TEXT PRODUCTS ═══
+Any letter → any letter (same font, same case) = Exact IF. Different font or case = Design Inexact.
+Greeting cards: different text/message = Design Inexact.
 
-═══ RESPONSE FORMAT ═══
-Respond ONLY with a single valid JSON object. No text before or after. No markdown code fences.
+═══ DESIGN/PATTERN ═══
+Font change / word change / layout change = Design Inexact. Closure mechanism different (button vs buckle) = Design Inexact.
+Pattern type change (stripes→floral, plain→patterned) = Design Inexact.
 
-{"status":"IF","matchType":"Exact","confidence":88,"inexactType":null,"reasoning":"Clear 1-2 sentence explanation of the decision.","attributes":[{"name":"Product Type","temu":"...","amazon":"...","match":"ok"},{"name":"Brand","temu":"...","amazon":"...","match":"ok"},{"name":"Color","temu":"...","amazon":"...","match":"ok"},{"name":"Material","temu":"...","amazon":"...","match":"ok"},{"name":"Size","temu":"...","amazon":"...","match":"ok"},{"name":"Pack","temu":"...","amazon":"...","match":"ok"}]}
+═══ PHONE LOCK STATUS ═══
+Locked↔Unlocked (any combination) = INF. Different carrier lock = INF. No exceptions.
 
-match field values: "ok" | "inexact" | "fail" | "na"`;
+═══ DATA SOURCE PRIORITY ═══
+Product Description > Images > BQT. If description conflicts with image, follow description.
+BQT (Browser Query Tool) = use for ASIN availability only, not for attribute decisions.
+
+═══ UNIVERSAL PRODUCTS ═══
+If product is labelled "universal fit" or "compatible with all" → map to universal/generic Amazon equivalent.
+
+═══ ALWAYS INF ═══
+Model number mismatch | Refurbished≠New | Gender mismatch | Full vs half sleeve | Ankle vs toe socks | Voltage mismatch | Phone locked≠unlocked | Toy age group mismatch | Jewelry carat mismatch | Keyboard key count mismatch | Tyre season mismatch | Temu has more pack than Amazon (HL/Cons)
+
+═══ GOLDEN RULE ═══
+Don't match what looks similar. Match what behaves the same. When confused: "Is the core product experience the same?" YES→IF. NO→INF.
+
+Respond ONLY with this JSON structure:
+{"status":"IF","matchType":"Exact","confidence":88,"inexactType":null,"reasoning":"Clear 1-2 sentence explanation.","attributes":[{"name":"Product Type","temu":"...","amazon":"...","match":"ok"},{"name":"Brand","temu":"...","amazon":"...","match":"ok"},{"name":"Color","temu":"...","amazon":"...","match":"ok"},{"name":"Material","temu":"...","amazon":"...","match":"ok"},{"name":"Size","temu":"...","amazon":"...","match":"ok"},{"name":"Pack","temu":"...","amazon":"...","match":"ok"}]}
+match values: ok | inexact | fail | na`;
 
 // ══════════════════════════════════════════
-//  OPENROUTER API CALL (streaming SSE)
+//  PING GROQ (connectivity test)
 // ══════════════════════════════════════════
-async function callOpenRouter(temu, amz, onToken) {
-  const userMsg = `Analyze this Temu→Amazon product mapping:\n\nTEMU PRODUCT:\n${temu}\n\n${amz ? 'AMAZON PRODUCT:\n' + amz : 'No Amazon product provided — suggest most likely mapping status from Temu data alone.'}`;
+async function pingGemini() {   // keep same name so HTML onclick works
+  const dot = document.getElementById('ai-status-dot');
+  const txt = document.getElementById('ai-status-txt');
+  dot.style.background = 'var(--gold)';
+  txt.textContent = 'Testing Groq…';
+  try {
+    const resp = await fetch(GROQ_URL, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+        'Authorization': 'Bearer ' + GROQ_KEY
+      },
+      body: JSON.stringify({
+        model: GROQ_MODEL,
+        messages: [
+          { role: 'user', content: 'Reply with only this exact text: {"ok":true}' }
+        ],
+        max_tokens: 20,
+        temperature: 0
+      })
+    });
+    const data = await resp.json();
+    if (!resp.ok) {
+      dot.style.background = 'var(--rlt)';
+      txt.textContent = `Error ${resp.status}: ${data?.error?.message || 'unknown'}`;
+      return;
+    }
+    const reply = data?.choices?.[0]?.message?.content || '';
+    if (reply) {
+      dot.style.background = 'var(--glt)';
+      txt.textContent = `✓ Groq reachable — ${GROQ_MODEL} responding`;
+      showToast('✓ Groq AI is working!', 'ok');
+    } else {
+      dot.style.background = 'var(--gold)';
+      txt.textContent = 'Reachable but got empty reply';
+    }
+  } catch(e) {
+    dot.style.background = 'var(--rlt)';
+    txt.textContent = `Network fail: ${e.message}`;
+    showToast('Network error — cannot reach Groq', 'err');
+  }
+}
 
-  const resp = await fetch(OR_URL, {
-    method: 'POST',
-    headers: {
-      'Content-Type': 'application/json',
-      'Authorization': 'Bearer ' + OR_KEY,
-      'HTTP-Referer': 'https://mapflow-notes.app',
-      'X-Title': 'MapFlow Notes + AI'
-    },
-    body: JSON.stringify({
-      model: OR_MODEL,
-      stream: true,
-      messages: [
-        { role: 'system', content: SYSTEM },
-        { role: 'user', content: userMsg }
-      ]
-    })
-  });
+// ══════════════════════════════════════════
+//  GROQ API CALL  (streaming SSE — openai-compatible)
+// ══════════════════════════════════════════
+async function callGemini(temu, amz, onToken) {   // keep same name so caller works
+  const userMsg =
+    `Analyze this Temu→Amazon product mapping:\n\nTEMU PRODUCT:\n${temu}\n\n` +
+    (amz ? `AMAZON PRODUCT:\n${amz}` : 'No Amazon product provided — suggest most likely mapping status from Temu data alone.');
 
-  if (!resp.ok) {
-    const err = await resp.text();
-    throw new Error(`OpenRouter ${resp.status}: ${err.slice(0,200)}`);
+  let resp;
+  try {
+    resp = await fetch(GROQ_URL, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+        'Authorization': 'Bearer ' + GROQ_KEY
+      },
+      body: JSON.stringify({
+        model: GROQ_MODEL,
+        messages: [
+          { role: 'system', content: SYSTEM },
+          { role: 'user',   content: userMsg }
+        ],
+        max_tokens: 1200,
+        temperature: 0.1,
+        stream: true        // Groq supports SSE streaming natively
+      })
+    });
+  } catch(netErr) {
+    throw new Error('Network error — cannot reach Groq: ' + netErr.message);
   }
 
-  const reader = resp.body.getReader();
+  if (!resp.ok) {
+    let errMsg = `HTTP ${resp.status}`;
+    try { const e = await resp.json(); errMsg = e?.error?.message || errMsg; } catch {}
+    throw new Error('Groq API: ' + errMsg);
+  }
+
+  // ── Parse SSE stream ──
+  const reader  = resp.body.getReader();
   const decoder = new TextDecoder();
   let full = '', buf = '';
 
@@ -1348,23 +1814,33 @@ async function callOpenRouter(temu, amz, onToken) {
     if (done) break;
     buf += decoder.decode(value, { stream: true });
     const lines = buf.split('\n');
-    buf = lines.pop();
+    buf = lines.pop();                           // keep incomplete line
     for (const line of lines) {
       const trimmed = line.trim();
       if (!trimmed.startsWith('data:')) continue;
-      const data = trimmed.slice(5).trim();
-      if (data === '[DONE]') break;
+      const payload = trimmed.slice(5).trim();
+      if (!payload || payload === '[DONE]') continue;
       try {
-        const parsed = JSON.parse(data);
-        const tok = parsed.choices?.[0]?.delta?.content || '';
+        const chunk = JSON.parse(payload);
+        const tok   = chunk?.choices?.[0]?.delta?.content || '';
         if (tok) { full += tok; onToken(tok); }
-      } catch { /* skip malformed chunks */ }
+      } catch { /* skip malformed SSE chunks */ }
     }
   }
 
-  const start = full.indexOf('{'), end = full.lastIndexOf('}');
-  if (start === -1 || end === -1) throw new Error('No JSON found in Claude response');
-  return JSON.parse(full.slice(start, end + 1));
+  if (!full.trim()) throw new Error('Groq returned an empty response');
+
+  // ── Extract JSON robustly ──
+  const clean = full.replace(/```json\s*/gi, '').replace(/```\s*/g, '').trim();
+  const start = clean.indexOf('{');
+  const end   = clean.lastIndexOf('}');
+  if (start === -1 || end === -1)
+    throw new Error('No JSON found in Groq response. Raw: ' + clean.slice(0, 150));
+  try {
+    return JSON.parse(clean.slice(start, end + 1));
+  } catch(jsonErr) {
+    throw new Error('JSON parse error: ' + jsonErr.message + ' | Raw: ' + clean.slice(start, start + 150));
+  }
 }
 
 // ══════════════════════════════════════════
@@ -1546,7 +2022,7 @@ window.addEventListener('DOMContentLoaded', () => {
   pg.classList.add('act');
   const label = NAV.flatMap(n => [n, ...(n.ch||[])]).find(n => n.id === currentPage)?.label || currentPage;
   document.getElementById('breadcrumb').textContent = label;
-  document.getElementById('theme-btn').textContent = document.documentElement.getAttribute('data-theme') === 'dark' ? '🌙' : '☀️';
+  document.getElementById('theme-btn').textContent = {dark:'🌙', light:'☀️', pitch:'⚫'}[document.documentElement.getAttribute('data-theme')] || '🌙';
   // Analyze button idle pulse
   document.getElementById('analyze-btn').classList.add('idle');
 });
