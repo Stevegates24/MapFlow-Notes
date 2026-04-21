@@ -117,7 +117,7 @@ body{font-family:var(--fn);background:var(--bg);color:var(--tx);font-size:14px;-
   width:240px;flex-shrink:0;
   background:var(--b2);border-right:1px solid var(--bd);
   display:flex;flex-direction:column;overflow:hidden;
-  transition:width .3s cubic-bezier(.4,0,.2,1),opacity .25s;
+  transition:width .42s cubic-bezier(.25,.8,.25,1),opacity .32s ease;
 }
 .sidebar.collapsed{width:0;opacity:0;}
 .sb-top{padding:10px 8px 8px;border-bottom:1px solid var(--bd);flex-shrink:0;}
@@ -127,7 +127,7 @@ body{font-family:var(--fn);background:var(--bg);color:var(--tx);font-size:14px;-
   display:flex;align-items:center;gap:8px;
   padding:6.5px 10px;border-radius:8px;margin:1px 6px;
   cursor:pointer;font-size:12px;font-weight:500;color:var(--mlt);
-  transition:background .12s,color .12s,transform .12s;position:relative;
+  transition:background .18s ease,color .18s ease,transform .22s cubic-bezier(.25,.8,.25,1);position:relative;
 }
 .ni:hover{background:var(--b4);color:var(--tx);transform:translateX(2px);}
 .ni.act{background:var(--or-a10);color:var(--or);font-weight:700;box-shadow:inset 0 0 20px var(--or-a06);}
@@ -137,7 +137,7 @@ body{font-family:var(--fn);background:var(--bg);color:var(--tx);font-size:14px;-
 .nsub .ni{padding:5.5px 8px 5.5px 22px;font-size:11.5px;}
 
 /* ─── NOTES MAIN ─── */
-.notes-main{flex:1;overflow-y:auto;min-width:0;position:relative;display:flex;flex-direction:column;align-items:center;transition:margin-right .28s cubic-bezier(.4,0,.2,1);}
+.notes-main{flex:1;overflow-y:auto;min-width:0;position:relative;display:flex;flex-direction:column;align-items:center;transition:margin-right .42s cubic-bezier(.25,.8,.25,1);}
 .notes-main.ai-open{margin-right:420px;}
 .np{display:block;padding:40px 32px 24px;max-width:920px;width:100%;}
 .np:first-child{padding-top:36px;}
@@ -153,7 +153,7 @@ body{font-family:var(--fn);background:var(--bg);color:var(--tx);font-size:14px;-
 .card{
   background:var(--b2);border:1px solid var(--bd);border-radius:16px;
   padding:20px 22px;margin-bottom:14px;
-  transition:border-color .22s,box-shadow .22s,transform .22s;
+  transition:border-color .32s ease,box-shadow .32s ease,transform .38s cubic-bezier(.25,.8,.25,1);
   position:relative;overflow:hidden;
 }
 .card::before{
@@ -234,7 +234,7 @@ code{background:var(--b4);border:1px solid var(--bd2);border-radius:5px;padding:
 .ncard{
   background:var(--b2);border:1px solid var(--bd);border-radius:12px;
   padding:16px;cursor:pointer;
-  transition:all .22s cubic-bezier(.34,1.4,.64,1);
+  transition:border-color .32s ease,background .32s ease,transform .38s cubic-bezier(.25,.8,.25,1),box-shadow .38s ease;
 }
 .ncard:hover{border-color:var(--or-a25);background:var(--b3);transform:translateY(-3px) scale(1.01);box-shadow:0 12px 36px rgba(0,0,0,.3),0 0 0 1px var(--or-a15);}
 .ncard:active{transform:scale(.97);}
@@ -248,7 +248,7 @@ code{background:var(--b4);border:1px solid var(--bd2);border-radius:5px;padding:
   position:fixed;right:0;top:54px;bottom:0;width:420px;
   background:var(--b2);border-left:1px solid var(--bd2);
   z-index:150;transform:translateX(100%);
-  transition:transform .28s cubic-bezier(.4,0,.2,1);
+  transition:transform .42s cubic-bezier(.25,.8,.25,1);
   display:flex;flex-direction:column;overflow:hidden;
 }
 .ai-panel.open{transform:translateX(0);}
@@ -353,9 +353,9 @@ code{background:var(--b4);border:1px solid var(--bd2);border-radius:5px;padding:
 
 /* ─── SIDEBAR SMOOTH SCROLL ─── */
 .sb-nav{scroll-behavior:smooth;-webkit-overflow-scrolling:touch;}
-/* Physics bounce on active nav item */
-@keyframes navBounce{0%{transform:translateX(0)}30%{transform:translateX(6px)}60%{transform:translateX(-2px)}80%{transform:translateX(3px)}100%{transform:translateX(0)}}
-.ni.bounce{animation:navBounce .45s cubic-bezier(.34,1.56,.64,1);}
+/* Nav active highlight — subtle fade-in slide, no bounce */
+@keyframes navBounce{0%{opacity:.4;transform:translateX(-4px)}100%{opacity:1;transform:translateX(0)}}
+.ni.bounce{animation:navBounce .28s cubic-bezier(.25,.8,.25,1);}
 /* Continuous scroll mode — slide animations removed */
 
 /* ─── READING PROGRESS BAR ─── */
@@ -367,7 +367,7 @@ code{background:var(--b4);border:1px solid var(--bd2);border-radius:5px;padding:
   position:fixed;left:0;top:54px;bottom:0;width:300px;
   background:var(--b2);border-right:1px solid var(--bd2);
   z-index:190;transform:translateX(-100%);
-  transition:transform .28s cubic-bezier(.4,0,.2,1);
+  transition:transform .42s cubic-bezier(.25,.8,.25,1);
   display:flex;flex-direction:column;overflow:hidden;
   box-shadow:4px 0 40px rgba(0,0,0,.4);
 }
@@ -391,10 +391,26 @@ code{background:var(--b4);border:1px solid var(--bd2);border-radius:5px;padding:
 .sp-brand{font-size:12px;font-weight:800;text-align:center;margin-bottom:3px;}
 /* Theme toggle in settings */
 .theme-chips{display:flex;gap:5px;padding:6px 16px 10px;}
-.theme-chip{flex:1;height:28px;border-radius:7px;border:1px solid var(--bd2);background:var(--b4);color:var(--mt);font-family:var(--fn);font-size:11px;font-weight:700;cursor:pointer;transition:all .15s;}
+.theme-chip{flex:1;height:28px;border-radius:7px;border:1px solid var(--bd2);background:var(--b4);color:var(--mt);font-family:var(--fn);font-size:11px;font-weight:700;cursor:pointer;transition:all .18s ease;}
+.theme-chip:hover{background:var(--b5);color:var(--tx);}
 .theme-chip.act{background:var(--or-a12);border-color:var(--or-a25);color:var(--or);}
+/* Accent swatches */
+.accent-swatches{display:flex;gap:7px;flex-wrap:wrap;}
+.accent-sw{width:24px;height:24px;border-radius:6px;cursor:pointer;border:2px solid transparent;transition:transform .18s ease,box-shadow .18s ease;}
+.accent-sw:hover{transform:scale(1.18);}
+.accent-sw.active{border-color:var(--tx);box-shadow:0 0 0 1px var(--tx),0 2px 8px rgba(0,0,0,.3);}
+/* Toggle switch */
+.sp-toggle{position:relative;width:36px;height:20px;flex-shrink:0;display:block;}
+.sp-toggle input{opacity:0;width:0;height:0;position:absolute;}
+.sp-toggle-track{position:absolute;inset:0;border-radius:10px;background:var(--b5);border:1px solid var(--bd2);cursor:pointer;transition:background .2s ease;}
+.sp-toggle input:checked + .sp-toggle-track{background:var(--or);border-color:var(--or);}
+.sp-toggle-thumb{position:absolute;top:3px;left:3px;width:12px;height:12px;border-radius:50%;background:#fff;transition:left .2s ease;pointer-events:none;box-shadow:0 1px 3px rgba(0,0,0,.3);}
+.sp-toggle input:checked ~ .sp-toggle-thumb{left:19px;}
+/* Blob slider */
+.blob-slider{-webkit-appearance:none;appearance:none;width:100%;height:3px;border-radius:3px;background:var(--b5);border:1px solid var(--bd2);outline:none;cursor:pointer;}
+.blob-slider::-webkit-slider-thumb{-webkit-appearance:none;width:14px;height:14px;border-radius:50%;background:var(--or);cursor:pointer;border:2px solid var(--bg);box-shadow:0 1px 4px rgba(0,0,0,.3);}
 /* Settings overlay */
-.sp-ovl{position:fixed;inset:0;z-index:189;background:rgba(0,0,0,.4);opacity:0;pointer-events:none;transition:opacity .25s;}
+.sp-ovl{position:fixed;inset:0;z-index:189;background:rgba(0,0,0,.45);backdrop-filter:blur(4px);-webkit-backdrop-filter:blur(4px);opacity:0;pointer-events:none;transition:opacity .3s ease;}
 .sp-ovl.show{opacity:1;pointer-events:all;}
 
 /* ─── WELCOME SCREEN ─── */
@@ -464,7 +480,7 @@ code{background:var(--b4);border:1px solid var(--bd2);border-radius:5px;padding:
   </div>
   <div class="hright">
     <button class="hbtn" onclick="toggleSearch()" title="Search notes (/)">🔍</button>
-    <button class="hbtn" id="theme-btn" onclick="cycleThem()">🌙</button>
+    <button class="hbtn" id="theme-btn" onclick="cycleTheme()">🌙</button>
     <button class="hbtn" onclick="openSettings()" title="Settings & Links">⚙️</button>
     <button class="hbtn or" id="ai-toggle" onclick="toggleAI()">🤖 AI Assistant</button>
   </div>
@@ -512,7 +528,7 @@ code{background:var(--b4);border:1px solid var(--bd2);border-radius:5px;padding:
     <button class="wl-btn" id="wl-start-btn" onclick="startApp()">
       <span>🚀</span> Let's Start Learning
     </button>
-    <div class="wl-skip" onclick="startApp()">Skip intro →</div>
+    //<div class="wl-skip" onclick="startApp()">Skip intro →</div>
   </div>
 </div>
 
@@ -521,34 +537,62 @@ code{background:var(--b4);border:1px solid var(--bd2);border-radius:5px;padding:
 <div class="settings-panel" id="settings-panel">
   <div class="sp-hdr">
     <div class="sp-hdr-ico">⚙️</div>
-    <div class="sp-hdr-title">Settings & Links</div>
+    <div class="sp-hdr-title">Settings</div>
     <button class="sp-close" onclick="closeSettings()">✕</button>
   </div>
   <div class="sp-body">
+
     <!-- APPEARANCE -->
     <div class="sp-section">
       <div class="sp-sec-title">Appearance</div>
-      <div class="theme-chips">
-        <button class="theme-chip" id="tc-dark" onclick="setTheme('dark')">🌙 Dark</button>
-        <button class="theme-chip" id="tc-light" onclick="setTheme('light')">☀️ Light</button>
-        <button class="theme-chip" id="tc-pitch" onclick="setTheme('pitch')">⚫ Pitch</button>
+      <div class="sp-item" style="cursor:default;flex-wrap:wrap;gap:8px">
+        <span style="font-size:12px;font-weight:600;color:var(--tx);flex-shrink:0">Theme</span>
+        <div class="theme-chips" style="padding:0;flex:1;min-width:160px">
+          <button class="theme-chip" id="tc-dark"  onclick="setTheme('dark')">🌙 Dark</button>
+          <button class="theme-chip" id="tc-light" onclick="setTheme('light')">☀️ Light</button>
+          <button class="theme-chip" id="tc-pitch" onclick="setTheme('pitch')">⚫ Pitch</button>
+        </div>
+      </div>
+      <div class="sp-item" style="cursor:default;flex-wrap:wrap;gap:10px">
+        <div style="flex:1">
+          <span style="font-size:12px;font-weight:600;color:var(--tx);display:block;margin-bottom:8px">Accent Color</span>
+          <div class="accent-swatches" id="accent-swatches"></div>
+        </div>
       </div>
     </div>
+
+    <!-- AMBIENT GLOW -->
+    <div class="sp-section">
+      <div class="sp-sec-title">Ambient Glow</div>
+      <div class="sp-item" style="cursor:default">
+        <span class="sp-label">Enable Glow <span class="sp-sub">Mouse-tracking background light</span></span>
+        <label class="sp-toggle">
+          <input type="checkbox" id="blob-toggle" onchange="toggleBlob(this.checked)" checked/>
+          <div class="sp-toggle-track"></div>
+          <div class="sp-toggle-thumb"></div>
+        </label>
+      </div>
+      <div class="sp-item" id="blob-intensity-row" style="cursor:default">
+        <span class="sp-label">Intensity <span class="sp-sub" id="blob-pct-label">85%</span></span>
+        <input type="range" class="blob-slider" id="blob-slider" min="0" max="100" value="85" oninput="setBlobIntensity(this.value)" style="width:90px"/>
+      </div>
+    </div>
+
     <!-- TOOLS -->
     <div class="sp-section">
       <div class="sp-sec-title">MapFlow Tools</div>
-      <div class="sp-item" onclick="window.open('https://stevegates24.github.io/MapFlow-Notes/','_blank')">
-        <span class="sp-icon">📘</span>
-        <span class="sp-label">MapFlow Notes <span class="sp-sub">Published web version · stevegates24.github.io</span></span>
+      <div class="sp-item" onclick="window.open('https://stevegates24.github.io/Temu-Mapping-Simplifier/','_blank')">
+        <span class="sp-icon">⇌</span>
+        <span class="sp-label">MapFlow Tool <span class="sp-sub">Temu → Amazon mapper · stevegates24.github.io</span></span>
         <span class="sp-arr">↗</span>
       </div>
-     
-        <div class="sp-item" onclick="window.open('https://stevegates24.github.io/Temu-Mapping-Simplifier/','_blank')">
-        <span class="sp-icon">📘</span>
-        <span class="sp-label">MapFlow Tool <span class="sp-sub">Published web version · stevegates24.github.io</span></span>
+      <div class="sp-item" onclick="window.open('https://stevegates24.github.io/MapFlow-Notes/','_blank')">
+        <span class="sp-icon">📖</span>
+        <span class="sp-label">MapFlow Notes <span class="sp-sub">This guide · Published web version</span></span>
         <span class="sp-arr">↗</span>
       </div>
     </div>
+
     <!-- LEARN -->
     <div class="sp-section">
       <div class="sp-sec-title">Learning</div>
@@ -565,6 +609,7 @@ code{background:var(--b4);border:1px solid var(--bd2);border-radius:5px;padding:
         <span class="sp-label">Pro Mapper Thinking <span class="sp-sub">Advanced speed techniques</span></span>
       </div>
     </div>
+
     <!-- RESOURCES -->
     <div class="sp-section">
       <div class="sp-sec-title">Resources</div>
@@ -578,6 +623,7 @@ code{background:var(--b4);border:1px solid var(--bd2);border-radius:5px;padding:
         <span class="sp-label">Show Welcome Screen <span class="sp-sub">Re-play the intro</span></span>
       </div>
     </div>
+
     <!-- ABOUT -->
     <div class="sp-section">
       <div class="sp-sec-title">About</div>
@@ -587,10 +633,11 @@ code{background:var(--b4);border:1px solid var(--bd2);border-radius:5px;padding:
         <span class="sp-arr">↗</span>
       </div>
     </div>
+
   </div>
   <div class="sp-footer">
-    <div class="sp-brand">MapFlow Notes + AI</div>
-    <div class="sp-version">v7.0 · by Steve Gates · CMT Mapping Guide</div>
+    <div class="sp-brand">MapFlow <span style="color:var(--or)">Notes</span> + AI</div>
+    <div class="sp-version">v2.0 · by Steve Gates · CMT Mapping Guide</div>
   </div>
 </div>
 
@@ -1711,103 +1758,128 @@ function buildPage(id) {
 }
 
 // ══════════════════════════════════════════
-//  SPRING PHYSICS SCROLL
+//  SPRING PHYSICS SCROLL — real spring sim
 // ══════════════════════════════════════════
-function springScrollTo(container, targetY, duration) {
-  const start = container.scrollTop;
-  const diff = targetY - start;
-  if (Math.abs(diff) < 2) return;
+// ══════════════════════════════════════════
+//  SMOOTH SCROLL — critically damped, no bounce
+// ══════════════════════════════════════════
+// We use a simple easeOutQuart curve — silky smooth deceleration,
+// no spring overshoot at all (overshoot was causing the jitter +
+// wrong-section highlight during scroll).
+function smoothScrollTo(container, targetY, onDone) {
+  if (container._scrollRaf) cancelAnimationFrame(container._scrollRaf);
+  const start    = container.scrollTop;
+  const dist     = targetY - start;
+  if (Math.abs(dist) < 1) { if (onDone) onDone(); return; }
+  const duration = Math.min(520, Math.max(260, Math.abs(dist) * 0.35)); // scale with distance
   const startTime = performance.now();
 
-  // Elastic ease-out — gives the "spring past then settle" physics feel
-  function easeOutElastic(t) {
-    if (t <= 0) return 0;
-    if (t >= 1) return 1;
-    const c4 = (2 * Math.PI) / 2.8;
-    return 1 - Math.pow(2, -9 * t) * Math.cos(t * 10 * c4);
+  function easeOutQuart(t) {
+    return 1 - Math.pow(1 - t, 4);
   }
 
   function step(now) {
-    const elapsed = Math.min((now - startTime) / duration, 1);
-    container.scrollTop = start + diff * easeOutElastic(elapsed);
-    if (elapsed < 1) requestAnimationFrame(step);
-  }
-  requestAnimationFrame(step);
-}
-
-// ══════════════════════════════════════════
-//  INTERSECTION OBSERVER — auto-update nav as you scroll
-// ══════════════════════════════════════════
-let scrollObserver = null;
-function setupScrollObserver() {
-  const main = document.getElementById('notes-main');
-  const allIds = getAllNavIds().filter(id => NOTES[id]);
-
-  scrollObserver = new IntersectionObserver((entries) => {
-    // Find the entry with highest intersection that is actually visible
-    let best = null, bestRatio = 0;
-    entries.forEach(entry => {
-      if (entry.isIntersecting && entry.intersectionRatio > bestRatio) {
-        bestRatio = entry.intersectionRatio;
-        best = entry;
-      }
-    });
-    if (best) {
-      const id = best.target.id.replace('page-', '');
-      if (id && id !== currentPage) updateActiveNav(id);
+    const t = Math.min((now - startTime) / duration, 1);
+    container.scrollTop = start + dist * easeOutQuart(t);
+    if (t < 1) {
+      container._scrollRaf = requestAnimationFrame(step);
+    } else {
+      container.scrollTop = targetY;
+      container._scrollRaf = null;
+      if (onDone) onDone();
     }
-  }, {
-    root: main,
-    // Trigger when section enters the top 55% of the viewport
-    rootMargin: '-5% 0px -40% 0px',
-    threshold: [0, 0.05, 0.1, 0.2, 0.35]
-  });
-
-  allIds.forEach(id => {
-    const el = document.getElementById('page-' + id);
-    if (el) scrollObserver.observe(el);
-  });
+  }
+  container._scrollRaf = requestAnimationFrame(step);
 }
 
-function updateActiveNav(id) {
+// ══════════════════════════════════════════
+//  SCROLL-BASED NAV SYNC
+//  Replaces IntersectionObserver — far more
+//  reliable for a continuous-scroll layout
+//  where multiple sections are visible at once.
+//  Logic: whichever section's top is closest
+//  to (but not past) 30% down the viewport
+//  is the "active" one.
+// ══════════════════════════════════════════
+let scrollObserver  = null; // kept as null — no longer used
+let _isProgrammatic = false;
+let _scrollSyncRaf  = null;
+
+function setupScrollObserver() {
+  // Attach a scroll listener on notes-main instead of IntersectionObserver
+  const main = document.getElementById('notes-main');
+  if (!main || main._scrollSyncBound) return;
+  main._scrollSyncBound = true;
+  main.addEventListener('scroll', () => {
+    if (_isProgrammatic) return;
+    if (_scrollSyncRaf) return; // throttle to one rAF per scroll event
+    _scrollSyncRaf = requestAnimationFrame(() => {
+      _scrollSyncRaf = null;
+      syncNavToScroll(main);
+    });
+  }, { passive: true });
+}
+
+function syncNavToScroll(main) {
+  const allIds = getAllNavIds().filter(id => NOTES[id]);
+  // The "trigger line" is 28% down from the top of the scroll container
+  const triggerY = main.scrollTop + main.clientHeight * 0.28;
+  // Find the last section whose top is above the trigger line
+  let activeId = allIds[0];
+  for (const id of allIds) {
+    const el = document.getElementById('page-' + id);
+    if (!el) continue;
+    if (el.offsetTop <= triggerY) activeId = id;
+    else break;
+  }
+  if (activeId && activeId !== currentPage) {
+    updateActiveNav(activeId, false); // no bounce on scroll
+  }
+}
+
+function updateActiveNav(id, withBounce = true) {
   if (!NOTES[id]) return;
-  // Deactivate old nav item
   const oldNi = document.getElementById('ni-' + currentPage);
   if (oldNi) oldNi.classList.remove('act');
   currentPage = id;
   localStorage.setItem('mfn_page', id);
-  // Activate new nav item with bounce
   const ni = document.getElementById('ni-' + id);
   if (ni) {
     ni.classList.add('act');
-    ni.classList.remove('bounce');
-    void ni.offsetWidth;
-    ni.classList.add('bounce');
-    ni.addEventListener('animationend', () => ni.classList.remove('bounce'), {once:true});
+    if (withBounce) {
+      ni.classList.remove('bounce');
+      void ni.offsetWidth;
+      ni.classList.add('bounce');
+      ni.addEventListener('animationend', () => ni.classList.remove('bounce'), {once:true});
+    }
     ni.scrollIntoView({block:'nearest', behavior:'smooth'});
   }
-  // Breadcrumb fade
+  // Breadcrumb crossfade
   const label = NAV.flatMap(n => [n, ...(n.ch||[])]).find(n => n.id === id)?.label || id;
   const bc = document.getElementById('breadcrumb');
+  bc.style.transition = 'opacity .12s ease';
   bc.style.opacity = '0';
-  setTimeout(() => { bc.textContent = label; bc.style.transition = 'opacity .18s'; bc.style.opacity = '1'; }, 110);
+  setTimeout(() => { bc.textContent = label; bc.style.opacity = '1'; }, 120);
   updateProgress();
 }
 
 function navTo(id) {
   if (!NOTES[id]) return;
-  const pg = document.getElementById('page-' + id);
-  if (!pg) return;
+  buildPage(id);
+  const pg   = document.getElementById('page-' + id);
   const main = document.getElementById('notes-main');
-  // Temporarily disconnect the scroll observer so it doesn't fire
-  // spuriously during the programmatic scroll
-  if (scrollObserver) scrollObserver.disconnect();
-  // Spring-physics scroll to the section
-  springScrollTo(main, pg.offsetTop - 10, 680);
-  // Manually update nav immediately for snappiness
-  updateActiveNav(id);
-  // Reconnect observer after scroll settles
-  setTimeout(() => { if (scrollObserver) setupScrollObserver(); }, 800);
+  if (!pg) return;
+
+  // Block scroll listener while we're animating
+  _isProgrammatic = true;
+
+  // Highlight nav immediately
+  updateActiveNav(id, true);
+
+  // Smooth scroll — unlock listener only after animation ends
+  smoothScrollTo(main, Math.max(0, pg.offsetTop - 10), () => {
+    setTimeout(() => { _isProgrammatic = false; }, 80);
+  });
 }
 
 // ══════════════════════════════════════════
@@ -2317,21 +2389,91 @@ function showToast(msg, type='') {
 }
 
 // ══════════════════════════════════════════
-//  THEME
+//  THEME + ACCENT SYSTEM (MapFlow-identical)
 // ══════════════════════════════════════════
 const THEMES = ['dark','light','pitch'];
-function cycleThem() {
-  const cur = document.documentElement.getAttribute('data-theme') || 'dark';
-  const next = THEMES[(THEMES.indexOf(cur) + 1) % THEMES.length];
-  setTheme(next);
+const THEME_ICONS = {dark:'🌙 Dark', light:'☀️ Light', pitch:'⚫ Pitch'};
+
+const ACCENTS = [
+  {id:'orange', label:'Orange (default)', h:'#FF6200', dk:'#CC4E00', lt:'#FF8C3A'},
+  {id:'purple', label:'Purple',           h:'#7C3AED', dk:'#6D28D9', lt:'#A78BFA'},
+  {id:'blue',   label:'Blue',             h:'#2563EB', dk:'#1D4ED8', lt:'#60A5FA'},
+  {id:'green',  label:'Green',            h:'#16A34A', dk:'#15803D', lt:'#4ADE80'},
+  {id:'teal',   label:'Teal',             h:'#0D9488', dk:'#0F766E', lt:'#2DD4BF'},
+  {id:'rose',   label:'Rose',             h:'#E11D48', dk:'#BE123C', lt:'#FB7185'},
+];
+
+let currentAccent   = localStorage.getItem('mfn_accent') || 'orange';
+let blobEnabled     = localStorage.getItem('mfn_blob') !== 'false';
+let blobIntensity   = parseInt(localStorage.getItem('mfn_blob_intensity') || '85');
+
+function hexRgb(h){ const x=h.replace('#',''); const n=parseInt(x,16); return[(n>>16)&255,(n>>8)&255,n&255]; }
+
+function applyAccent(id) {
+  const a = ACCENTS.find(x => x.id === id) || ACCENTS[0];
+  const root = document.documentElement;
+  root.style.setProperty('--or',  a.h);
+  root.style.setProperty('--odk', a.dk);
+  root.style.setProperty('--olt', a.lt);
+  const [r,g,b] = hexRgb(a.h);
+  const rv = `${r},${g},${b}`;
+  const alphas = {a04:.04,a06:.06,a07:.07,a08:.08,a10:.1,a12:.12,a18:.18,a20:.2,a25:.25,a30:.3,a40:.4,a50:.5};
+  Object.entries(alphas).forEach(([k,v]) => root.style.setProperty(`--or-${k}`, `rgba(${rv},${v})`));
+  // Blob colour follows accent
+  const theme = root.getAttribute('data-theme') || 'dark';
+  const blobA = theme === 'light' ? 0.22 : theme === 'pitch' ? 0.14 : 0.18;
+  root.style.setProperty('--blob1', `rgba(${rv},${blobA})`);
+  root.style.setProperty('--blob2', `rgba(${rv},0.07)`);
+  currentAccent = id;
+  localStorage.setItem('mfn_accent', id);
+  document.querySelectorAll('.accent-sw').forEach(sw => sw.classList.toggle('active', sw.dataset.accent === id));
 }
+
+function buildAccentSwatches() {
+  const el = document.getElementById('accent-swatches');
+  if (!el) return;
+  el.innerHTML = ACCENTS.map(a =>
+    `<div class="accent-sw ${a.id === currentAccent ? 'active' : ''}" data-accent="${a.id}"
+       style="background:${a.h}" title="${a.label}"
+       onclick="applyAccent('${a.id}')"></div>`
+  ).join('');
+}
+
 function setTheme(t) {
   document.documentElement.setAttribute('data-theme', t);
   localStorage.setItem('mfn_theme', t);
-  document.getElementById('theme-btn').textContent = {dark:'🌙',light:'☀️',pitch:'⚫'}[t]||'🌙';
+  // Sync header theme button
+  const btn = document.getElementById('theme-btn');
+  if (btn) btn.textContent = {dark:'🌙', light:'☀️', pitch:'⚫'}[t] || '🌙';
+  // Sync chips
   document.querySelectorAll('.theme-chip').forEach(c => c.classList.remove('act'));
-  const tc = document.getElementById('tc-'+t);
+  const tc = document.getElementById('tc-' + t);
   if (tc) tc.classList.add('act');
+  // Re-apply accent so blob alpha matches new theme
+  applyAccent(currentAccent);
+}
+
+function cycleTheme() {
+  const cur = document.documentElement.getAttribute('data-theme') || 'dark';
+  setTheme(THEMES[(THEMES.indexOf(cur) + 1) % THEMES.length]);
+}
+
+function toggleBlob(on) {
+  blobEnabled = on;
+  localStorage.setItem('mfn_blob', on ? 'true' : 'false');
+  const b = document.getElementById('blob');
+  if (b) b.style.opacity = on ? String(blobIntensity / 100) : '0';
+  const row = document.getElementById('blob-intensity-row');
+  if (row) row.style.opacity = on ? '1' : '.38';
+}
+
+function setBlobIntensity(val) {
+  blobIntensity = parseInt(val);
+  localStorage.setItem('mfn_blob_intensity', val);
+  const b = document.getElementById('blob');
+  if (b && blobEnabled) b.style.opacity = String(blobIntensity / 100);
+  const lbl = document.getElementById('blob-pct-label');
+  if (lbl) lbl.textContent = val + '%';
 }
 
 // ══════════════════════════════════════════
@@ -2340,20 +2482,37 @@ function setTheme(t) {
 function openSettings() {
   document.getElementById('settings-panel').classList.add('open');
   document.getElementById('sp-ovl').classList.add('show');
+  buildAccentSwatches();
   // Sync theme chips
   const t = document.documentElement.getAttribute('data-theme') || 'dark';
   document.querySelectorAll('.theme-chip').forEach(c => c.classList.remove('act'));
-  const tc = document.getElementById('tc-'+t);
+  const tc = document.getElementById('tc-' + t);
   if (tc) tc.classList.add('act');
+  // Sync blob toggle + slider
+  const bt = document.getElementById('blob-toggle');
+  if (bt) bt.checked = blobEnabled;
+  const bs = document.getElementById('blob-slider');
+  if (bs) bs.value = blobIntensity;
+  const lbl = document.getElementById('blob-pct-label');
+  if (lbl) lbl.textContent = blobIntensity + '%';
+  const row = document.getElementById('blob-intensity-row');
+  if (row) row.style.opacity = blobEnabled ? '1' : '.38';
 }
 function closeSettings() {
   document.getElementById('settings-panel').classList.remove('open');
   document.getElementById('sp-ovl').classList.remove('show');
 }
-function openMainMapflow() {
-  // Try to open the index file — if hosted, navigate there; otherwise show toast
-  showToast('Open your MapFlow Tool (index.html) in a separate tab', '');
-}
+
+// Init on load
+(function(){
+  applyAccent(currentAccent);
+  const b = document.getElementById('blob');
+  if (b) b.style.opacity = blobEnabled ? String(blobIntensity / 100) : '0';
+  // Set header theme button text
+  const t = document.documentElement.getAttribute('data-theme') || 'dark';
+  const btn = document.getElementById('theme-btn');
+  if (btn) btn.textContent = {dark:'🌙', light:'☀️', pitch:'⚫'}[t] || '🌙';
+})();
 
 // ══════════════════════════════════════════
 //  READING PROGRESS BAR
