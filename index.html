@@ -359,6 +359,40 @@ code{background:var(--b4);border:1px solid var(--bd2);border-radius:5px;padding:
 .stream-box{background:var(--b3);border:1px solid var(--bd);border-radius:9px;padding:11px;display:none;}
 .stream-box.show{display:block;}
 .stream-lbl{font-size:9px;font-weight:800;text-transform:uppercase;letter-spacing:.08em;color:var(--mt);margin-bottom:7px;}
+/* ─── INLINE IMAGE ATTACHMENT ─── */
+.inline-img-row{margin-top:7px;}
+/* Pill — collapsed state */
+.img-pill{
+  display:flex;align-items:center;gap:7px;
+  height:32px;padding:0 12px;border-radius:8px;
+  border:1px dashed var(--bd2);background:var(--b3);
+  cursor:pointer;transition:all .22s;width:100%;
+}
+.img-pill:hover{border-color:var(--or-a40);background:var(--b4);}
+.img-pill.drag-over{border-color:var(--or);background:var(--or-a06);border-style:solid;}
+.img-pill-icon{font-size:14px;flex-shrink:0;transition:transform .25s cubic-bezier(.34,1.4,.64,1);}
+.img-pill:hover .img-pill-icon{transform:scale(1.2);}
+.img-pill-label{font-size:11.5px;color:var(--mt);font-weight:500;flex:1;}
+/* Thumbnail — shown after image loaded */
+.img-thumb-wrap{
+  display:flex;align-items:center;gap:9px;
+  padding:6px 10px;background:var(--or-a04);
+  border:1px solid var(--or-a20);border-radius:9px;
+  animation:fadeUp .2s ease;position:relative;
+}
+.img-thumb{width:44px;height:44px;object-fit:cover;border-radius:6px;border:1px solid var(--bd2);flex-shrink:0;}
+.img-thumb-info{flex:1;font-size:10.5px;color:var(--mlt);line-height:1.5;}
+.img-clear{width:22px;height:22px;border-radius:50%;background:var(--b4);border:1px solid var(--bd2);color:var(--mt);font-size:11px;cursor:pointer;display:flex;align-items:center;justify-content:center;transition:all .15s;flex-shrink:0;}
+.img-clear:hover{background:var(--rlt);color:#fff;border-color:var(--rlt);}
+/* Vision active indicator in header */
+.vision-indicator{display:none;align-items:center;gap:4px;font-size:9.5px;font-weight:800;color:#A78BFA;background:rgba(139,92,246,0.1);border:1px solid rgba(139,92,246,0.22);border-radius:5px;padding:1px 7px;vertical-align:middle;}
+.vision-indicator.show{display:inline-flex;}
+.img-mode-hint{font-size:10px;color:var(--mt);text-align:center;margin-top:4px;opacity:.8;}
+/* Vision active tag inline with label */
+.img-vision-tag{font-size:9.5px;font-weight:800;color:#A78BFA;background:rgba(139,92,246,0.12);border:1px solid rgba(139,92,246,0.22);border-radius:4px;padding:1px 5px;margin-left:5px;vertical-align:middle;}
+/* img-pill margin */
+.img-pill{margin-top:5px;}
+
 .stream-txt{font-size:12px;color:var(--mlt);line-height:1.75;font-family:var(--mo);white-space:pre-wrap;word-break:break-word;max-height:180px;overflow-y:auto;}
 .cursor{display:inline-block;width:2px;height:12px;background:var(--or);border-radius:1px;vertical-align:text-bottom;animation:blink .7s step-end infinite;}
 @keyframes blink{0%,100%{opacity:1}50%{opacity:0}}
@@ -563,7 +597,7 @@ code{background:var(--b4);border:1px solid var(--bd2);border-radius:5px;padding:
     <button class="wl-btn" id="wl-start-btn" onclick="startApp()">
       <span>🚀</span> Let's Start Learning
     </button>
-    
+    <div class="wl-skip" onclick="startApp()">Skip intro →</div>
   </div>
 </div>
 
@@ -663,28 +697,62 @@ code{background:var(--b4);border:1px solid var(--bd2);border-radius:5px;padding:
     <div class="ai-ico">🤖</div>
     <div style="flex:1">
       <div class="ai-hdr-t">AI Mapping Assistant</div>
-      <div class="ai-hdr-s">Groq — Llama 3.3 70B · <span class="ai-ready">● Ready</span></div>
+      <div class="ai-hdr-s">Groq — Llama 3.3 70B · <span class="ai-ready">● Ready</span> · <span class="vision-indicator" id="vision-indicator">📷 Vision on</span></div>
     </div>
     <button class="ai-close" onclick="toggleAI()">✕</button>
   </div>
   <div class="ai-body" id="ai-body">
+    <!-- 2 tabs: Title | Fields -->
     <div>
       <div class="itabs" id="itabs">
-        <button class="itab act" onclick="setInTab('text',this)">📝 Text</button>
-        <button class="itab" onclick="setInTab('url',this)">🔗 URL</button>
+        <button class="itab act" onclick="setInTab('text',this)">📝 Title</button>
         <button class="itab" onclick="setInTab('fields',this)">🗂 Fields</button>
       </div>
     </div>
 
-    <!-- Text/URL input -->
+    <!-- Title tab: Temu + Amazon, each with optional image -->
     <div id="in-text">
-      <div class="albl">Temu Product</div>
-      <textarea id="ai-temu" class="ata" rows="4" placeholder="Paste Temu product title + description…&#10;&#10;Include: name, color, size, material, brand, pack quantity…"></textarea>
-      <div class="albl" style="margin-top:8px">Amazon Product <span style="color:var(--mt);font-weight:400">(optional, for comparison)</span></div>
-      <textarea id="ai-amz" class="ata" rows="3" placeholder="Amazon product title + specs…"></textarea>
+      <!-- TEMU -->
+      <div class="albl">Temu Product
+        <span id="temu-vision-tag" class="img-vision-tag" style="display:none">📷</span>
+      </div>
+      <textarea id="ai-temu" class="ata" rows="3"
+        placeholder="Paste Temu title, description, or URL…&#10;&#10;Include: name, color, size, material, brand, pack…"></textarea>
+      <div class="img-pill" id="img-pill-temu"
+           ondrop="handleImgDrop(event,'temu')" ondragover="handleImgDragOver(event)" ondragleave="handleImgDragLeave(event)"
+           onclick="triggerImgBrowse('temu')">
+        <input type="file" id="img-file-temu" accept="image/*" onchange="handleImgFile(event,'temu')" style="display:none"/>
+        <span class="img-pill-icon">📎</span>
+        <span class="img-pill-label">Attach Temu image <span style="opacity:.6;font-size:10.5px">(optional)</span></span>
+      </div>
+      <div class="img-thumb-wrap" id="img-thumb-temu" style="display:none">
+        <img id="img-preview-temu" class="img-thumb" alt="Temu product"/>
+        <div class="img-thumb-info" id="img-info-temu"></div>
+        <button class="img-clear" onclick="clearImage(event,'temu')" title="Remove">✕</button>
+      </div>
+
+      <!-- AMAZON -->
+      <div class="albl" style="margin-top:10px">Amazon Product
+        <span style="color:var(--mt);font-weight:400">(optional)</span>
+        <span id="amz-vision-tag" class="img-vision-tag" style="display:none">📷</span>
+      </div>
+      <textarea id="ai-amz" class="ata" rows="3"
+        placeholder="Amazon product title, ASIN, or URL…"></textarea>
+      <div class="img-pill" id="img-pill-amz"
+           ondrop="handleImgDrop(event,'amz')" ondragover="handleImgDragOver(event)" ondragleave="handleImgDragLeave(event)"
+           onclick="triggerImgBrowse('amz')">
+        <input type="file" id="img-file-amz" accept="image/*" onchange="handleImgFile(event,'amz')" style="display:none"/>
+        <span class="img-pill-icon">📎</span>
+        <span class="img-pill-label">Attach Amazon image <span style="opacity:.6;font-size:10.5px">(optional)</span></span>
+      </div>
+      <div class="img-thumb-wrap" id="img-thumb-amz" style="display:none">
+        <img id="img-preview-amz" class="img-thumb" alt="Amazon product"/>
+        <div class="img-thumb-info" id="img-info-amz"></div>
+        <button class="img-clear" onclick="clearImage(event,'amz')" title="Remove">✕</button>
+      </div>
     </div>
 
-    <!-- Structured fields -->
+    <!-- Fields tab: structured inputs + optional images -->
     <div id="in-fields" style="display:none">
       <div class="sfg">
         <div><div class="albl">Product Type</div><input id="sf-type" type="text" class="ata" style="height:32px;resize:none" placeholder="e.g. T-Shirt"></div>
@@ -701,6 +769,23 @@ code{background:var(--b4);border:1px solid var(--bd2);border-radius:5px;padding:
         <div><div class="albl">Amazon Size/Pack</div><input id="sf-as" type="text" class="ata" style="height:32px;resize:none" placeholder="e.g. XL / 3-pack"></div>
       </div>
       <div style="margin-top:6px"><div class="albl">Notes</div><textarea id="sf-notes" class="ata" rows="2" placeholder="Extra details…"></textarea></div>
+      <!-- Dual image upload in fields tab -->
+      <div style="display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-top:10px">
+        <div>
+          <div class="albl">Temu Image <span style="color:var(--mt);font-weight:400">(opt)</span></div>
+          <div class="img-pill" onclick="triggerImgBrowse('temu')"
+               ondrop="handleImgDrop(event,'temu')" ondragover="handleImgDragOver(event)" ondragleave="handleImgDragLeave(event)">
+            <span class="img-pill-icon">📎</span><span class="img-pill-label" id="sf-temu-img-lbl">Attach</span>
+          </div>
+        </div>
+        <div>
+          <div class="albl">Amazon Image <span style="color:var(--mt);font-weight:400">(opt)</span></div>
+          <div class="img-pill" onclick="triggerImgBrowse('amz')"
+               ondrop="handleImgDrop(event,'amz')" ondragover="handleImgDragOver(event)" ondragleave="handleImgDragLeave(event)">
+            <span class="img-pill-icon">📎</span><span class="img-pill-label" id="sf-amz-img-lbl">Attach</span>
+          </div>
+        </div>
+      </div>
     </div>
 
     <div class="ai-acts">
@@ -1962,9 +2047,10 @@ document.addEventListener('keydown', e => { if (e.key === '/' && document.active
 //  GEMINI API CONFIG
 // ══════════════════════════════════════════
 // ── Groq uses OpenAI-compatible Chat Completions API ──
-const GROQ_KEY   = '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';
-const GROQ_MODEL = 'llama-3.3-70b-versatile';   // best free model on Groq
-const GROQ_URL   = 'https://api.groq.com/openai/v1/chat/completions';
+const GROQ_KEY         = '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';
+const GROQ_MODEL       = 'llama-3.3-70b-versatile';          // text analysis
+const GROQ_VISION_MODEL= 'meta-llama/llama-4-scout-17b-16e-instruct'; // vision + text
+const GROQ_URL         = 'https://api.groq.com/openai/v1/chat/completions';
 
 // ══════════════════════════════════════════
 //  AI PANEL
@@ -1980,6 +2066,236 @@ function toggleAI() {
 
 // ══════════════════════════════════════════
 //  MAIN ANALYZE FUNCTION
+
+// ══════════════════════════════════════════
+//  IMAGE UPLOAD — dual (Temu + Amazon)
+// ══════════════════════════════════════════
+// Each side stored separately
+const imgState = {
+  temu: { base64: null, mime: null },
+  amz:  { base64: null, mime: null }
+};
+
+function triggerImgBrowse(side) {
+  const id = side === 'amz' ? 'img-file-amz' : 'img-file-temu';
+  const el = document.getElementById(id);
+  if (el) el.click();
+}
+
+function handleImgDragOver(e) {
+  e.preventDefault(); e.stopPropagation();
+  e.currentTarget.classList.add('drag-over');
+}
+function handleImgDragLeave(e) {
+  e.currentTarget.classList.remove('drag-over');
+}
+function handleImgDrop(e, side) {
+  e.preventDefault(); e.stopPropagation();
+  e.currentTarget.classList.remove('drag-over');
+  const file = e.dataTransfer.files[0];
+  if (file) loadImageFile(file, side || 'temu');
+}
+function handleImgFile(e, side) {
+  const file = e.target.files[0];
+  if (file) loadImageFile(file, side || 'temu');
+}
+
+function loadImageFile(file, side) {
+  if (!file.type.startsWith('image/')) {
+    showToast('Please upload an image file (JPG, PNG, WEBP…)', 'err'); return;
+  }
+  if (file.size > 10 * 1024 * 1024) {
+    showToast('Image too large — max 10MB', 'err'); return;
+  }
+  const reader = new FileReader();
+  reader.onload = ev => {
+    const dataUrl = ev.target.result;
+    const [, b64] = dataUrl.split(',');
+    imgState[side].base64 = b64;
+    imgState[side].mime   = file.type;
+    const shortName = file.name.length > 22 ? file.name.slice(0,20)+'…' : file.name;
+    const sizeKb    = (file.size/1024).toFixed(0) + ' KB';
+    // Update whichever side this is
+    const pillId  = 'img-pill-' + side;
+    const thumbId = 'img-thumb-' + side;
+    const previewId = 'img-preview-' + side;
+    const infoId  = 'img-info-' + side;
+    const tagId   = side + '-vision-tag';
+    // Show thumb, hide pill (for title-tab pills only)
+    const pill = document.getElementById(pillId);
+    if (pill) pill.style.display = 'none';
+    const thumb = document.getElementById(thumbId);
+    if (thumb) { thumb.style.display = 'flex'; }
+    const preview = document.getElementById(previewId);
+    if (preview) preview.src = dataUrl;
+    const info = document.getElementById(infoId);
+    if (info) info.textContent = shortName + ' · ' + sizeKb;
+    // Show inline vision tag next to label
+    const tag = document.getElementById(tagId);
+    if (tag) tag.style.display = 'inline';
+    // Update fields-tab label if visible
+    const sfLbl = document.getElementById('sf-' + side + '-img-lbl');
+    if (sfLbl) sfLbl.textContent = '✓ ' + shortName;
+    // Vision header badge — show if either side has image
+    updateVisionBadge();
+    showToast(`📷 ${side === 'amz' ? 'Amazon' : 'Temu'} image attached`, 'ok');
+  };
+  reader.readAsDataURL(file);
+}
+
+function clearImage(e, side) {
+  if (e) e.stopPropagation();
+  imgState[side].base64 = null;
+  imgState[side].mime   = null;
+  const pillId  = 'img-pill-' + side;
+  const thumbId = 'img-thumb-' + side;
+  const fileId  = 'img-file-' + side;
+  const tagId   = side + '-vision-tag';
+  const pill  = document.getElementById(pillId);
+  if (pill) pill.style.display = '';
+  const thumb = document.getElementById(thumbId);
+  if (thumb) thumb.style.display = 'none';
+  const fileEl = document.getElementById(fileId);
+  if (fileEl) fileEl.value = '';
+  const tag = document.getElementById(tagId);
+  if (tag) tag.style.display = 'none';
+  const sfLbl = document.getElementById('sf-' + side + '-img-lbl');
+  if (sfLbl) sfLbl.textContent = 'Attach';
+  updateVisionBadge();
+}
+
+function updateVisionBadge() {
+  const hasAny = imgState.temu.base64 || imgState.amz.base64;
+  const vi = document.getElementById('vision-indicator');
+  if (vi) vi.classList.toggle('show', !!hasAny);
+}
+
+// ── VISION SYSTEM PROMPT ──
+const VISION_SYSTEM = `You are an expert CMT (Competitor Mapping Tool) analyst with vision capabilities. A mapper has shared a product image for mapping analysis.
+
+Your task:
+1. IDENTIFY the product — what type is it? (apparel, electronics, accessories, beauty, etc.)
+2. EXTRACT visible attributes — color, material, design/pattern, brand (if visible), size indicators, pack quantity
+3. CLASSIFY the product line — Softlines (SL) / Hardlines (HL) / Consumables
+4. SUGGEST a mapping status based on what you see:
+   - If only ONE product image: describe what you see and suggest search keywords for Amazon
+   - If TWO products visible (side by side): compare them and suggest IF / INF based on CMT rules
+
+CMT RULES SUMMARY:
+- Exact IF: all attributes match (brand, color, material, design, size, pack)
+- Inexact IF: match found but one minor attribute differs (Brand/Color/Material/Design/Size/Pack/Specification)
+- INF: major mismatch — different model, gender, product type, locked vs unlocked phone, etc.
+- Multicolor vs named color: if images clearly match → Exact IF
+
+RESPOND ONLY with this JSON structure (no markdown, no extra text):
+{
+  "status": "IF|INF|INVALID|UNKNOWN",
+  "matchType": "Exact|Inexact|null",
+  "confidence": 75,
+  "inexactType": "Color|Brand|Material|Design/Pattern|Size|Pack|Specification|null",
+  "productIdentified": "Brief product description (e.g. Men's crew neck cotton T-shirt, navy blue)",
+  "productLine": "Softlines|Hardlines|Consumables|Unknown",
+  "extractedAttributes": {
+    "type": "...", "color": "...", "material": "...", "brand": "...", "design": "...", "size": "...", "pack": "..."
+  },
+  "amazonSearchKeywords": "3-5 keyword search string for Amazon",
+  "reasoning": "Clear explanation of what you see and why you suggest this status.",
+  "attributes": [
+    {"name":"Product Type","temu":"...","amazon":"...","match":"ok|inexact|fail|na"},
+    {"name":"Color","temu":"...","amazon":"...","match":"ok|inexact|fail|na"},
+    {"name":"Material","temu":"...","amazon":"...","match":"ok|inexact|fail|na"},
+    {"name":"Brand","temu":"...","amazon":"...","match":"ok|inexact|fail|na"},
+    {"name":"Design","temu":"...","amazon":"...","match":"ok|inexact|fail|na"}
+  ]
+}`;
+
+// ── CALL VISION API ──
+async function callVisionGroq(temuB64, temuMime, amzB64, amzMime, temuText, amzText, onToken) {
+  // Build rich multimodal prompt with images + text
+  let textPart = 'Analyze these product images for CMT Temu→Amazon mapping.';
+  if (temuText) textPart += `\n\nTEMU PRODUCT TITLE:\n${temuText}`;
+  if (amzText)  textPart += `\n\nAMAZON PRODUCT TITLE:\n${amzText}`;
+  if (temuB64 && amzB64) {
+    textPart += '\n\nFirst image = Temu product. Second image = Amazon product. Compare them directly.';
+  } else if (temuB64) {
+    textPart += '\n\nThe image shows the Temu product. Identify it and suggest what Amazon ASIN it should map to.';
+  } else if (amzB64) {
+    textPart += '\n\nThe image shows the Amazon product. Compare against the Temu title above.';
+  }
+  textPart += '\n\nUse ALL provided images AND text to make the most accurate CMT mapping assessment. Cross-reference visual and text attributes.';
+
+  // Build content array — images first, then text
+  const userContent = [];
+  if (temuB64) userContent.push({ type: 'image_url', image_url: { url: `data:${temuMime};base64,${temuB64}` } });
+  if (amzB64)  userContent.push({ type: 'image_url', image_url: { url: `data:${amzMime};base64,${amzB64}`  } });
+  userContent.push({ type: 'text', text: textPart });
+
+  const resp = await fetch(GROQ_URL, {
+    method: 'POST',
+    headers: {
+      'Content-Type': 'application/json',
+      'Authorization': 'Bearer ' + GROQ_KEY
+    },
+    body: JSON.stringify({
+      model: GROQ_VISION_MODEL,
+      messages: [
+        { role: 'system', content: VISION_SYSTEM },
+        { role: 'user',   content: userContent }
+      ],
+      max_tokens: 1200,
+      temperature: 0.1,
+      stream: true
+    })
+  });
+
+  if (!resp.ok) {
+    let errMsg = `HTTP ${resp.status}`;
+    try { const e = await resp.json(); errMsg = e?.error?.message || errMsg; } catch {}
+    throw new Error('Vision API: ' + errMsg);
+  }
+
+  // Parse SSE
+  const reader  = resp.body.getReader();
+  const decoder = new TextDecoder();
+  let full = '', buf = '';
+  while (true) {
+    const { done, value } = await reader.read();
+    if (done) break;
+    buf += decoder.decode(value, { stream: true });
+    const lines = buf.split('\n');
+    buf = lines.pop();
+    for (const line of lines) {
+      const trimmed = line.trim();
+      if (!trimmed.startsWith('data:')) continue;
+      const payload = trimmed.slice(5).trim();
+      if (!payload || payload === '[DONE]') continue;
+      try {
+        const chunk = JSON.parse(payload);
+        const tok   = chunk?.choices?.[0]?.delta?.content || '';
+        if (tok) { full += tok; onToken(tok); }
+      } catch {}
+    }
+  }
+  if (!full.trim()) throw new Error('Vision model returned empty response');
+  const clean = full.replace(/```json\s*/gi,'').replace(/```\s*/g,'').trim();
+  const start = clean.indexOf('{'), end = clean.lastIndexOf('}');
+  if (start === -1 || end === -1) throw new Error('No JSON in vision response');
+  const parsed = JSON.parse(clean.slice(start, end+1));
+  // Normalise to standard result shape
+  return {
+    status:      parsed.status || 'UNKNOWN',
+    matchType:   parsed.matchType || null,
+    confidence:  parsed.confidence || 60,
+    inexactType: parsed.inexactType || null,
+    reasoning:   parsed.reasoning || '',
+    productIdentified: parsed.productIdentified || '',
+    amazonSearchKeywords: parsed.amazonSearchKeywords || '',
+    attributes:  parsed.attributes || [],
+    isVisionResult: true,
+    extractedAttributes: parsed.extractedAttributes || {}
+  };
+}
+
 // ══════════════════════════════════════════
 let lastResult = null;
 
@@ -1996,44 +2312,109 @@ function gatherInput() {
 
 async function analyzeProduct() {
   const {temu, amz} = gatherInput();
-  if (!temu) { document.getElementById('ai-temu').focus(); return; }
+  const hasTemuImg = !!imgState.temu.base64;
+  const hasAmzImg  = !!imgState.amz.base64;
+  const hasImage   = hasTemuImg || hasAmzImg;
+  const hasText  = !!temu;
 
-  const btn = document.getElementById('analyze-btn');
-  const thinking = document.getElementById('thinking');
+  // Need at least one input
+  if (!hasText && !hasImage) {
+    document.getElementById('ai-temu').focus();
+    showToast('Add a product title or attach an image', 'err');
+    return;
+  }
+
+  const btn       = document.getElementById('analyze-btn');
+  const thinking  = document.getElementById('thinking');
   const streamBox = document.getElementById('stream-box');
-  const resBox = document.getElementById('res-box');
+  const resBox    = document.getElementById('res-box');
   const streamTxt = document.getElementById('stream-txt');
+  const streamLbl = streamBox.querySelector('.stream-lbl');
 
   btn.disabled = true;
   btn.classList.remove('idle');
   resBox.classList.remove('show');
   streamBox.classList.remove('show');
   thinking.classList.add('show');
-  document.getElementById('ttxt').textContent = 'Connecting to Groq…';
 
   let result = null;
-  try {
-    document.getElementById('ttxt').textContent = 'Sending to Groq AI…';
-    thinking.classList.remove('show');
-    streamBox.classList.add('show');
-    streamTxt.innerHTML = '<span class="cursor"></span>';
-    result = await callGemini(temu, amz, token => {
-      const cur = streamTxt.querySelector('.cursor');
-      if (cur) cur.before(document.createTextNode(token));
-      streamTxt.scrollTop = streamTxt.scrollHeight;
-    });
-    showToast('✓ Groq analysis complete', 'ok');
-  } catch(e) {
-    console.error('Gemini error:', e.message);
-    // Show real error in stream box before hiding it
-    streamTxt.innerHTML = `<span style="color:var(--rlt);font-size:11px">⚠ ${e.message}</span>`;
-    await new Promise(r => setTimeout(r, 2200));
-    showToast('AI error — using rule engine', 'err');
-    streamBox.classList.remove('show');
-    thinking.classList.add('show');
-    document.getElementById('ttxt').textContent = 'Using rule engine fallback…';
-    await new Promise(r => setTimeout(r, 500));
-    result = ruleEngine(temu, amz);
+
+  if (hasImage) {
+    // ── VISION path: send image + text together ──
+    document.getElementById('ttxt').textContent = hasText
+      ? 'Sending title + image to Llama 4 Vision…'
+      : 'Sending image to Llama 4 Vision…';
+    if (streamLbl) streamLbl.textContent = '🔍 Vision AI analyzing' + (hasText ? ' title + image…' : ' image…');
+    try {
+      thinking.classList.remove('show');
+      streamBox.classList.add('show');
+      streamTxt.innerHTML = '<span class="cursor"></span>';
+      // Pass both text and image to vision model
+      result = await callVisionGroq(
+        imgState.temu.base64, imgState.temu.mime,
+        imgState.amz.base64,  imgState.amz.mime,
+        temu, amz, token => {
+        const cur = streamTxt.querySelector('.cursor');
+        if (cur) cur.before(document.createTextNode(token));
+        streamTxt.scrollTop = streamTxt.scrollHeight;
+      });
+      showToast('✓ Vision analysis complete', 'ok');
+    } catch(e) {
+      console.error('Vision error:', e.message);
+      streamTxt.innerHTML = `<span style="color:var(--rlt);font-size:11px">⚠ Vision: ${e.message}</span>`;
+      await new Promise(r => setTimeout(r, 2000));
+      // Fallback: if image fails but we have text, try text-only
+      if (hasText) {
+        showToast('Vision failed — retrying with text only', 'err');
+        streamBox.classList.remove('show');
+        thinking.classList.add('show');
+        document.getElementById('ttxt').textContent = 'Retrying with text…';
+        try {
+          await new Promise(r => setTimeout(r, 400));
+          thinking.classList.remove('show');
+          streamBox.classList.add('show');
+          streamTxt.innerHTML = '<span class="cursor"></span>';
+          result = await callGemini(temu, amz, token => {
+            const cur = streamTxt.querySelector('.cursor');
+            if (cur) cur.before(document.createTextNode(token));
+            streamTxt.scrollTop = streamTxt.scrollHeight;
+          });
+        } catch(e2) {
+          result = ruleEngine(temu, amz);
+        }
+      } else {
+        showToast('Vision error — no text fallback available', 'err');
+        thinking.classList.remove('show');
+        streamBox.classList.remove('show');
+        btn.disabled = false; btn.classList.add('idle');
+        return;
+      }
+    }
+  } else {
+    // ── TEXT-ONLY path ──
+    document.getElementById('ttxt').textContent = 'Connecting to Groq…';
+    if (streamLbl) streamLbl.textContent = '⚡ Groq / Llama 3.3 is analyzing…';
+    try {
+      thinking.classList.remove('show');
+      streamBox.classList.add('show');
+      streamTxt.innerHTML = '<span class="cursor"></span>';
+      result = await callGemini(temu, amz, token => {
+        const cur = streamTxt.querySelector('.cursor');
+        if (cur) cur.before(document.createTextNode(token));
+        streamTxt.scrollTop = streamTxt.scrollHeight;
+      });
+      showToast('✓ Analysis complete', 'ok');
+    } catch(e) {
+      console.error('Groq error:', e.message);
+      streamTxt.innerHTML = `<span style="color:var(--rlt);font-size:11px">⚠ ${e.message}</span>`;
+      await new Promise(r => setTimeout(r, 2000));
+      showToast('AI error — using rule engine', 'err');
+      streamBox.classList.remove('show');
+      thinking.classList.add('show');
+      document.getElementById('ttxt').textContent = 'Using rule engine fallback…';
+      await new Promise(r => setTimeout(r, 400));
+      result = ruleEngine(temu, amz);
+    }
   }
 
   thinking.classList.remove('show');
@@ -2313,14 +2694,32 @@ function showResult(r) {
   const box = document.getElementById('res-box');
   box.classList.add('show');
   const statusEl = document.getElementById('res-status');
-  statusEl.textContent = r.status;
-  statusEl.className = 'status-big s-' + r.status.toLowerCase();
+  const safeStatus = ['IF','INF','INVALID','UNKNOWN'].includes(r.status) ? r.status : 'UNKNOWN';
+  statusEl.textContent = safeStatus;
+  statusEl.className   = 'status-big s-' + safeStatus.toLowerCase();
   const conf = Math.min(100, Math.max(0, r.confidence||70));
   document.getElementById('res-conf').textContent = conf + '%';
   document.getElementById('res-bar').style.width = conf + '%';
-  document.getElementById('res-mt').innerHTML = r.status==='IF' ? `<span class="badge ${r.matchType==='Exact'?'b-if':'b-inx'}">${r.matchType}</span>` : '<span style="color:var(--mt)">—</span>';
-  document.getElementById('res-ix').innerHTML = r.inexactType ? `<span class="badge b-inx">${r.inexactType}</span>` : '<span style="color:var(--mt)">None</span>';
-  document.getElementById('res-rs').textContent = r.reasoning || '—';
+  document.getElementById('res-mt').innerHTML = r.status==='IF'
+    ? `<span class="badge ${r.matchType==='Exact'?'b-if':'b-inx'}">${r.matchType}</span>`
+    : '<span style="color:var(--mt)">—</span>';
+  document.getElementById('res-ix').innerHTML = r.inexactType
+    ? `<span class="badge b-inx">${r.inexactType}</span>`
+    : '<span style="color:var(--mt)">None</span>';
+
+  // Vision mode: append product ID + search keywords
+  let rsEl = document.getElementById('res-rs');
+  rsEl.innerHTML = '';
+  rsEl.appendChild(document.createTextNode(r.reasoning || '—'));
+  if (r.isVisionResult) {
+    if (r.productIdentified) {
+      rsEl.insertAdjacentHTML('beforeend', `<div style="margin-top:7px;padding:6px 10px;background:rgba(139,92,246,0.07);border:1px solid rgba(139,92,246,0.18);border-radius:7px;font-size:11.5px;"><strong style="color:#A78BFA">🔍 Identified:</strong> ${r.productIdentified}</div>`);
+    }
+    if (r.amazonSearchKeywords) {
+      rsEl.insertAdjacentHTML('beforeend', `<div style="margin-top:5px;padding:6px 10px;background:var(--b3);border:1px solid var(--bd);border-radius:7px;font-size:11.5px;"><strong style="color:var(--mlt)">🔎 Search on Amazon:</strong> <span style="font-family:var(--mo);color:var(--olt)">${r.amazonSearchKeywords}</span></div>`);
+    }
+  }
+
   document.getElementById('atbl-body').innerHTML = (r.attributes||[]).map(a => {
     const cls={ok:'m-ok',inexact:'m-nx',fail:'m-no',na:'m-na'}[a.match]||'m-na';
     const ico={ok:'✓',inexact:'≈',fail:'✗',na:'—'}[a.match]||'—';
@@ -2344,6 +2743,8 @@ function clearAI() {
   ['res-box','stream-box','thinking'].forEach(id => document.getElementById(id).classList.remove('show'));
   document.getElementById('ai-temu').value = '';
   document.getElementById('ai-amz').value = '';
+  clearImage(null, 'temu');
+  clearImage(null, 'amz');
   lastResult = null;
 }
 
@@ -2353,10 +2754,8 @@ function clearAI() {
 function setInTab(type, el) {
   document.querySelectorAll('.itab').forEach(t => t.classList.remove('act'));
   el.classList.add('act');
-  document.getElementById('in-text').style.display = type === 'fields' ? 'none' : 'block';
+  document.getElementById('in-text').style.display   = type === 'fields' ? 'none' : 'block';
   document.getElementById('in-fields').style.display = type === 'fields' ? 'block' : 'none';
-  if (type === 'url') document.getElementById('ai-temu').placeholder = 'Paste Temu product URL here…\nhttps://www.temu.com/…';
-  else document.getElementById('ai-temu').placeholder = 'Paste Temu product title + description…\n\nInclude: name, color, size, material, brand, pack quantity…';
 }
 
 // ══════════════════════════════════════════
