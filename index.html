@@ -5,6 +5,8 @@
 (function(){
   const t=localStorage.getItem('mfn_theme')||'dark';
   document.documentElement.setAttribute('data-theme',['light','dark','pitch'].includes(t)?t:'dark');
+  const a=localStorage.getItem('mfn_accent')||'orange';
+  if(a&&a!=='orange')document.documentElement.setAttribute('data-accent',a);
 })();
 </script>
 <meta charset="UTF-8"/><meta name="viewport" content="width=device-width,initial-scale=1.0"/>
@@ -50,9 +52,52 @@
   --or-a40:rgba(255,98,0,0.44);--or-a50:rgba(255,98,0,0.56);
   --glow-or:0 0 30px rgba(255,98,0,0.30);
 }
+/* ─── ACCENT COLOR THEMES (overlay on top of base theme) ─── */
+/* Default accent = orange (already in :root) */
+[data-accent="blue"]{
+  --or:#3B82F6;--odk:#2563EB;--olt:#60A5FA;
+  --or-a04:rgba(59,130,246,0.04);--or-a06:rgba(59,130,246,0.06);--or-a08:rgba(59,130,246,0.08);
+  --or-a10:rgba(59,130,246,0.10);--or-a12:rgba(59,130,246,0.12);--or-a18:rgba(59,130,246,0.18);
+  --or-a20:rgba(59,130,246,0.20);--or-a25:rgba(59,130,246,0.25);--or-a30:rgba(59,130,246,0.30);
+  --or-a40:rgba(59,130,246,0.40);--or-a50:rgba(59,130,246,0.50);
+  --blob1:rgba(59,130,246,0.14);--blob2:rgba(30,60,180,0.08);
+}
+[data-accent="purple"]{
+  --or:#8B5CF6;--odk:#7C3AED;--olt:#A78BFA;
+  --or-a04:rgba(139,92,246,0.04);--or-a06:rgba(139,92,246,0.06);--or-a08:rgba(139,92,246,0.08);
+  --or-a10:rgba(139,92,246,0.10);--or-a12:rgba(139,92,246,0.12);--or-a18:rgba(139,92,246,0.18);
+  --or-a20:rgba(139,92,246,0.20);--or-a25:rgba(139,92,246,0.25);--or-a30:rgba(139,92,246,0.30);
+  --or-a40:rgba(139,92,246,0.40);--or-a50:rgba(139,92,246,0.50);
+  --blob1:rgba(139,92,246,0.15);--blob2:rgba(80,30,200,0.09);
+}
+[data-accent="green"]{
+  --or:#10B981;--odk:#059669;--olt:#34D399;
+  --or-a04:rgba(16,185,129,0.04);--or-a06:rgba(16,185,129,0.06);--or-a08:rgba(16,185,129,0.08);
+  --or-a10:rgba(16,185,129,0.10);--or-a12:rgba(16,185,129,0.12);--or-a18:rgba(16,185,129,0.18);
+  --or-a20:rgba(16,185,129,0.20);--or-a25:rgba(16,185,129,0.25);--or-a30:rgba(16,185,129,0.30);
+  --or-a40:rgba(16,185,129,0.40);--or-a50:rgba(16,185,129,0.50);
+  --blob1:rgba(16,185,129,0.13);--blob2:rgba(5,100,70,0.07);
+}
+[data-accent="rose"]{
+  --or:#F43F5E;--odk:#E11D48;--olt:#FB7185;
+  --or-a04:rgba(244,63,94,0.04);--or-a06:rgba(244,63,94,0.06);--or-a08:rgba(244,63,94,0.08);
+  --or-a10:rgba(244,63,94,0.10);--or-a12:rgba(244,63,94,0.12);--or-a18:rgba(244,63,94,0.18);
+  --or-a20:rgba(244,63,94,0.20);--or-a25:rgba(244,63,94,0.25);--or-a30:rgba(244,63,94,0.30);
+  --or-a40:rgba(244,63,94,0.40);--or-a50:rgba(244,63,94,0.50);
+  --blob1:rgba(244,63,94,0.14);--blob2:rgba(160,20,60,0.08);
+}
+[data-accent="amber"]{
+  --or:#F59E0B;--odk:#D97706;--olt:#FCD34D;
+  --or-a04:rgba(245,158,11,0.04);--or-a06:rgba(245,158,11,0.06);--or-a08:rgba(245,158,11,0.08);
+  --or-a10:rgba(245,158,11,0.10);--or-a12:rgba(245,158,11,0.12);--or-a18:rgba(245,158,11,0.18);
+  --or-a20:rgba(245,158,11,0.20);--or-a25:rgba(245,158,11,0.25);--or-a30:rgba(245,158,11,0.30);
+  --or-a40:rgba(245,158,11,0.40);--or-a50:rgba(245,158,11,0.50);
+  --blob1:rgba(245,158,11,0.14);--blob2:rgba(180,100,0,0.08);
+}
+
 *{box-sizing:border-box;margin:0;padding:0;}
 html,body{height:100%;overflow:hidden;}
-body{font-family:var(--fn);background:var(--bg);color:var(--tx);font-size:14px;-webkit-font-smoothing:antialiased;transition:background .25s,color .25s;}
+body{font-family:var(--fn);background:var(--bg);color:var(--tx);font-size:14px;-webkit-font-smoothing:antialiased;transition:background .4s ease,color .3s ease;}
 ::-webkit-scrollbar{width:4px;height:4px;}
 ::-webkit-scrollbar-thumb{background:var(--sb);border-radius:4px;}
 
@@ -97,7 +142,8 @@ body{font-family:var(--fn);background:var(--bg);color:var(--tx);font-size:14px;-
 .hbtn.or{background:var(--or);color:#fff;border-color:var(--or);box-shadow:0 2px 10px var(--or-a30);}
 .hbtn.or:hover{background:var(--odk);}
 /* Search overlay */
-.search-bar{position:fixed;top:0;left:0;right:0;height:54px;z-index:300;background:var(--b2);border-bottom:1px solid var(--bd2);display:none;align-items:center;padding:0 16px;gap:10px;}
+.search-bar{position:fixed;top:0;left:0;right:0;height:54px;z-index:300;background:var(--b2);border-bottom:1px solid var(--bd2);display:none;align-items:center;padding:0 16px;gap:10px;opacity:0;transform:translateY(-4px);transition:opacity .2s,transform .22s cubic-bezier(.34,1.2,.64,1);}
+.search-bar.show{display:flex;opacity:1;transform:translateY(0);}
 .search-bar.show{display:flex;}
 .search-bar input{flex:1;background:transparent;border:none;outline:none;font-family:var(--fn);font-size:15px;color:var(--tx);}
 .search-bar input::placeholder{color:var(--mt);}
@@ -117,7 +163,7 @@ body{font-family:var(--fn);background:var(--bg);color:var(--tx);font-size:14px;-
   width:240px;flex-shrink:0;
   background:var(--b2);border-right:1px solid var(--bd);
   display:flex;flex-direction:column;overflow:hidden;
-  transition:width .42s cubic-bezier(.25,.8,.25,1),opacity .32s ease;
+  transition:width .3s cubic-bezier(.4,0,.2,1),opacity .25s;
 }
 .sidebar.collapsed{width:0;opacity:0;}
 .sb-top{padding:10px 8px 8px;border-bottom:1px solid var(--bd);flex-shrink:0;}
@@ -127,7 +173,7 @@ body{font-family:var(--fn);background:var(--bg);color:var(--tx);font-size:14px;-
   display:flex;align-items:center;gap:8px;
   padding:6.5px 10px;border-radius:8px;margin:1px 6px;
   cursor:pointer;font-size:12px;font-weight:500;color:var(--mlt);
-  transition:background .18s ease,color .18s ease,transform .22s cubic-bezier(.25,.8,.25,1);position:relative;
+  transition:background .22s ease,color .22s ease,transform .28s cubic-bezier(.34,1.18,.64,1);position:relative;
 }
 .ni:hover{background:var(--b4);color:var(--tx);transform:translateX(2px);}
 .ni.act{background:var(--or-a10);color:var(--or);font-weight:700;box-shadow:inset 0 0 20px var(--or-a06);}
@@ -137,7 +183,7 @@ body{font-family:var(--fn);background:var(--bg);color:var(--tx);font-size:14px;-
 .nsub .ni{padding:5.5px 8px 5.5px 22px;font-size:11.5px;}
 
 /* ─── NOTES MAIN ─── */
-.notes-main{flex:1;overflow-y:auto;min-width:0;position:relative;display:flex;flex-direction:column;align-items:center;transition:margin-right .42s cubic-bezier(.25,.8,.25,1);}
+.notes-main{flex:1;overflow-y:auto;min-width:0;position:relative;display:flex;flex-direction:column;align-items:center;transition:margin-right .38s cubic-bezier(.4,0,.2,1);}
 .notes-main.ai-open{margin-right:420px;}
 .np{display:block;padding:40px 32px 24px;max-width:920px;width:100%;}
 .np:first-child{padding-top:36px;}
@@ -153,7 +199,7 @@ body{font-family:var(--fn);background:var(--bg);color:var(--tx);font-size:14px;-
 .card{
   background:var(--b2);border:1px solid var(--bd);border-radius:16px;
   padding:20px 22px;margin-bottom:14px;
-  transition:border-color .32s ease,box-shadow .32s ease,transform .38s cubic-bezier(.25,.8,.25,1);
+  transition:border-color .3s ease,box-shadow .3s ease,transform .32s cubic-bezier(.34,1.28,.64,1);
   position:relative;overflow:hidden;
 }
 .card::before{
@@ -203,7 +249,7 @@ body{font-family:var(--fn);background:var(--bg);color:var(--tx);font-size:14px;-
 /* Steps */
 .steps{display:flex;flex-direction:column;gap:9px;}
 .step{display:flex;gap:13px;align-items:flex-start;padding:12px;background:var(--b3);border-radius:10px;border:1px solid var(--bd);transition:border-color .2s,transform .2s;}
-.step:hover{border-color:var(--bd2);transform:translateX(3px);}
+.step{transition:border-color .25s,transform .3s cubic-bezier(.34,1.2,.64,1);}.step:hover{border-color:var(--bd2);transform:translateX(4px);}
 .sn{width:29px;height:29px;border-radius:8px;background:var(--or-a12);border:1px solid var(--or-a25);display:flex;align-items:center;justify-content:center;font-size:13px;font-weight:900;color:var(--or);flex-shrink:0;}
 .sb strong{display:block;font-size:13px;margin-bottom:3px;}
 .sb span{font-size:12px;color:var(--mlt);line-height:1.65;}
@@ -234,7 +280,7 @@ code{background:var(--b4);border:1px solid var(--bd2);border-radius:5px;padding:
 .ncard{
   background:var(--b2);border:1px solid var(--bd);border-radius:12px;
   padding:16px;cursor:pointer;
-  transition:border-color .32s ease,background .32s ease,transform .38s cubic-bezier(.25,.8,.25,1),box-shadow .38s ease;
+  transition:all .36s cubic-bezier(.34,1.26,.64,1);
 }
 .ncard:hover{border-color:var(--or-a25);background:var(--b3);transform:translateY(-3px) scale(1.01);box-shadow:0 12px 36px rgba(0,0,0,.3),0 0 0 1px var(--or-a15);}
 .ncard:active{transform:scale(.97);}
@@ -248,7 +294,7 @@ code{background:var(--b4);border:1px solid var(--bd2);border-radius:5px;padding:
   position:fixed;right:0;top:54px;bottom:0;width:420px;
   background:var(--b2);border-left:1px solid var(--bd2);
   z-index:150;transform:translateX(100%);
-  transition:transform .42s cubic-bezier(.25,.8,.25,1);
+  transition:transform .38s cubic-bezier(.4,0,.2,1);
   display:flex;flex-direction:column;overflow:hidden;
 }
 .ai-panel.open{transform:translateX(0);}
@@ -353,9 +399,9 @@ code{background:var(--b4);border:1px solid var(--bd2);border-radius:5px;padding:
 
 /* ─── SIDEBAR SMOOTH SCROLL ─── */
 .sb-nav{scroll-behavior:smooth;-webkit-overflow-scrolling:touch;}
-/* Nav active highlight — subtle fade-in slide, no bounce */
-@keyframes navBounce{0%{opacity:.4;transform:translateX(-4px)}100%{opacity:1;transform:translateX(0)}}
-.ni.bounce{animation:navBounce .28s cubic-bezier(.25,.8,.25,1);}
+/* Physics bounce on active nav item */
+@keyframes navBounce{0%{transform:translateX(0) scale(1)}35%{transform:translateX(3px) scale(1.015)}70%{transform:translateX(-1px)}100%{transform:translateX(0) scale(1)}}
+.ni.bounce{animation:navBounce .5s cubic-bezier(.25,.46,.45,.94);}
 /* Continuous scroll mode — slide animations removed */
 
 /* ─── READING PROGRESS BAR ─── */
@@ -367,7 +413,7 @@ code{background:var(--b4);border:1px solid var(--bd2);border-radius:5px;padding:
   position:fixed;left:0;top:54px;bottom:0;width:300px;
   background:var(--b2);border-right:1px solid var(--bd2);
   z-index:190;transform:translateX(-100%);
-  transition:transform .42s cubic-bezier(.25,.8,.25,1);
+  transition:transform .28s cubic-bezier(.4,0,.2,1);
   display:flex;flex-direction:column;overflow:hidden;
   box-shadow:4px 0 40px rgba(0,0,0,.4);
 }
@@ -391,26 +437,15 @@ code{background:var(--b4);border:1px solid var(--bd2);border-radius:5px;padding:
 .sp-brand{font-size:12px;font-weight:800;text-align:center;margin-bottom:3px;}
 /* Theme toggle in settings */
 .theme-chips{display:flex;gap:5px;padding:6px 16px 10px;}
-.theme-chip{flex:1;height:28px;border-radius:7px;border:1px solid var(--bd2);background:var(--b4);color:var(--mt);font-family:var(--fn);font-size:11px;font-weight:700;cursor:pointer;transition:all .18s ease;}
-.theme-chip:hover{background:var(--b5);color:var(--tx);}
+.theme-chip{flex:1;height:28px;border-radius:7px;border:1px solid var(--bd2);background:var(--b4);color:var(--mt);font-family:var(--fn);font-size:11px;font-weight:700;cursor:pointer;transition:all .15s;}
 .theme-chip.act{background:var(--or-a12);border-color:var(--or-a25);color:var(--or);}
-/* Accent swatches */
-.accent-swatches{display:flex;gap:7px;flex-wrap:wrap;}
-.accent-sw{width:24px;height:24px;border-radius:6px;cursor:pointer;border:2px solid transparent;transition:transform .18s ease,box-shadow .18s ease;}
-.accent-sw:hover{transform:scale(1.18);}
-.accent-sw.active{border-color:var(--tx);box-shadow:0 0 0 1px var(--tx),0 2px 8px rgba(0,0,0,.3);}
-/* Toggle switch */
-.sp-toggle{position:relative;width:36px;height:20px;flex-shrink:0;display:block;}
-.sp-toggle input{opacity:0;width:0;height:0;position:absolute;}
-.sp-toggle-track{position:absolute;inset:0;border-radius:10px;background:var(--b5);border:1px solid var(--bd2);cursor:pointer;transition:background .2s ease;}
-.sp-toggle input:checked + .sp-toggle-track{background:var(--or);border-color:var(--or);}
-.sp-toggle-thumb{position:absolute;top:3px;left:3px;width:12px;height:12px;border-radius:50%;background:#fff;transition:left .2s ease;pointer-events:none;box-shadow:0 1px 3px rgba(0,0,0,.3);}
-.sp-toggle input:checked ~ .sp-toggle-thumb{left:19px;}
-/* Blob slider */
-.blob-slider{-webkit-appearance:none;appearance:none;width:100%;height:3px;border-radius:3px;background:var(--b5);border:1px solid var(--bd2);outline:none;cursor:pointer;}
-.blob-slider::-webkit-slider-thumb{-webkit-appearance:none;width:14px;height:14px;border-radius:50%;background:var(--or);cursor:pointer;border:2px solid var(--bg);box-shadow:0 1px 4px rgba(0,0,0,.3);}
+/* Accent color swatches */
+.accent-chips{display:flex;gap:8px;padding:8px 16px 12px;align-items:center;}
+.accent-chip{width:22px;height:22px;border-radius:50%;border:2px solid transparent;cursor:pointer;transition:transform .22s cubic-bezier(.34,1.4,.64,1),border-color .18s;flex-shrink:0;outline:none;}
+.accent-chip:hover{transform:scale(1.25);}
+.accent-chip.act{border-color:var(--tx);transform:scale(1.18);box-shadow:0 0 0 3px var(--or-a25);}
 /* Settings overlay */
-.sp-ovl{position:fixed;inset:0;z-index:189;background:rgba(0,0,0,.45);backdrop-filter:blur(4px);-webkit-backdrop-filter:blur(4px);opacity:0;pointer-events:none;transition:opacity .3s ease;}
+.sp-ovl{position:fixed;inset:0;z-index:189;background:rgba(0,0,0,.35);opacity:0;pointer-events:none;transition:opacity .35s ease;backdrop-filter:blur(2px);-webkit-backdrop-filter:blur(2px);}
 .sp-ovl.show{opacity:1;pointer-events:all;}
 
 /* ─── WELCOME SCREEN ─── */
@@ -480,7 +515,7 @@ code{background:var(--b4);border:1px solid var(--bd2);border-radius:5px;padding:
   </div>
   <div class="hright">
     <button class="hbtn" onclick="toggleSearch()" title="Search notes (/)">🔍</button>
-    <button class="hbtn" id="theme-btn" onclick="cycleTheme()">🌙</button>
+    <button class="hbtn" id="theme-btn" onclick="cycleThem()">🌙</button>
     <button class="hbtn" onclick="openSettings()" title="Settings & Links">⚙️</button>
     <button class="hbtn or" id="ai-toggle" onclick="toggleAI()">🤖 AI Assistant</button>
   </div>
@@ -528,7 +563,7 @@ code{background:var(--b4);border:1px solid var(--bd2);border-radius:5px;padding:
     <button class="wl-btn" id="wl-start-btn" onclick="startApp()">
       <span>🚀</span> Let's Start Learning
     </button>
-    //<div class="wl-skip" onclick="startApp()">Skip intro →</div>
+    
   </div>
 </div>
 
@@ -537,62 +572,43 @@ code{background:var(--b4);border:1px solid var(--bd2);border-radius:5px;padding:
 <div class="settings-panel" id="settings-panel">
   <div class="sp-hdr">
     <div class="sp-hdr-ico">⚙️</div>
-    <div class="sp-hdr-title">Settings</div>
+    <div class="sp-hdr-title">Settings & Links</div>
     <button class="sp-close" onclick="closeSettings()">✕</button>
   </div>
   <div class="sp-body">
-
     <!-- APPEARANCE -->
     <div class="sp-section">
       <div class="sp-sec-title">Appearance</div>
-      <div class="sp-item" style="cursor:default;flex-wrap:wrap;gap:8px">
-        <span style="font-size:12px;font-weight:600;color:var(--tx);flex-shrink:0">Theme</span>
-        <div class="theme-chips" style="padding:0;flex:1;min-width:160px">
-          <button class="theme-chip" id="tc-dark"  onclick="setTheme('dark')">🌙 Dark</button>
-          <button class="theme-chip" id="tc-light" onclick="setTheme('light')">☀️ Light</button>
-          <button class="theme-chip" id="tc-pitch" onclick="setTheme('pitch')">⚫ Pitch</button>
-        </div>
+      <div class="theme-chips">
+        <button class="theme-chip" id="tc-dark" onclick="setTheme('dark')">🌙 Dark</button>
+        <button class="theme-chip" id="tc-light" onclick="setTheme('light')">☀️ Light</button>
+        <button class="theme-chip" id="tc-pitch" onclick="setTheme('pitch')">⚫ Pitch</button>
       </div>
-      <div class="sp-item" style="cursor:default;flex-wrap:wrap;gap:10px">
-        <div style="flex:1">
-          <span style="font-size:12px;font-weight:600;color:var(--tx);display:block;margin-bottom:8px">Accent Color</span>
-          <div class="accent-swatches" id="accent-swatches"></div>
-        </div>
-      </div>
-    </div>
-
-    <!-- AMBIENT GLOW -->
-    <div class="sp-section">
-      <div class="sp-sec-title">Ambient Glow</div>
-      <div class="sp-item" style="cursor:default">
-        <span class="sp-label">Enable Glow <span class="sp-sub">Mouse-tracking background light</span></span>
-        <label class="sp-toggle">
-          <input type="checkbox" id="blob-toggle" onchange="toggleBlob(this.checked)" checked/>
-          <div class="sp-toggle-track"></div>
-          <div class="sp-toggle-thumb"></div>
-        </label>
-      </div>
-      <div class="sp-item" id="blob-intensity-row" style="cursor:default">
-        <span class="sp-label">Intensity <span class="sp-sub" id="blob-pct-label">85%</span></span>
-        <input type="range" class="blob-slider" id="blob-slider" min="0" max="100" value="85" oninput="setBlobIntensity(this.value)" style="width:90px"/>
+      <div class="sp-sec-title" style="padding-top:2px">Accent Color</div>
+      <div class="accent-chips">
+        <button class="accent-chip act" id="ac-orange" onclick="setAccent('orange')" title="Orange (Default)" style="background:#FF6200;"></button>
+        <button class="accent-chip" id="ac-blue"   onclick="setAccent('blue')"   title="Blue"   style="background:#3B82F6;"></button>
+        <button class="accent-chip" id="ac-purple" onclick="setAccent('purple')" title="Purple" style="background:#8B5CF6;"></button>
+        <button class="accent-chip" id="ac-green"  onclick="setAccent('green')"  title="Green"  style="background:#10B981;"></button>
+        <button class="accent-chip" id="ac-rose"   onclick="setAccent('rose')"   title="Rose"   style="background:#F43F5E;"></button>
+        <button class="accent-chip" id="ac-amber"  onclick="setAccent('amber')"  title="Amber"  style="background:#F59E0B;"></button>
       </div>
     </div>
-
     <!-- TOOLS -->
     <div class="sp-section">
       <div class="sp-sec-title">MapFlow Tools</div>
-      <div class="sp-item" onclick="window.open('https://stevegates24.github.io/Temu-Mapping-Simplifier/','_blank')">
-        <span class="sp-icon">⇌</span>
-        <span class="sp-label">MapFlow Tool <span class="sp-sub">Temu → Amazon mapper · stevegates24.github.io</span></span>
+      <div class="sp-item" onclick="window.open('https://stevegates24.github.io/MapFlow-Notes/','_blank')">
+        <span class="sp-icon">📘</span>
+        <span class="sp-label">MapFlow Notes <span class="sp-sub">Published web version · stevegates24.github.io</span></span>
         <span class="sp-arr">↗</span>
       </div>
-      <div class="sp-item" onclick="window.open('https://stevegates24.github.io/MapFlow-Notes/','_blank')">
-        <span class="sp-icon">📖</span>
-        <span class="sp-label">MapFlow Notes <span class="sp-sub">This guide · Published web version</span></span>
+     
+        <div class="sp-item" onclick="window.open('https://stevegates24.github.io/Temu-Mapping-Simplifier/','_blank')">
+        <span class="sp-icon">📘</span>
+        <span class="sp-label">MapFlow Tool <span class="sp-sub">Published web version · stevegates24.github.io</span></span>
         <span class="sp-arr">↗</span>
       </div>
     </div>
-
     <!-- LEARN -->
     <div class="sp-section">
       <div class="sp-sec-title">Learning</div>
@@ -609,7 +625,6 @@ code{background:var(--b4);border:1px solid var(--bd2);border-radius:5px;padding:
         <span class="sp-label">Pro Mapper Thinking <span class="sp-sub">Advanced speed techniques</span></span>
       </div>
     </div>
-
     <!-- RESOURCES -->
     <div class="sp-section">
       <div class="sp-sec-title">Resources</div>
@@ -623,7 +638,6 @@ code{background:var(--b4);border:1px solid var(--bd2);border-radius:5px;padding:
         <span class="sp-label">Show Welcome Screen <span class="sp-sub">Re-play the intro</span></span>
       </div>
     </div>
-
     <!-- ABOUT -->
     <div class="sp-section">
       <div class="sp-sec-title">About</div>
@@ -633,10 +647,9 @@ code{background:var(--b4);border:1px solid var(--bd2);border-radius:5px;padding:
         <span class="sp-arr">↗</span>
       </div>
     </div>
-
   </div>
   <div class="sp-footer">
-    <div class="sp-brand">MapFlow <span style="color:var(--or)">Notes</span> + AI</div>
+    <div class="sp-brand">MapFlow Notes + AI</div>
     <div class="sp-version">v2.0 · by Steve Gates · CMT Mapping Guide</div>
   </div>
 </div>
@@ -1758,128 +1771,126 @@ function buildPage(id) {
 }
 
 // ══════════════════════════════════════════
-//  SPRING PHYSICS SCROLL — real spring sim
+//  SPRING PHYSICS SCROLL
 // ══════════════════════════════════════════
-// ══════════════════════════════════════════
-//  SMOOTH SCROLL — critically damped, no bounce
-// ══════════════════════════════════════════
-// We use a simple easeOutQuart curve — silky smooth deceleration,
-// no spring overshoot at all (overshoot was causing the jitter +
-// wrong-section highlight during scroll).
-function smoothScrollTo(container, targetY, onDone) {
-  if (container._scrollRaf) cancelAnimationFrame(container._scrollRaf);
-  const start    = container.scrollTop;
-  const dist     = targetY - start;
-  if (Math.abs(dist) < 1) { if (onDone) onDone(); return; }
-  const duration = Math.min(520, Math.max(260, Math.abs(dist) * 0.35)); // scale with distance
-  const startTime = performance.now();
+function springScrollTo(container, targetY) {
+  // Critically-damped spring simulation — real physics, butter smooth
+  // No harsh bouncing. Settles naturally like a heavy door closing.
+  const stiffness = 140;  // spring constant — lower = lazier/smoother
+  const damping   = 22;   // critically damped at 2*sqrt(stiffness*mass)
+  const mass      = 1;
+  const minVel    = 0.3;  // stop threshold (px/s)
+  const minDist   = 0.5;  // stop threshold (px)
 
-  function easeOutQuart(t) {
-    return 1 - Math.pow(1 - t, 4);
-  }
+  let pos = container.scrollTop;
+  let vel = 0;
+  let last = performance.now();
+  let raf;
 
-  function step(now) {
-    const t = Math.min((now - startTime) / duration, 1);
-    container.scrollTop = start + dist * easeOutQuart(t);
-    if (t < 1) {
-      container._scrollRaf = requestAnimationFrame(step);
-    } else {
+  // Cancel any previous spring animation on this container
+  if (container._springRaf) cancelAnimationFrame(container._springRaf);
+
+  function tick(now) {
+    const dt = Math.min((now - last) / 1000, 0.032); // cap at 32ms (~30fps min)
+    last = now;
+
+    // Spring force + damping force
+    const springF  = -stiffness * (pos - targetY);
+    const dampingF = -damping * vel;
+    const acc = (springF + dampingF) / mass;
+
+    vel += acc * dt;
+    pos += vel * dt;
+    container.scrollTop = pos;
+
+    // Settle condition — position close enough AND velocity near zero
+    if (Math.abs(pos - targetY) < minDist && Math.abs(vel) < minVel) {
       container.scrollTop = targetY;
-      container._scrollRaf = null;
-      if (onDone) onDone();
+      return; // done
     }
+    container._springRaf = requestAnimationFrame(tick);
   }
-  container._scrollRaf = requestAnimationFrame(step);
+  container._springRaf = requestAnimationFrame(tick);
 }
 
 // ══════════════════════════════════════════
-//  SCROLL-BASED NAV SYNC
-//  Replaces IntersectionObserver — far more
-//  reliable for a continuous-scroll layout
-//  where multiple sections are visible at once.
-//  Logic: whichever section's top is closest
-//  to (but not past) 30% down the viewport
-//  is the "active" one.
+//  INTERSECTION OBSERVER — auto-update nav as you scroll
 // ══════════════════════════════════════════
-let scrollObserver  = null; // kept as null — no longer used
-let _isProgrammatic = false;
-let _scrollSyncRaf  = null;
-
+let scrollObserver = null;
 function setupScrollObserver() {
-  // Attach a scroll listener on notes-main instead of IntersectionObserver
   const main = document.getElementById('notes-main');
-  if (!main || main._scrollSyncBound) return;
-  main._scrollSyncBound = true;
-  main.addEventListener('scroll', () => {
-    if (_isProgrammatic) return;
-    if (_scrollSyncRaf) return; // throttle to one rAF per scroll event
-    _scrollSyncRaf = requestAnimationFrame(() => {
-      _scrollSyncRaf = null;
-      syncNavToScroll(main);
-    });
-  }, { passive: true });
-}
-
-function syncNavToScroll(main) {
   const allIds = getAllNavIds().filter(id => NOTES[id]);
-  // The "trigger line" is 28% down from the top of the scroll container
-  const triggerY = main.scrollTop + main.clientHeight * 0.28;
-  // Find the last section whose top is above the trigger line
-  let activeId = allIds[0];
-  for (const id of allIds) {
-    const el = document.getElementById('page-' + id);
-    if (!el) continue;
-    if (el.offsetTop <= triggerY) activeId = id;
-    else break;
+
+  // Use a scroll listener for smoother active-nav tracking
+  // (IntersectionObserver fires too coarsely for a smooth feel)
+  let ticking = false;
+  const allIdsForObs = getAllNavIds().filter(id => NOTES[id]);
+
+  function onScroll() {
+    if (ticking) return;
+    ticking = true;
+    requestAnimationFrame(() => {
+      ticking = false;
+      const viewportMid = main.scrollTop + main.clientHeight * 0.32;
+      let closest = null, closestDist = Infinity;
+      allIdsForObs.forEach(id => {
+        const el = document.getElementById('page-' + id);
+        if (!el) return;
+        const dist = Math.abs(el.offsetTop - viewportMid);
+        if (dist < closestDist) { closestDist = dist; closest = id; }
+      });
+      if (closest && closest !== currentPage) updateActiveNav(closest);
+    });
   }
-  if (activeId && activeId !== currentPage) {
-    updateActiveNav(activeId, false); // no bounce on scroll
-  }
+
+  main.addEventListener('scroll', onScroll, { passive: true });
+  // Store cleanup fn on the observer object for disconnection
+  scrollObserver = { disconnect: () => main.removeEventListener('scroll', onScroll) };
+
+  // Observation set up via scroll listener above
 }
 
-function updateActiveNav(id, withBounce = true) {
+function updateActiveNav(id) {
   if (!NOTES[id]) return;
+  // Deactivate old nav item
   const oldNi = document.getElementById('ni-' + currentPage);
   if (oldNi) oldNi.classList.remove('act');
   currentPage = id;
   localStorage.setItem('mfn_page', id);
+  // Activate new nav item with bounce
   const ni = document.getElementById('ni-' + id);
   if (ni) {
     ni.classList.add('act');
-    if (withBounce) {
-      ni.classList.remove('bounce');
-      void ni.offsetWidth;
-      ni.classList.add('bounce');
-      ni.addEventListener('animationend', () => ni.classList.remove('bounce'), {once:true});
-    }
+    ni.classList.remove('bounce');
+    void ni.offsetWidth;
+    ni.classList.add('bounce');
+    ni.addEventListener('animationend', () => ni.classList.remove('bounce'), {once:true});
     ni.scrollIntoView({block:'nearest', behavior:'smooth'});
   }
-  // Breadcrumb crossfade
+  // Breadcrumb fade
   const label = NAV.flatMap(n => [n, ...(n.ch||[])]).find(n => n.id === id)?.label || id;
   const bc = document.getElementById('breadcrumb');
-  bc.style.transition = 'opacity .12s ease';
   bc.style.opacity = '0';
-  setTimeout(() => { bc.textContent = label; bc.style.opacity = '1'; }, 120);
+  setTimeout(() => { bc.textContent = label; bc.style.transition = 'opacity .18s'; bc.style.opacity = '1'; }, 110);
   updateProgress();
 }
 
 function navTo(id) {
   if (!NOTES[id]) return;
-  buildPage(id);
-  const pg   = document.getElementById('page-' + id);
-  const main = document.getElementById('notes-main');
+  const pg = document.getElementById('page-' + id);
   if (!pg) return;
-
-  // Block scroll listener while we're animating
-  _isProgrammatic = true;
-
-  // Highlight nav immediately
-  updateActiveNav(id, true);
-
-  // Smooth scroll — unlock listener only after animation ends
-  smoothScrollTo(main, Math.max(0, pg.offsetTop - 10), () => {
-    setTimeout(() => { _isProgrammatic = false; }, 80);
-  });
+  const main = document.getElementById('notes-main');
+  // Temporarily disconnect the scroll observer so it doesn't fire
+  // spuriously during the programmatic scroll
+  // Disable scroll-observer temporarily to avoid jitter during programmatic scroll
+  let observerPaused = true;
+  if (scrollObserver) scrollObserver.disconnect();
+  // Spring-physics scroll to the section
+  springScrollTo(main, pg.offsetTop - 10);
+  // Update nav immediately
+  updateActiveNav(id);
+  // Re-setup after spring settles (spring takes ~600ms to settle)
+  setTimeout(() => { if (scrollObserver) setupScrollObserver(); }, 750);
 }
 
 // ══════════════════════════════════════════
@@ -1907,9 +1918,15 @@ function toggleSidebar() {
 let searchOpen = false;
 function toggleSearch() {
   searchOpen = !searchOpen;
-  document.getElementById('search-bar').classList.toggle('show', searchOpen);
-  if (searchOpen) { document.getElementById('search-inp').focus(); document.getElementById('search-results').innerHTML=''; }
-  else { document.getElementById('search-results').classList.remove('show'); }
+  const sb = document.getElementById('search-bar');
+  if (searchOpen) {
+    sb.style.display = 'flex';
+    requestAnimationFrame(() => { sb.classList.add('show'); document.getElementById('search-inp').focus(); document.getElementById('search-results').innerHTML=''; });
+  } else {
+    sb.classList.remove('show');
+    setTimeout(() => { sb.style.display = 'none'; }, 200);
+    document.getElementById('search-results').classList.remove('show');
+  }
 }
 function closeSearch() {
   searchOpen = false;
@@ -2389,91 +2406,41 @@ function showToast(msg, type='') {
 }
 
 // ══════════════════════════════════════════
-//  THEME + ACCENT SYSTEM (MapFlow-identical)
+//  THEME
 // ══════════════════════════════════════════
 const THEMES = ['dark','light','pitch'];
-const THEME_ICONS = {dark:'🌙 Dark', light:'☀️ Light', pitch:'⚫ Pitch'};
-
-const ACCENTS = [
-  {id:'orange', label:'Orange (default)', h:'#FF6200', dk:'#CC4E00', lt:'#FF8C3A'},
-  {id:'purple', label:'Purple',           h:'#7C3AED', dk:'#6D28D9', lt:'#A78BFA'},
-  {id:'blue',   label:'Blue',             h:'#2563EB', dk:'#1D4ED8', lt:'#60A5FA'},
-  {id:'green',  label:'Green',            h:'#16A34A', dk:'#15803D', lt:'#4ADE80'},
-  {id:'teal',   label:'Teal',             h:'#0D9488', dk:'#0F766E', lt:'#2DD4BF'},
-  {id:'rose',   label:'Rose',             h:'#E11D48', dk:'#BE123C', lt:'#FB7185'},
-];
-
-let currentAccent   = localStorage.getItem('mfn_accent') || 'orange';
-let blobEnabled     = localStorage.getItem('mfn_blob') !== 'false';
-let blobIntensity   = parseInt(localStorage.getItem('mfn_blob_intensity') || '85');
-
-function hexRgb(h){ const x=h.replace('#',''); const n=parseInt(x,16); return[(n>>16)&255,(n>>8)&255,n&255]; }
-
-function applyAccent(id) {
-  const a = ACCENTS.find(x => x.id === id) || ACCENTS[0];
-  const root = document.documentElement;
-  root.style.setProperty('--or',  a.h);
-  root.style.setProperty('--odk', a.dk);
-  root.style.setProperty('--olt', a.lt);
-  const [r,g,b] = hexRgb(a.h);
-  const rv = `${r},${g},${b}`;
-  const alphas = {a04:.04,a06:.06,a07:.07,a08:.08,a10:.1,a12:.12,a18:.18,a20:.2,a25:.25,a30:.3,a40:.4,a50:.5};
-  Object.entries(alphas).forEach(([k,v]) => root.style.setProperty(`--or-${k}`, `rgba(${rv},${v})`));
-  // Blob colour follows accent
-  const theme = root.getAttribute('data-theme') || 'dark';
-  const blobA = theme === 'light' ? 0.22 : theme === 'pitch' ? 0.14 : 0.18;
-  root.style.setProperty('--blob1', `rgba(${rv},${blobA})`);
-  root.style.setProperty('--blob2', `rgba(${rv},0.07)`);
-  currentAccent = id;
-  localStorage.setItem('mfn_accent', id);
-  document.querySelectorAll('.accent-sw').forEach(sw => sw.classList.toggle('active', sw.dataset.accent === id));
+function cycleThem() {
+  const cur = document.documentElement.getAttribute('data-theme') || 'dark';
+  const next = THEMES[(THEMES.indexOf(cur) + 1) % THEMES.length];
+  setTheme(next);
 }
-
-function buildAccentSwatches() {
-  const el = document.getElementById('accent-swatches');
-  if (!el) return;
-  el.innerHTML = ACCENTS.map(a =>
-    `<div class="accent-sw ${a.id === currentAccent ? 'active' : ''}" data-accent="${a.id}"
-       style="background:${a.h}" title="${a.label}"
-       onclick="applyAccent('${a.id}')"></div>`
-  ).join('');
-}
-
 function setTheme(t) {
   document.documentElement.setAttribute('data-theme', t);
   localStorage.setItem('mfn_theme', t);
-  // Sync header theme button
-  const btn = document.getElementById('theme-btn');
-  if (btn) btn.textContent = {dark:'🌙', light:'☀️', pitch:'⚫'}[t] || '🌙';
-  // Sync chips
+  document.getElementById('theme-btn').textContent = {dark:'🌙',light:'☀️',pitch:'⚫'}[t]||'🌙';
+  loadAccent();
   document.querySelectorAll('.theme-chip').forEach(c => c.classList.remove('act'));
-  const tc = document.getElementById('tc-' + t);
+  const tc = document.getElementById('tc-'+t);
   if (tc) tc.classList.add('act');
-  // Re-apply accent so blob alpha matches new theme
-  applyAccent(currentAccent);
 }
 
-function cycleTheme() {
-  const cur = document.documentElement.getAttribute('data-theme') || 'dark';
-  setTheme(THEMES[(THEMES.indexOf(cur) + 1) % THEMES.length]);
+// ── ACCENT COLORS ──
+const ACCENTS = ['orange','blue','purple','green','rose','amber'];
+function setAccent(a) {
+  // Remove all accent data attrs
+  ACCENTS.forEach(ac => document.documentElement.removeAttribute('data-accent'));
+  if (a && a !== 'orange') {
+    document.documentElement.setAttribute('data-accent', a);
+  }
+  localStorage.setItem('mfn_accent', a || 'orange');
+  // Update swatch borders
+  document.querySelectorAll('.accent-chip').forEach(ch => ch.classList.remove('act'));
+  const ac = document.getElementById('ac-' + (a || 'orange'));
+  if (ac) ac.classList.add('act');
 }
-
-function toggleBlob(on) {
-  blobEnabled = on;
-  localStorage.setItem('mfn_blob', on ? 'true' : 'false');
-  const b = document.getElementById('blob');
-  if (b) b.style.opacity = on ? String(blobIntensity / 100) : '0';
-  const row = document.getElementById('blob-intensity-row');
-  if (row) row.style.opacity = on ? '1' : '.38';
-}
-
-function setBlobIntensity(val) {
-  blobIntensity = parseInt(val);
-  localStorage.setItem('mfn_blob_intensity', val);
-  const b = document.getElementById('blob');
-  if (b && blobEnabled) b.style.opacity = String(blobIntensity / 100);
-  const lbl = document.getElementById('blob-pct-label');
-  if (lbl) lbl.textContent = val + '%';
+function loadAccent() {
+  const saved = localStorage.getItem('mfn_accent') || 'orange';
+  setAccent(saved);
 }
 
 // ══════════════════════════════════════════
@@ -2482,37 +2449,25 @@ function setBlobIntensity(val) {
 function openSettings() {
   document.getElementById('settings-panel').classList.add('open');
   document.getElementById('sp-ovl').classList.add('show');
-  buildAccentSwatches();
   // Sync theme chips
   const t = document.documentElement.getAttribute('data-theme') || 'dark';
-  document.querySelectorAll('.theme-chip').forEach(c => c.classList.remove('act'));
-  const tc = document.getElementById('tc-' + t);
+  document.querySelectorAll('.theme-chip').forEach(ch => ch.classList.remove('act'));
+  const tc = document.getElementById('tc-'+t);
   if (tc) tc.classList.add('act');
-  // Sync blob toggle + slider
-  const bt = document.getElementById('blob-toggle');
-  if (bt) bt.checked = blobEnabled;
-  const bs = document.getElementById('blob-slider');
-  if (bs) bs.value = blobIntensity;
-  const lbl = document.getElementById('blob-pct-label');
-  if (lbl) lbl.textContent = blobIntensity + '%';
-  const row = document.getElementById('blob-intensity-row');
-  if (row) row.style.opacity = blobEnabled ? '1' : '.38';
+  // Sync accent chips
+  const a = localStorage.getItem('mfn_accent') || 'orange';
+  document.querySelectorAll('.accent-chip').forEach(ch => ch.classList.remove('act'));
+  const ac = document.getElementById('ac-'+a);
+  if (ac) ac.classList.add('act');
 }
 function closeSettings() {
   document.getElementById('settings-panel').classList.remove('open');
   document.getElementById('sp-ovl').classList.remove('show');
 }
-
-// Init on load
-(function(){
-  applyAccent(currentAccent);
-  const b = document.getElementById('blob');
-  if (b) b.style.opacity = blobEnabled ? String(blobIntensity / 100) : '0';
-  // Set header theme button text
-  const t = document.documentElement.getAttribute('data-theme') || 'dark';
-  const btn = document.getElementById('theme-btn');
-  if (btn) btn.textContent = {dark:'🌙', light:'☀️', pitch:'⚫'}[t] || '🌙';
-})();
+function openMainMapflow() {
+  // Try to open the index file — if hosted, navigate there; otherwise show toast
+  showToast('Open your MapFlow Tool (index.html) in a separate tab', '');
+}
 
 // ══════════════════════════════════════════
 //  READING PROGRESS BAR
